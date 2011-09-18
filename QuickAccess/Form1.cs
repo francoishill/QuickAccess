@@ -40,19 +40,6 @@ namespace QuickAccess
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
-        const int WM_HOTKEY = 786;
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-        const uint MOD_ALT = 1;
-        const uint MOD_CONTROL = 2;
-        const uint MOD_SHIFT = 4;
-        const uint MOD_WIN = 8;
-        const int Id = 500;
-
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
         //// Activate or minimize a window
         //[DllImportAttribute("User32.DLL")]
         //private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -142,8 +129,7 @@ namespace QuickAccess
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (!RegisterHotKey(this.Handle, Id, MOD_CONTROL, (int)Keys.Q))
-                MessageBox.Show("Could not register hotkey");
+            RegisterHotKey(this.Handle, Id, MOD_CONTROL, (int)Keys.Q);
             label1.Text = AvailableActionList;
             SetAutocompleteActionList();
             InitializeHooks(false, true);
@@ -235,6 +221,19 @@ namespace QuickAccess
         void actHook_KeyPress(object sender, KeyPressEventArgs e)
         {
         }
+
+        const int WM_HOTKEY = 786;
+        [DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        const uint MOD_ALT = 1;
+        const uint MOD_CONTROL = 2;
+        const uint MOD_SHIFT = 4;
+        const uint MOD_WIN = 8;
+        const int Id = 500;
+
+        [DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
         void actHook_KeyUp(object sender, KeyEventArgs e)
         {
