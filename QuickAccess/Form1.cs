@@ -69,34 +69,105 @@ namespace QuickAccess
 		[DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
 		static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);
 
-		AutoCompleteStringCollection AutoCompleteActionList = new AutoCompleteStringCollection()
+		public class Commands
 		{
-			"todo ",
-      "run ",
-      "mail ",
-      "explore ",
-      "web ",
-      "google ",
-      "kill ",
-      "startupbat ",
-			"call "
-			//"unhide "
-		};
+			public static Dictionary<string, CommandDetails> CommandList = new Dictionary<string, CommandDetails>();
+			public static AutoCompleteStringCollection AutoCompleteAllactionList;
 
-		AutoCompleteStringCollection AutoCompleteRunList = new AutoCompleteStringCollection()
-		{
-			"run chrome",
-      "run delphi2010",
-      "run delphi2007",
-      "run phpstorm",
-      "run sqlitespy"
-		};
+			private static void AddToCommandList(string commandNameIn, List<string> commandArgumentsIn, string UserLabelIn)
+			{
+				CommandList.Add(commandNameIn.ToLower(), new CommandDetails(commandNameIn, commandArgumentsIn, UserLabelIn));
+				RepopulateAutoCompleteAllactionList();
+			}
+
+			public static void PopulateCommandList()
+			{
+				AddToCommandList("todo",
+					new List<string>()
+					{
+						"120;15;Buy milk;Buy milk after work"
+					},
+					"todo MinutesFromNow;Autosnooze;Item name;Description");
+				AddToCommandList("run",
+					new List<string>()
+					{
+						"chrome",
+			      "delphi2010",
+			      "delphi2007",
+			      "phpstorm",
+			      "sqlitespy"
+					},
+					"run chrome/canary/delphi2010/delphi2007/phpstorm");
+				AddToCommandList("mail", null, "mail to;subject;body");
+				AddToCommandList("explore", null, "explore franother/prog/docs/folderpath");
+				AddToCommandList("web", null, "web google.com");
+				AddToCommandList("google", null, "google search on google");
+				AddToCommandList("kill", null, "kill processNameToKill");
+				AddToCommandList("startupbat", null, "startupbat open/getall/getline xxx/comment #/uncomment #");
+				AddToCommandList("call", null, "call yolwork/imqs/kerry/deon/johann/wesley/honda");
+				AddToCommandList("cmd", null, "cmd firepuma/folderpath");
+				AddToCommandList("btw", null, "btw text");
+				AddToCommandList("svncommit", null, "svncommit proj User32stuff;Log message");
+			}
+
+			private static void RepopulateAutoCompleteAllactionList()
+			{
+				if (AutoCompleteAllactionList != null) AutoCompleteAllactionList.Clear();
+				AutoCompleteAllactionList = new AutoCompleteStringCollection();
+				foreach (string key in CommandList.Keys)
+					AutoCompleteAllactionList.Add(CommandList[key].commandName);
+			}
+
+			public class CommandDetails
+			{
+				public string commandName;
+				public AutoCompleteStringCollection commandArguments;
+				public string UserLabel;
+				public CommandDetails(string commandNameIn, List<string> commandArgumentsIn, string UserLabelIn)
+				{
+					commandName = commandNameIn;
+					commandArguments = new AutoCompleteStringCollection();
+					if (commandArgumentsIn != null)
+						foreach (string arg in commandArgumentsIn)
+							commandArguments.Add(commandNameIn + " " + arg);
+					UserLabel = UserLabelIn;
+				}
+			}
+
+			//public static List<CommandDetails> CommandList = new List<CommandDetails>()
+			//{
+			//  new CommandDetails("todo",
+			//    new AutoCompleteStringCollection() {
+			//      "todo ",
+			//      "run ",
+			//      "mail ",
+			//      "explore ",
+			//      "web ",
+			//      "google ",
+			//      "kill ",
+			//      "startupbat ",
+			//      "call ",
+			//      "cmd",
+			//      "btw"
+			//    }),
+			//  new CommandDetails("run",
+			//    new AutoCompleteStringCollection(){
+			//      "run chrome",
+			//      "run delphi2010",
+			//      "run delphi2007",
+			//      "run phpstorm",
+			//      "run sqlitespy"
+			//    }),
+			//};
+		}
 
 		//Win32 API calls necesary to raise an unowned processs main window
 
 		public Form1()
 		{
 			InitializeComponent();
+
+			Commands.PopulateCommandList();
 
 			if (!System.Diagnostics.Debugger.IsAttached && Environment.GetCommandLineArgs()[0].ToUpper().Contains("Apps\\2.0".ToUpper()))
 			{
@@ -114,7 +185,7 @@ namespace QuickAccess
 			if (!RegisterHotKey(this.Handle, Id, MOD_CONTROL, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Q");
 			label1.Text = AvailableActionList;
 			SetAutocompleteActionList();
-			InitializeHooks(false, true);
+			//InitializeHooks(false, true);
 			this.Hide();
 			this.Opacity = origOpacity;
 		}
@@ -209,10 +280,10 @@ namespace QuickAccess
 
 		void SetAutocompleteActionList()
 		{
-			if (textBox1.AutoCompleteCustomSource != AutoCompleteActionList)
+			if (textBox1.AutoCompleteCustomSource != Commands.AutoCompleteAllactionList)
 			{
 				//textBox1.AutoCompleteCustomSource.Clear();
-				textBox1.AutoCompleteCustomSource = AutoCompleteActionList;
+				textBox1.AutoCompleteCustomSource = Commands.AutoCompleteAllactionList;
 			}
 			//textBox1.AutoCompleteCustomSource.AddRange(new string[] {
 			//          "todo ",
@@ -229,12 +300,14 @@ namespace QuickAccess
 
 		}
 
-		void SetAutoCompleteRun()
+		void SetAutoCompleteForAction(string action)
 		{
-			if (textBox1.AutoCompleteCustomSource != AutoCompleteRunList)
+			//CommandDetails.CommandList.Add("", new CommandDetails("", null));
+			if (textBox1.AutoCompleteCustomSource != Commands.CommandList[action].commandArguments && textBox1.TextLength > 2)//SelectionLength == 0)
 			{
 				//textBox1.AutoCompleteCustomSource.Clear();
-				textBox1.AutoCompleteCustomSource = AutoCompleteRunList;
+				textBox1.AutoCompleteCustomSource = Commands.CommandList[action].commandArguments;
+				//appendLogTextbox("autocomplete for " + action);
 			}
 		}
 
@@ -509,51 +582,21 @@ namespace QuickAccess
 
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
-			if (textBox1.Text.ToUpper().StartsWith("TODO"))
-			{
-				label1.Text = "todo MinutesFromNow;Autosnooze;Item name;Description";
-			}
-			else if (textBox1.Text.ToUpper().StartsWith("RUN"))
-			{
-				label1.Text = "run chrome/canary/delphi2010/delphi2007/phpstorm";
-			}
-			else if (textBox1.Text.ToUpper().StartsWith("MAIL"))
-			{
-				label1.Text = "mail to;subject;body";
-			}
-			else if (textBox1.Text.ToUpper().StartsWith("EXPLORE"))
-			{
-				label1.Text = "explore franother/prog/docs";
-			}
-			else if (textBox1.Text.ToUpper().StartsWith("WEB"))
-			{
-				label1.Text = "web google.com";
-			}
-			else if (textBox1.Text.ToUpper().StartsWith("GOOGLE"))
-			{
-				label1.Text = "google search on google";
-			}
-			else if (textBox1.Text.ToUpper().StartsWith("KILL"))
-			{
-				label1.Text = "kill processNameToKill";
-			}
-			else if (textBox1.Text.ToUpper().StartsWith("STARTUPBAT"))
-			{
-				label1.Text = "startupbat open/getall/getline xxx/comment #/uncomment #";
-			}
-			else if (textBox1.Text.ToUpper().StartsWith("CALL"))
-			{
-				label1.Text = "call yolwork/imqs/kerry/deon/johann/wesley/honda";
-			}
-			//else if (textBox1.Text.ToUpper().StartsWith("UNHIDE"))
-			//{
-			//  label1.Text = "unhide processname";
-			//}
+			string tmpkey = "987654321abcde";
+			if (textBox1.Text.ToLower().IndexOf(' ') != -1)
+				tmpkey = textBox1.Text.ToLower().Substring(0, textBox1.Text.ToLower().IndexOf(' '));
+			if (Commands.CommandList.ContainsKey(tmpkey))
+				label1.Text = Commands.CommandList[tmpkey].UserLabel;
 			else
 				label1.Text = AvailableActionList;
 
-			if (textBox1.Text.ToUpper().StartsWith("RUN")) SetAutoCompleteRun();
-			else SetAutocompleteActionList();
+			lock (this)
+			{
+				if (Commands.CommandList.ContainsKey(textBox1.Text.ToLower()))
+					SetAutoCompleteForAction(textBox1.Text.ToLower());
+				//if (textBox1.Text.ToUpper().StartsWith("RUN")) SetAutoCompleteForAction("run");
+				else if (textBox1.Text.Length == 0) SetAutocompleteActionList();
+			}
 		}
 
 		private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -780,6 +823,89 @@ namespace QuickAccess
 					else if (name == "honda") appendLogTextbox("Honda Tygervalley: 021 910 8300");
 					else appendLogTextbox("Name not regocnized to call: " + name);
 				}
+				else if (textBox1.Text.ToUpper().StartsWith("CMD ") && textBox1.Text.Length >= 5)
+				{
+					string cmdpath = textBox1.Text.Substring(4).ToLower();
+					if (cmdpath == "firepuma")
+						System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + @"c:\francois\websites\firepuma" + "\"");
+					else if (Directory.Exists(cmdpath))
+						System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + cmdpath + "\"");
+					else
+						appendLogTextbox("Folder does not exist, cannot start cmd: " + cmdpath);
+				}
+				else if (textBox1.Text.ToUpper().StartsWith("BTW ") && textBox1.Text.Length >= 5)
+				{
+					string btwtext = textBox1.Text.Substring(4).ToLower();
+					string responsestr = "";
+					PerformVoidFunctionSeperateThread(() =>
+						{
+							responsestr = PostPHP("http://firepuma.com/btw/directadd/f/" + PhpEncryption.StringToHex(btwtext), "");
+						});
+					appendLogTextbox(responsestr);
+					if (responsestr.ToLower().StartsWith("success:"))
+						textBox1.Text = "";
+					//appendLogTextbox("Folder does not exist, cannot start cmd: " + cmdpath);
+				}
+				else if (textBox1.Text.ToUpper().StartsWith("SVNCOMMIT ") && textBox1.Text.Length >= 11)
+				{
+					//svncommit proj User32stuff;Log message
+					string svncommandwithargs = textBox1.Text.ToLower().Substring(11);
+					if (svncommandwithargs.Contains(' '))
+					{
+						string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' '));
+						string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
+						if (projnameAndlogmessage.Contains(';'))
+						{
+							string projname = projnameAndlogmessage.Split(';')[0];
+							string logmessage = projnameAndlogmessage.Split(';')[1];
+							try
+							{
+								string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+								//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+								string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
+								string placedherebecauseSvnPathMustBeRemoved;
+								if (Directory.Exists(commitDir))
+								{
+									PerformVoidFunctionSeperateThread(() =>
+									{
+										//TODO: Should still remove the path of svn from the next line
+										//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+										ProcessStartInfo start = new ProcessStartInfo(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+										start.UseShellExecute = false;
+										start.CreateNoWindow = true;
+										start.RedirectStandardOutput = true;
+										start.RedirectStandardError = true;
+										System.Diagnostics.Process svnproc = new Process();
+										svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+										{
+											if (outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
+											else appendLogTextbox("Svn error empty");
+										};
+										svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+										{
+											if (outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
+											else appendLogTextbox("Svn output empty");
+										};
+										svnproc.StartInfo = start;
+										svnproc.Start();
+
+										svnproc.BeginOutputReadLine();
+										svnproc.BeginErrorReadLine();
+
+										svnproc.WaitForExit();
+									});
+								}
+								else appendLogTextbox("Error: folder not found: " + commitDir);
+							}
+							catch (Exception exc)
+							{
+								appendLogTextbox("Exception on running svn: " + exc.Message);
+							}
+						}
+						else appendLogTextbox("Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
+					}
+					else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
+				}
 				/*else if (textBox1.Text.ToUpper().StartsWith("UNHIDE ") && textBox1.Text.Length >= 8)
 				{
 					string processName = textBox1.Text.Substring(7);
@@ -799,12 +925,14 @@ namespace QuickAccess
 				}*/
 
 				textBox1.Select(textBox1.Text.Length, 0);
+				//e.SuppressKeyPress = true;
+				//e.Handled = true;
 			}
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+		private void Form1_MouseClick(object sender, MouseEventArgs e)
 		{
-			this.Hide();
+			if (e.Button == System.Windows.Forms.MouseButtons.Right) this.Hide();
 		}
 	}
 
