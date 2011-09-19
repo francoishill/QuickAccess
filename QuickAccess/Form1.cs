@@ -887,7 +887,9 @@ namespace QuickAccess
 											else appendLogTextbox("Svn error empty");
 										};
 										svnproc.StartInfo = start;
-										svnproc.Start();
+										if (svnproc.Start())
+											appendLogTextbox("Performing svn commit, please wait...");
+										else appendLogTextbox("Error: Could not run svn commit.");
 
 										svnproc.BeginOutputReadLine();
 										svnproc.BeginErrorReadLine();
