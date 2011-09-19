@@ -40,6 +40,21 @@ namespace QuickAccess
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
+        private double origOpacity;
+
+        const int WM_HOTKEY = 786;
+        [DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        const uint MOD_ALT = 1;
+        const uint MOD_CONTROL = 2;
+        const uint MOD_SHIFT = 4;
+        const uint MOD_WIN = 8;
+        const int Id = 500;
+
+        [DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
         //// Activate or minimize a window
         //[DllImportAttribute("User32.DLL")]
         //private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -58,6 +73,9 @@ namespace QuickAccess
                 Microsoft.Win32.RegistryKey regkeyRUN = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
                 regkeyRUN.SetValue(ThisAppName, "\"" + System.Windows.Forms.Application.ExecutablePath + "\"", Microsoft.Win32.RegistryValueKind.String);
             }
+
+            origOpacity = this.Opacity;
+            this.Opacity = 0;
         }
 
         private bool IsAltDown()
@@ -127,12 +145,20 @@ namespace QuickAccess
             this.Show();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_Shown(object sender, EventArgs e)
         {
-            RegisterHotKey(this.Handle, Id, MOD_CONTROL, (int)Keys.Q);
+            this.ShowInTaskbar = true;
+            if (!RegisterHotKey(this.Handle, Id, MOD_CONTROL, (int)Keys.Q)) MessageBox.Show("Could not register hotkey");
             label1.Text = AvailableActionList;
             SetAutocompleteActionList();
             InitializeHooks(false, true);
+            this.Hide();
+            this.Opacity = origOpacity;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            
         }
 
         protected override void WndProc(ref Message m)
@@ -221,19 +247,6 @@ namespace QuickAccess
         void actHook_KeyPress(object sender, KeyPressEventArgs e)
         {
         }
-
-        const int WM_HOTKEY = 786;
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-        const uint MOD_ALT = 1;
-        const uint MOD_CONTROL = 2;
-        const uint MOD_SHIFT = 4;
-        const uint MOD_WIN = 8;
-        const int Id = 500;
-
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
         void actHook_KeyUp(object sender, KeyEventArgs e)
         {
@@ -611,6 +624,11 @@ namespace QuickAccess
 
                 textBox1.Select(textBox1.Text.Length, 0);
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Hide();
         }
     }
 
