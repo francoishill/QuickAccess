@@ -156,11 +156,6 @@ namespace QuickAccess
             this.Opacity = origOpacity;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            
-        }
-
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == WM_HOTKEY)
@@ -203,7 +198,8 @@ namespace QuickAccess
                 "run chrome",
                 "run delphi2010",
                 "run delphi2007",
-                "run phpstorm"
+                "run phpstorm",
+                "run sqlitespy"
             });
         }
 
@@ -563,6 +559,8 @@ namespace QuickAccess
                         exepath = @"C:\Program Files (x86)\Embarcadero\RAD Studio\7.0\bin\bds.exe";
                     else if (appname == "phpstorm")
                         exepath = @"C:\Program Files (x86)\JetBrains\PhpStorm 2.1.4\bin\PhpStorm.exe";
+                    else if (appname == "sqlitespy")
+                        exepath = @"C:\Francois\Programs\SQLiteSpy_1.9.1\SQLiteSpy.exe";
 
                     if (File.Exists(exepath))
                         System.Diagnostics.Process.Start(exepath);
