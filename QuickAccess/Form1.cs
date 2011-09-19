@@ -878,13 +878,13 @@ namespace QuickAccess
 										System.Diagnostics.Process svnproc = new Process();
 										svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
 										{
-											if (outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
-											else appendLogTextbox("Svn error empty");
+											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
+											else appendLogTextbox("Svn output empty");
 										};
 										svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
 										{
-											if (outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
-											else appendLogTextbox("Svn output empty");
+											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
+											else appendLogTextbox("Svn error empty");
 										};
 										svnproc.StartInfo = start;
 										svnproc.Start();
