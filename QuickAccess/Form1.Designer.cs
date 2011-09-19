@@ -81,6 +81,7 @@
             this.textBox_Messages.Location = new System.Drawing.Point(22, 84);
             this.textBox_Messages.Multiline = true;
             this.textBox_Messages.Name = "textBox_Messages";
+            this.textBox_Messages.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox_Messages.Size = new System.Drawing.Size(708, 173);
             this.textBox_Messages.TabIndex = 2;
             this.textBox_Messages.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
