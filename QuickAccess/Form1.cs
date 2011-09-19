@@ -506,7 +506,7 @@ namespace QuickAccess
 			}
 			else if (textBox1.Text.ToUpper().StartsWith("STARTUPBAT"))
 			{
-				label1.Text = "startupbat getall/getline xxx/comment #/uncomment #";
+				label1.Text = "startupbat open/getall/getline xxx/comment #/uncomment #";
 			}
 			else
 				label1.Text = AvailableActionList;
@@ -629,7 +629,11 @@ namespace QuickAccess
 					string filePath = @"C:\Francois\Other\Startup\work Startup.bat";
 					string comm = textBox1.Text.Substring(11).ToLower();
 					//getall/getline 'xxx'/comment #/uncomment #
-					if (comm.StartsWith("getall"))
+					if (comm.StartsWith("open"))
+					{
+						System.Diagnostics.Process.Start("notepad", filePath);
+					}
+					else if (comm.StartsWith("getall"))
 					{
 						StreamReader sr = new StreamReader(filePath);
 						string line = sr.ReadLine();
