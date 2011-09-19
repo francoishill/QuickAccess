@@ -55,12 +55,42 @@ namespace QuickAccess
 		[DllImport("user32.dll")]
 		private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-		//// Activate or minimize a window
-		//[DllImportAttribute("User32.DLL")]
-		//private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-		//private const int SW_SHOW = 5;
-		//private const int SW_MINIMIZE = 6;
-		//private const int SW_RESTORE = 9;
+		// Activate or minimize a window
+		[DllImportAttribute("User32.DLL")]
+		private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+		private const int SW_SHOW = 5;
+		private const int SW_MINIMIZE = 6;
+		private const int SW_RESTORE = 9;
+
+		// For Windows Mobile, replace user32.dll with coredll.dll
+		[DllImport("user32.dll", SetLastError = true)]
+		static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+		[DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
+		static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);
+
+		AutoCompleteStringCollection AutoCompleteActionList = new AutoCompleteStringCollection()
+		{
+			"todo ",
+      "run ",
+      "mail ",
+      "explore ",
+      "web ",
+      "google ",
+      "kill ",
+      "startupbat ",
+			"call "
+			//"unhide "
+		};
+
+		AutoCompleteStringCollection AutoCompleteRunList = new AutoCompleteStringCollection()
+		{
+			"run chrome",
+      "run delphi2010",
+      "run delphi2007",
+      "run phpstorm",
+      "run sqlitespy"
+		};
 
 		//Win32 API calls necesary to raise an unowned processs main window
 
@@ -179,29 +209,33 @@ namespace QuickAccess
 
 		void SetAutocompleteActionList()
 		{
-			textBox1.AutoCompleteCustomSource.Clear();
-			textBox1.AutoCompleteCustomSource.AddRange(new string[] {
-                "todo ",
-                "run ",
-                "mail ",
-                "explore ",
-                "web ",
-                "google ",
-                "kill ",
-                "startupbat"
-            });
+			if (textBox1.AutoCompleteCustomSource != AutoCompleteActionList)
+			{
+				//textBox1.AutoCompleteCustomSource.Clear();
+				textBox1.AutoCompleteCustomSource = AutoCompleteActionList;
+			}
+			//textBox1.AutoCompleteCustomSource.AddRange(new string[] {
+			//          "todo ",
+			//          "run ",
+			//          "mail ",
+			//          "explore ",
+			//          "web ",
+			//          "google ",
+			//          "kill ",
+			//          "startupbat ",
+			//          "call ",
+			//          "unhide "
+			//      });
+
 		}
 
 		void SetAutoCompleteRun()
 		{
-			textBox1.AutoCompleteCustomSource.Clear();
-			textBox1.AutoCompleteCustomSource.AddRange(new string[] {
-                "run chrome",
-                "run delphi2010",
-                "run delphi2007",
-                "run phpstorm",
-                "run sqlitespy"
-            });
+			if (textBox1.AutoCompleteCustomSource != AutoCompleteRunList)
+			{
+				//textBox1.AutoCompleteCustomSource.Clear();
+				textBox1.AutoCompleteCustomSource = AutoCompleteRunList;
+			}
 		}
 
 		UserActivityHook actHook;
@@ -482,7 +516,6 @@ namespace QuickAccess
 			else if (textBox1.Text.ToUpper().StartsWith("RUN"))
 			{
 				label1.Text = "run chrome/canary/delphi2010/delphi2007/phpstorm";
-				if (textBox1.Text.ToUpper() == "RUN") SetAutoCompleteRun();
 			}
 			else if (textBox1.Text.ToUpper().StartsWith("MAIL"))
 			{
@@ -508,8 +541,19 @@ namespace QuickAccess
 			{
 				label1.Text = "startupbat open/getall/getline xxx/comment #/uncomment #";
 			}
+			else if (textBox1.Text.ToUpper().StartsWith("CALL"))
+			{
+				label1.Text = "call yolwork/imqs/kerry/deon/johann/wesley/honda";
+			}
+			//else if (textBox1.Text.ToUpper().StartsWith("UNHIDE"))
+			//{
+			//  label1.Text = "unhide processname";
+			//}
 			else
 				label1.Text = AvailableActionList;
+
+			if (textBox1.Text.ToUpper().StartsWith("RUN")) SetAutoCompleteRun();
+			else SetAutocompleteActionList();
 		}
 
 		private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -722,6 +766,37 @@ namespace QuickAccess
 						}
 					}
 				}
+				else if (textBox1.Text.ToUpper().StartsWith("CALL ") && textBox1.Text.Length >= 6)
+				{
+					//call yolwork/imqs/kerry/adrian/deon/johann/wesley
+					string name = textBox1.Text.ToLower().Substring(5);
+					if (name == "yolwork") appendLogTextbox("Yolande work: (021) 853 3564");
+					else if (name == "imqs") appendLogTextbox("IMQS office: 021-880 2712 / 880 1632");
+					else if (name == "kerry") appendLogTextbox("Kerry extension: 107");
+					else if (name == "adrian") appendLogTextbox("Adrian extension: 106");
+					else if (name == "deon") appendLogTextbox("Deon extension: 121");
+					else if (name == "johann") appendLogTextbox("Johann extension: 119");
+					else if (name == "wesley") appendLogTextbox("Wesley extension: 111");
+					else if (name == "honda") appendLogTextbox("Honda Tygervalley: 021 910 8300");
+					else appendLogTextbox("Name not regocnized to call: " + name);
+				}
+				/*else if (textBox1.Text.ToUpper().StartsWith("UNHIDE ") && textBox1.Text.Length >= 8)
+				{
+					string processName = textBox1.Text.Substring(7);
+					Process[] processes = Process.GetProcessesByName(processName);
+					if (processes.Length > 1) appendLogTextbox("More than one process found, cannot unhide multiple");
+					else if (processes.Length == 0) appendLogTextbox("Cannot unhide, unable to find process with name " + processName);
+					else
+					{
+						
+						//IntPtr handle = FindWindowByCaption(IntPtr.Zero, "Skype");
+						//appendLogTextbox("Skype window handle = " + handle);
+						//if (!ShowWindow(handle, SW_SHOW))
+						//  appendLogTextbox("Unable to unhide " + processName + ", ShowWindow command failed");
+						//else
+						//  appendLogTextbox("Process unhide successful: " + processName);
+					}
+				}*/
 
 				textBox1.Select(textBox1.Text.Length, 0);
 			}
