@@ -78,6 +78,26 @@ namespace QuickAccess
             this.Opacity = 0;
         }
 
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            this.ShowInTaskbar = true;
+            if (!RegisterHotKey(this.Handle, Id, MOD_CONTROL, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Q");
+            label1.Text = AvailableActionList;
+            SetAutocompleteActionList();
+            InitializeHooks(false, true);
+            this.Hide();
+            this.Opacity = origOpacity;
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_HOTKEY)
+            {
+                ToggleWindowActivation();
+            }
+            base.WndProc(ref m);
+        }
+
         private bool IsAltDown()
         {
             return ((ModifierKeys & Keys.Alt) == Keys.Alt);
@@ -143,26 +163,6 @@ namespace QuickAccess
         private void notifyIcon1_Click(object sender, EventArgs e)
         {
             this.Show();
-        }
-
-        private void Form1_Shown(object sender, EventArgs e)
-        {
-            this.ShowInTaskbar = true;
-            if (!RegisterHotKey(this.Handle, Id, MOD_CONTROL, (int)Keys.Q)) MessageBox.Show("Could not register hotkey");
-            label1.Text = AvailableActionList;
-            SetAutocompleteActionList();
-            InitializeHooks(false, true);
-            this.Hide();
-            this.Opacity = origOpacity;
-        }
-
-        protected override void WndProc(ref Message m)
-        {
-            if (m.Msg == WM_HOTKEY)
-            {
-                ToggleWindowActivation();
-            }
-            base.WndProc(ref m);
         }
 
         private void ToggleWindowActivation()
