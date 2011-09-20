@@ -26,7 +26,7 @@ namespace QuickAccess
 		private string Password = "f";
 		private const string MySQLdateformat = "yyyy-MM-dd HH:mm:ss";
 
-		private const string AvailableActionList = "Type tasks: todo, run, mail, explore, web, google, kill, etc";
+		private const string AvailableActionList = "Type tasks: todo, run, mail, explore, web, google, kill, startupbat, call, cmd, btw, svncommit, etc";
 
 		public const int WM_NCLBUTTONDOWN = 0xA1;
 		public const int HT_CAPTION = 0x2;
@@ -74,10 +74,25 @@ namespace QuickAccess
 			public static Dictionary<string, CommandDetails> CommandList = new Dictionary<string, CommandDetails>();
 			public static AutoCompleteStringCollection AutoCompleteAllactionList;
 
-			private static void AddToCommandList(string commandNameIn, List<string> commandArgumentsIn, string UserLabelIn)
+			private static void AddToCommandList(string commandNameIn, List<string> commandAutocompleteArgumentsIn, string UserLabelIn, List<CommandDetails.CommandArgumentClass> commandArgumentsIn)
 			{
-				CommandList.Add(commandNameIn.ToLower(), new CommandDetails(commandNameIn, commandArgumentsIn, UserLabelIn));
-				RepopulateAutoCompleteAllactionList();
+				bool requiredFoundAfterOptional = false;
+				if (commandArgumentsIn != null)
+				{
+					bool optionalFound = false;
+					foreach (CommandDetails.CommandArgumentClass ca in commandArgumentsIn)
+					{
+						if (!ca.Required) optionalFound = true;
+						if (optionalFound && ca.Required)
+							requiredFoundAfterOptional = true;
+					}
+				}
+				if (!requiredFoundAfterOptional)
+				{
+					CommandList.Add(commandNameIn.ToLower(), new CommandDetails(commandNameIn, commandAutocompleteArgumentsIn, UserLabelIn, commandArgumentsIn));
+					RepopulateAutoCompleteAllactionList();
+				}
+				else MessageBox.Show("Cannot have required parameter after optional: " + commandNameIn, "Error in argument list", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
 			public static void PopulateCommandList()
@@ -87,27 +102,109 @@ namespace QuickAccess
 					{
 						"120;15;Buy milk;Buy milk after work"
 					},
-					"todo MinutesFromNow;Autosnooze;Item name;Description");
+					"todo MinutesFromNow;Autosnooze;Item name;Description",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("MinutesFromNow", true, CommandDetails.TypeArg.Int),
+						new CommandDetails.CommandArgumentClass("AutosnoozeInterval", true, CommandDetails.TypeArg.Int),
+						new CommandDetails.CommandArgumentClass("ItemName", true, CommandDetails.TypeArg.Text),
+						new CommandDetails.CommandArgumentClass("ItemDescription", false, CommandDetails.TypeArg.Text)
+					});
+
 				AddToCommandList("run",
 					new List<string>()
 					{
+						"canary",
 						"chrome",
 			      "delphi2010",
 			      "delphi2007",
 			      "phpstorm",
 			      "sqlitespy"
 					},
-					"run chrome/canary/delphi2010/delphi2007/phpstorm");
-				AddToCommandList("mail", null, "mail to;subject;body");
-				AddToCommandList("explore", null, "explore franother/prog/docs/folderpath");
-				AddToCommandList("web", null, "web google.com");
-				AddToCommandList("google", null, "google search on google");
-				AddToCommandList("kill", null, "kill processNameToKill");
-				AddToCommandList("startupbat", null, "startupbat open/getall/getline xxx/comment #/uncomment #");
-				AddToCommandList("call", null, "call yolwork/imqs/kerry/deon/johann/wesley/honda");
-				AddToCommandList("cmd", null, "cmd firepuma/folderpath");
-				AddToCommandList("btw", null, "btw text");
-				AddToCommandList("svncommit", null, "svncommit proj User32stuff;Log message");
+					"run chrome/canary/delphi2010/delphi2007/phpstorm",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text)
+					});
+
+				AddToCommandList("mail", null, "mail to;subject;body",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("Toaddress", true, CommandDetails.TypeArg.Text),
+						new CommandDetails.CommandArgumentClass("Subject", true, CommandDetails.TypeArg.Text),
+						new CommandDetails.CommandArgumentClass("Body", false, CommandDetails.TypeArg.Text)
+					});
+
+				AddToCommandList("explore", null, "explore franother/prog/docs/folderpath",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text)
+					});
+
+				AddToCommandList("web", null, "web google.com",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("TokenOrUrl", true, CommandDetails.TypeArg.Text)
+					});
+
+				AddToCommandList("google", null, "google search on google",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("StringToSearchInGoogle", true, CommandDetails.TypeArg.Text)
+					});
+
+				AddToCommandList("kill", null, "kill processNameToKill",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("TokenOrProcessname", true, CommandDetails.TypeArg.Text)
+					});
+
+				AddToCommandList("startupbat",
+					new List<string>()
+					{
+						"open",
+						"getall",
+						"getline xxx",
+						"comment #",
+						"uncomment #"
+					},
+					"startupbat open/getall/getline xxx/comment #/uncomment #",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("Command", true, CommandDetails.TypeArg.Text),
+						new CommandDetails.CommandArgumentClass("ArgumentForCommand", false, CommandDetails.TypeArg.Text)
+					});
+
+				AddToCommandList("call", null, "call yolwork/imqs/kerry/deon/johann/wesley/honda",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("Token", true, CommandDetails.TypeArg.Text)
+					});
+
+				AddToCommandList("cmd", null, "cmd firepuma/folderpath",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text)
+					});
+
+				AddToCommandList("btw", null, "btw text",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("TextToUploadToBtw", true, CommandDetails.TypeArg.Text)
+					});
+
+				//AddToCommandList("svncommit", null, "svncommit proj User32stuff;Log message",
+				AddToCommandList("svncommit",
+					new List<string>()
+					{
+						"quickaccess;",
+					},
+					"svncommit User32stuff;Log message",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text),
+						new CommandDetails.CommandArgumentClass("LogMessage", true, CommandDetails.TypeArg.Text)
+					});
 			}
 
 			public static CommandDetails GetCommandDetailsFromTextboxText(string TextboxTextIn)
@@ -115,6 +212,12 @@ namespace QuickAccess
 				if (CommandList != null && TextboxTextIn.Contains(' '))
 				{
 					string tmpkey = TextboxTextIn.Substring(0, TextboxTextIn.IndexOf(' ')).ToLower();
+					if (CommandList.ContainsKey(tmpkey))
+						return CommandList[tmpkey];
+				}
+				else if (CommandList != null)
+				{
+					string tmpkey = TextboxTextIn.ToLower();
 					if (CommandList.ContainsKey(tmpkey))
 						return CommandList[tmpkey];
 				}
@@ -128,51 +231,109 @@ namespace QuickAccess
 				foreach (string key in CommandList.Keys)
 					AutoCompleteAllactionList.Add(CommandList[key].commandName);
 			}
-
+			
 			public class CommandDetails
 			{
+				public enum TypeArg { Int, Text };
+				private const char ArgumentSeparator = ';';
+
 				public string commandName;
-				public AutoCompleteStringCollection commandArguments;
+				public AutoCompleteStringCollection commandAutocompleteArguments;
 				public string UserLabel;
-				public CommandDetails(string commandNameIn, List<string> commandArgumentsIn, string UserLabelIn)
+				public List<CommandArgumentClass> commandArguments;
+				public CommandDetails(string commandNameIn, List<string> commandAutocompleteArgumentsIn, string UserLabelIn, List<CommandArgumentClass> commandArgumentsIn)
 				{
 					commandName = commandNameIn;
-					commandArguments = new AutoCompleteStringCollection();
-					if (commandArgumentsIn != null)
-						foreach (string arg in commandArgumentsIn)
-							commandArguments.Add(commandNameIn + " " + arg);
+					commandAutocompleteArguments = new AutoCompleteStringCollection();
+					if (commandAutocompleteArgumentsIn != null)
+						foreach (string arg in commandAutocompleteArgumentsIn)
+							commandAutocompleteArguments.Add(commandNameIn + " " + arg);
 					UserLabel = UserLabelIn;
+					commandArguments = commandArgumentsIn;
+				}
+
+				public bool CommandHasRequiredArguments()
+				{
+					if (commandArguments == null) return false;
+					if (commandArguments.Count == 0) return false;
+					return commandArguments[0].Required;
+				}
+
+				public bool TextHasAllRequiredArguments(string TextboxTextIn)
+				{
+					if (!CommandHasRequiredArguments()) return true;
+					else
+					{
+						int RequiredArgumentCount = 0;
+						foreach (CommandArgumentClass ca in commandArguments)
+							if (ca.Required)
+								RequiredArgumentCount++;
+						if (TextboxTextIn.Length == 0) return false;
+						if (!TextboxTextIn.Contains(' ')) return false;
+						string argStr = TextboxTextIn.Substring(TextboxTextIn.IndexOf(' ') + 1);
+						if (argStr.Length == 0) return false;
+						if (RequiredArgumentCount > 1 && !argStr.Contains(ArgumentSeparator)) return false;
+						if (argStr.Split(ArgumentSeparator).Length < RequiredArgumentCount) return false;
+					}
+					return true;
+				}
+
+				private int GetArgumentCountFromString(string str)
+				{
+					return str.Split(ArgumentSeparator).Length;
+				}
+
+				public bool TextValidateArguments(string TextboxTextIn, out string Errormsg)
+				{
+					Errormsg = "";
+					if (commandArguments == null) return true;
+					string argStr = TextboxTextIn.Substring(TextboxTextIn.IndexOf(' ') + 1);
+					int ArgCount = commandArguments.Count;
+					if (GetArgumentCountFromString(argStr) > ArgCount) return false;
+					string[] InputArguments = argStr.Split(ArgumentSeparator);
+					int cnt = 0;
+					foreach (string s in InputArguments)
+					{
+						int tmpint;
+						CommandArgumentClass comm = commandArguments[cnt];
+						switch (comm.TypeOfArgument)
+						{
+							case TypeArg.Int:
+								if (comm.Required && !int.TryParse(s, out tmpint))
+								{
+									Errormsg = "Cannot convert argument to Integer: " + comm.ArgumentName;
+									return false;
+								}
+								break;
+							case TypeArg.Text:
+								if (comm.Required && s.Length == 0)
+								{
+									Errormsg = "Argument may not be empty: " + comm.ArgumentName;
+									return false;
+								}
+								break;
+							default:
+								break;
+						}
+						cnt++;
+					}
+					return true;
+				}
+
+				public class CommandArgumentClass
+				{
+					public string ArgumentName;
+					public bool Required;
+					public TypeArg TypeOfArgument;
+					public CommandArgumentClass(string ArgumentNameIn, bool RequiredIn, TypeArg TypeOfArgumentIn)
+					{
+						ArgumentName = ArgumentNameIn;
+						Required = RequiredIn;
+						TypeOfArgument = TypeOfArgumentIn;
+					}
 				}
 			}
-
-			//public static List<CommandDetails> CommandList = new List<CommandDetails>()
-			//{
-			//  new CommandDetails("todo",
-			//    new AutoCompleteStringCollection() {
-			//      "todo ",
-			//      "run ",
-			//      "mail ",
-			//      "explore ",
-			//      "web ",
-			//      "google ",
-			//      "kill ",
-			//      "startupbat ",
-			//      "call ",
-			//      "cmd",
-			//      "btw"
-			//    }),
-			//  new CommandDetails("run",
-			//    new AutoCompleteStringCollection(){
-			//      "run chrome",
-			//      "run delphi2010",
-			//      "run delphi2007",
-			//      "run phpstorm",
-			//      "run sqlitespy"
-			//    }),
-			//};
 		}
-
-		//Win32 API calls necesary to raise an unowned processs main window
 
 		public Form1()
 		{
@@ -293,32 +454,351 @@ namespace QuickAccess
 		{
 			if (textBox1.AutoCompleteCustomSource != Commands.AutoCompleteAllactionList)
 			{
-				//textBox1.AutoCompleteCustomSource.Clear();
 				textBox1.AutoCompleteCustomSource = Commands.AutoCompleteAllactionList;
 			}
-			//textBox1.AutoCompleteCustomSource.AddRange(new string[] {
-			//          "todo ",
-			//          "run ",
-			//          "mail ",
-			//          "explore ",
-			//          "web ",
-			//          "google ",
-			//          "kill ",
-			//          "startupbat ",
-			//          "call ",
-			//          "unhide "
-			//      });
-
 		}
 
 		void SetAutoCompleteForAction(string action)
 		{
-			//CommandDetails.CommandList.Add("", new CommandDetails("", null));
-			if (textBox1.AutoCompleteCustomSource != Commands.CommandList[action].commandArguments && textBox1.TextLength > 2)//SelectionLength == 0)
+			if (textBox1.AutoCompleteCustomSource != Commands.CommandList[action].commandAutocompleteArguments && textBox1.TextLength > 2)//SelectionLength == 0)
 			{
-				//textBox1.AutoCompleteCustomSource.Clear();
-				textBox1.AutoCompleteCustomSource = Commands.CommandList[action].commandArguments;
-				//appendLogTextbox("autocomplete for " + action);
+				textBox1.AutoCompleteCustomSource = Commands.CommandList[action].commandAutocompleteArguments;
+			}
+		}
+
+		private void textBox1_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				/*string errorMsg;
+				Commands.CommandDetails command = Commands.GetCommandDetailsFromTextboxText(textBox1.Text);
+				string text = textBox1.Text;
+				if (command == null && text.Contains(' '))
+					appendLogTextbox("Command not regonized: " + text);
+				else if (command != null && text.Contains(' ') && text.Length < command.commandName.Length + 2
+					&& command.CommandHasRequiredArguments())
+					appendLogTextbox("No arguments for command: " + command.commandName);
+				else if (!command.TextHasAllRequiredArguments(text))
+					appendLogTextbox("Not all required arguments found");
+				else if (!command.TextValidateArguments(text, out errorMsg))
+					appendLogTextbox("Error: " + errorMsg);
+				else
+				{
+
+				}*/
+
+				if (textBox1.Text.ToLower().StartsWith("todo ") && textBox1.Text.Length >= 12 && textBox1.Text.Split(';').Length == 4)
+				{
+					string tmpstr = textBox1.Text.Substring(5);
+					AddTodoItemNow(
+							"QuickAccess",
+							"Quick todo",
+							tmpstr.Split(';')[2],
+							tmpstr.Split(';')[3],
+							false,
+							DateTime.Now.AddMinutes(Convert.ToInt32(tmpstr.Split(';')[0])),
+							DateTime.Now,
+							0,
+							false,
+							Convert.ToInt32(tmpstr.Split(';')[1]));
+				}
+				else if (textBox1.Text.ToLower().StartsWith("run ") && textBox1.Text.Length >= 5)
+				{
+					string appname = textBox1.Text.Substring(4).ToLower();
+					string exepath = "";
+					if (appname == "chrome")
+						exepath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\Application\chrome.exe";
+					else if (appname == "canary")
+						exepath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome SxS\Application\chrome.exe";
+					else if (appname == "delphi2007")
+						exepath = @"C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\bds.exe";
+					else if (appname == "delphi2010")
+						exepath = @"C:\Program Files (x86)\Embarcadero\RAD Studio\7.0\bin\bds.exe";
+					else if (appname == "phpstorm")
+						exepath = @"C:\Program Files (x86)\JetBrains\PhpStorm 2.1.4\bin\PhpStorm.exe";
+					else if (appname == "sqlitespy")
+						exepath = @"C:\Francois\Programs\SQLiteSpy_1.9.1\SQLiteSpy.exe";
+
+					if (File.Exists(exepath))
+						System.Diagnostics.Process.Start(exepath);
+					else
+					{
+						try
+						{
+							System.Diagnostics.Process.Start(appname);
+						}
+						catch (Exception exc) { appendLogTextbox(exc.Message); }
+					}
+				}
+				else if (textBox1.Text.ToLower().StartsWith("mail ") && textBox1.Text.Length >= 15 && textBox1.Text.Split(';').Length == 3)
+				{
+					string tmpstr = textBox1.Text.Substring(5);
+					CreateNewOutlookMessage(
+							tmpstr.Split(';')[0],
+							tmpstr.Split(';')[1],
+							tmpstr.Split(';')[2]);
+				}
+				else if (textBox1.Text.ToLower().StartsWith("explore ") && textBox1.Text.Length >= 9)
+				{
+					string explorepath = textBox1.Text.Substring(8).ToLower();
+					if (explorepath == "franother")
+						System.Diagnostics.Process.Start(@"c:\francois\other");
+					else if (explorepath == "prog")
+						System.Diagnostics.Process.Start(@"c:\programming");
+					else if (explorepath == "docs")
+						System.Diagnostics.Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+					else if (Directory.Exists(explorepath))
+						System.Diagnostics.Process.Start(explorepath);
+					else
+						appendLogTextbox("Unrecognized command to explore, and directory not found: " + explorepath);
+				}
+				else if (textBox1.Text.ToLower().StartsWith("web ") && textBox1.Text.Length >= 7)
+				{
+					string url = textBox1.Text.Substring(4).ToLower();
+					if (!url.StartsWith("http://") && !url.StartsWith("https://") && !url.StartsWith("www."))
+						url = "http://" + url;
+					System.Diagnostics.Process.Start(url);
+				}
+				else if (textBox1.Text.ToLower().StartsWith("google ") && textBox1.Text.Length >= 8)
+				{
+					string searchtxt = textBox1.Text.Substring(7);
+					System.Diagnostics.Process.Start("http://www.google.co.za/search?q=" + searchtxt);
+				}
+				else if (textBox1.Text.ToLower().StartsWith("kill ") && textBox1.Text.Length >= 6)
+				{
+					string processName = textBox1.Text.Substring(5);
+					Process[] processes = Process.GetProcessesByName(processName);
+					if (processes.Length > 1) appendLogTextbox("More than one process found, cannot kill");
+					else if (processes.Length == 0) appendLogTextbox("Cannot find process with name " + processName);
+					else
+					{
+						processes[0].Kill();
+						appendLogTextbox("Process killed: " + processName);
+					}
+				}
+				else if (textBox1.Text.ToLower().StartsWith("startupbat ") && textBox1.Text.Length >= 12)
+				{
+					string filePath = @"C:\Francois\Other\Startup\work Startup.bat";
+					string comm = textBox1.Text.Substring(11).ToLower();
+					//getall/getline 'xxx'/comment #/uncomment #
+					if (comm.StartsWith("open"))
+					{
+						System.Diagnostics.Process.Start("notepad", filePath);
+					}
+					else if (comm.StartsWith("getall"))
+					{
+						StreamReader sr = new StreamReader(filePath);
+						string line = sr.ReadLine();
+						int counter = 1;
+						while (!sr.EndOfStream)
+						{
+							appendLogTextbox((counter++) + ": " + line);
+							line = sr.ReadLine();
+						}
+						sr.Close();
+					}
+					else if (comm.StartsWith("getline"))
+					{
+						if (comm.StartsWith("getline ") && comm.Length >= 9)
+						{
+							string searchstr = comm.Substring(8);//comm.Split('\'')[1];
+							StreamReader sr = new StreamReader(filePath);
+							string line = sr.ReadLine();
+							int counter = 1;
+							while (!sr.EndOfStream)
+							{
+								if (line.ToLower().Contains(searchstr)) appendLogTextbox(counter + ": " + line);
+								counter++;
+								line = sr.ReadLine();
+							}
+							sr.Close();
+						}
+						else appendLogTextbox("Getline search string not defined (must be i.e. getline skype): " + textBox1.Text.Substring(11));
+					}
+					else if (comm.StartsWith("comment"))
+					{
+						string linenumstr = comm.Substring(7).Trim();
+						int linenum;
+						if (!int.TryParse(linenumstr, out linenum)) appendLogTextbox("Cannot obtain line number from: " + comm.Substring(7));
+						else
+						{
+							appendLogTextbox("Commenting line number " + linenum.ToString());
+							List<string> tmpLines = new List<string>();
+							StreamReader sr = new StreamReader(filePath);
+							string line = sr.ReadLine();
+							int counter = 1;
+							while (!sr.EndOfStream)
+							{
+								if (counter == linenum && !line.Trim().StartsWith("::")) line = "::" + line;
+								tmpLines.Add(line);
+								counter++;
+								line = sr.ReadLine();
+							}
+							sr.Close();
+							StreamWriter sw = new StreamWriter(filePath);
+							try
+							{
+								foreach (string s in tmpLines) sw.WriteLine(s);
+							}
+							finally { sw.Close(); }
+							appendLogTextbox("Successfully commented line number " + linenum.ToString());
+						}
+					}
+					else if (comm.StartsWith("uncomment"))
+					{
+						string linenumstr = comm.Substring(9).Trim();
+						int linenum;
+						if (!int.TryParse(linenumstr, out linenum)) appendLogTextbox("Cannot obtain line number from: " + comm.Substring(9));
+						else
+						{
+							appendLogTextbox("Unommenting line number " + linenum.ToString());
+							List<string> tmpLines = new List<string>();
+							StreamReader sr = new StreamReader(filePath);
+							string line = sr.ReadLine();
+							int counter = 1;
+							while (!sr.EndOfStream)
+							{
+								if (counter == linenum && line.Trim().StartsWith("::")) line = line.Substring(2);
+								tmpLines.Add(line);
+								counter++;
+								line = sr.ReadLine();
+							}
+							sr.Close();
+							StreamWriter sw = new StreamWriter(filePath);
+							try
+							{
+								foreach (string s in tmpLines) sw.WriteLine(s);
+							}
+							finally { sw.Close(); }
+							appendLogTextbox("Successfully uncommented line number " + linenum.ToString());
+						}
+					}
+				}
+				else if (textBox1.Text.ToLower().StartsWith("call ") && textBox1.Text.Length >= 6)
+				{
+					//call yolwork/imqs/kerry/adrian/deon/johann/wesley
+					string name = textBox1.Text.ToLower().Substring(5);
+					if (name == "yolwork") appendLogTextbox("Yolande work: (021) 853 3564");
+					else if (name == "imqs") appendLogTextbox("IMQS office: 021-880 2712 / 880 1632");
+					else if (name == "kerry") appendLogTextbox("Kerry extension: 107");
+					else if (name == "adrian") appendLogTextbox("Adrian extension: 106");
+					else if (name == "deon") appendLogTextbox("Deon extension: 121");
+					else if (name == "johann") appendLogTextbox("Johann extension: 119");
+					else if (name == "wesley") appendLogTextbox("Wesley extension: 111");
+					else if (name == "honda") appendLogTextbox("Honda Tygervalley: 021 910 8300");
+					else appendLogTextbox("Name not regocnized to call: " + name);
+				}
+				else if (textBox1.Text.ToLower().StartsWith("cmd ") && textBox1.Text.Length >= 5)
+				{
+					string cmdpath = textBox1.Text.Substring(4).ToLower();
+					if (cmdpath == "firepuma")
+						System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + @"c:\francois\websites\firepuma" + "\"");
+					else if (Directory.Exists(cmdpath))
+						System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + cmdpath + "\"");
+					else
+						appendLogTextbox("Folder does not exist, cannot start cmd: " + cmdpath);
+				}
+				else if (textBox1.Text.ToLower().StartsWith("btw ") && textBox1.Text.Length >= 5)
+				{
+					string btwtext = textBox1.Text.Substring(4).ToLower();
+					string responsestr = "";
+					PerformVoidFunctionSeperateThread(() =>
+					{
+						responsestr = PostPHP("http://firepuma.com/btw/directadd/f/" + PhpEncryption.StringToHex(btwtext), "");
+					});
+					appendLogTextbox(responsestr);
+					if (responsestr.ToLower().StartsWith("success:"))
+						textBox1.Text = "";
+					//appendLogTextbox("Folder does not exist, cannot start cmd: " + cmdpath);
+				}
+				else if (textBox1.Text.ToLower().StartsWith("svncommit ") && textBox1.Text.Length >= 11)
+				{
+					//svncommit proj User32stuff;Log message
+					string svncommandwithargs = textBox1.Text.ToLower().Substring(10);
+					if (svncommandwithargs.Contains(' '))
+					{
+						//string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
+						//string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
+						if (svncommandwithargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
+						{
+							string projname = svncommandwithargs.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
+							string logmessage = svncommandwithargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
+							logmessage = logmessage.Replace("\\", "\\\\");
+							logmessage = logmessage.Replace("\"", "\\\"");
+							try
+							{
+								string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
+								/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+								else appendLogTextbox("Error: command not regognized, " + svncommand);*/
+								//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+								string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
+								if (!File.Exists(svnpath)) svnpath = "svn";
+								string placedherebecauseSvnPathMustBeRemoved;
+								if (Directory.Exists(commitDir))
+								{
+									PerformVoidFunctionSeperateThread(() =>
+									{
+										//TODO: Should still remove the path of svn from the next line
+										//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+										ProcessStartInfo start = new ProcessStartInfo(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+										start.UseShellExecute = false;
+										start.CreateNoWindow = true;
+										start.RedirectStandardOutput = true;
+										start.RedirectStandardError = true;
+										System.Diagnostics.Process svnproc = new Process();
+										svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+										{
+											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
+											else appendLogTextbox("Svn output empty");
+										};
+										svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+										{
+											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
+											else appendLogTextbox("Svn error empty");
+										};
+										svnproc.StartInfo = start;
+										if (svnproc.Start())
+											appendLogTextbox("Performing svn commit, please wait...");
+										else appendLogTextbox("Error: Could not run svn commit.");
+
+										svnproc.BeginOutputReadLine();
+										svnproc.BeginErrorReadLine();
+
+										svnproc.WaitForExit();
+									});
+								}
+								else appendLogTextbox("Error: folder not found: " + commitDir);
+							}
+							catch (Exception exc)
+							{
+								appendLogTextbox("Exception on running svn: " + exc.Message);
+							}
+						}
+						else appendLogTextbox("Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
+					}
+					else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
+				}
+				/*else if (textBox1.Text.ToUpper().StartsWith("UNHIDE ") && textBox1.Text.Length >= 8)
+				{
+					string processName = textBox1.Text.Substring(7);
+					Process[] processes = Process.GetProcessesByName(processName);
+					if (processes.Length > 1) appendLogTextbox("More than one process found, cannot unhide multiple");
+					else if (processes.Length == 0) appendLogTextbox("Cannot unhide, unable to find process with name " + processName);
+					else
+					{
+						
+						//IntPtr handle = FindWindowByCaption(IntPtr.Zero, "Skype");
+						//appendLogTextbox("Skype window handle = " + handle);
+						//if (!ShowWindow(handle, SW_SHOW))
+						//  appendLogTextbox("Unable to unhide " + processName + ", ShowWindow command failed");
+						//else
+						//  appendLogTextbox("Process unhide successful: " + processName);
+					}
+				}*/
+
+				textBox1.Select(textBox1.Text.Length, 0);
+				//e.SuppressKeyPress = true;
+				//e.Handled = true;
 			}
 		}
 
@@ -380,6 +860,7 @@ namespace QuickAccess
 			//label1.Text = str;
 			textBox_Messages.Text = str + (textBox_Messages.Text.Length > 0 ? Environment.NewLine : "") + textBox_Messages.Text;
 			if (mustUpdateStatusText) updateStatusText(str);
+			Application.DoEvents();
 		}
 
 		/// <summary>
@@ -625,331 +1106,6 @@ namespace QuickAccess
 		private void Form1_VisibleChanged(object sender, EventArgs e)
 		{
 			notifyIcon1.Visible = !this.Visible;
-		}
-
-		private void textBox1_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Enter)
-			{
-				/*Commands.CommandDetails command = Commands.GetCommandDetailsFromTextboxText(textBox1.Text);
-				if (command != null)
-				{
-
-				}
-				else if (textBox1.Text.Contains(' '))
-					appendLogTextbox("Command not regonized: " + textBox1.Text + "(" + textBox1.AutoScrollOffset.ToString() + ")");*/
-				
-				if (textBox1.Text.ToUpper().StartsWith("TODO ") && textBox1.Text.Length >= 12 && textBox1.Text.Split(';').Length == 4)
-				{
-					string tmpstr = textBox1.Text.Substring(5);
-					AddTodoItemNow(
-							"QuickAccess",
-							"Quick todo",
-							tmpstr.Split(';')[2],
-							tmpstr.Split(';')[3],
-							false,
-							DateTime.Now.AddMinutes(Convert.ToInt32(tmpstr.Split(';')[0])),
-							DateTime.Now,
-							0,
-							false,
-							Convert.ToInt32(tmpstr.Split(';')[1]));
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("RUN ") && textBox1.Text.Length >= 5)
-				{
-					string appname = textBox1.Text.Substring(4).ToLower();
-					string exepath = "";
-					if (appname == "chrome")
-						exepath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\Application\chrome.exe";
-					else if (appname == "canary")
-						exepath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome SxS\Application\chrome.exe";
-					else if (appname == "delphi2007")
-						exepath = @"C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\bds.exe";
-					else if (appname == "delphi2010")
-						exepath = @"C:\Program Files (x86)\Embarcadero\RAD Studio\7.0\bin\bds.exe";
-					else if (appname == "phpstorm")
-						exepath = @"C:\Program Files (x86)\JetBrains\PhpStorm 2.1.4\bin\PhpStorm.exe";
-					else if (appname == "sqlitespy")
-						exepath = @"C:\Francois\Programs\SQLiteSpy_1.9.1\SQLiteSpy.exe";
-
-					if (File.Exists(exepath))
-						System.Diagnostics.Process.Start(exepath);
-					else
-					{
-						try
-						{
-							System.Diagnostics.Process.Start(appname);
-						}
-						catch (Exception exc) { appendLogTextbox(exc.Message); }
-					}
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("MAIL ") && textBox1.Text.Length >= 15 && textBox1.Text.Split(';').Length == 3)
-				{
-					string tmpstr = textBox1.Text.Substring(5);
-					CreateNewOutlookMessage(
-							tmpstr.Split(';')[0],
-							tmpstr.Split(';')[1],
-							tmpstr.Split(';')[2]);
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("EXPLORE ") && textBox1.Text.Length >= 9)
-				{
-					string explorepath = textBox1.Text.Substring(8).ToLower();
-					if (explorepath == "franother")
-						System.Diagnostics.Process.Start(@"c:\francois\other");
-					else if (explorepath == "prog")
-						System.Diagnostics.Process.Start(@"c:\programming");
-					else if (explorepath == "docs")
-						System.Diagnostics.Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-					else if (Directory.Exists(explorepath))
-						System.Diagnostics.Process.Start(explorepath);
-					else
-						appendLogTextbox("Unrecognized command to explore, and directory not found: " + explorepath);
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("WEB ") && textBox1.Text.Length >= 7)
-				{
-					string url = textBox1.Text.Substring(4).ToLower();
-					if (!url.StartsWith("http://") && !url.StartsWith("https://") && !url.StartsWith("www."))
-						url = "http://" + url;
-					System.Diagnostics.Process.Start(url);
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("GOOGLE ") && textBox1.Text.Length >= 8)
-				{
-					string searchtxt = textBox1.Text.Substring(7);
-					System.Diagnostics.Process.Start("http://www.google.co.za/search?q=" + searchtxt);
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("KILL ") && textBox1.Text.Length >= 6)
-				{
-					string processName = textBox1.Text.Substring(5);
-					Process[] processes = Process.GetProcessesByName(processName);
-					if (processes.Length > 1) appendLogTextbox("More than one process found, cannot kill");
-					else if (processes.Length == 0) appendLogTextbox("Cannot find process with name " + processName);
-					else
-					{
-						processes[0].Kill();
-						appendLogTextbox("Process killed: " + processName);
-					}
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("STARTUPBAT ") && textBox1.Text.Length >= 12)
-				{
-					string filePath = @"C:\Francois\Other\Startup\work Startup.bat";
-					string comm = textBox1.Text.Substring(11).ToLower();
-					//getall/getline 'xxx'/comment #/uncomment #
-					if (comm.StartsWith("open"))
-					{
-						System.Diagnostics.Process.Start("notepad", filePath);
-					}
-					else if (comm.StartsWith("getall"))
-					{
-						StreamReader sr = new StreamReader(filePath);
-						string line = sr.ReadLine();
-						int counter = 1;
-						while (!sr.EndOfStream)
-						{
-							appendLogTextbox((counter++) + ": " + line);
-							line = sr.ReadLine();
-						}
-						sr.Close();
-					}
-					else if (comm.StartsWith("getline"))
-					{
-						if (comm.StartsWith("getline ") && comm.Length >= 9)
-						{
-							string searchstr = comm.Substring(8);//comm.Split('\'')[1];
-							StreamReader sr = new StreamReader(filePath);
-							string line = sr.ReadLine();
-							int counter = 1;
-							while (!sr.EndOfStream)
-							{
-								if (line.ToLower().Contains(searchstr)) appendLogTextbox(counter + ": " + line);
-								counter++;
-								line = sr.ReadLine();
-							}
-							sr.Close();
-						}
-						else appendLogTextbox("Getline search string not defined (must be i.e. getline skype): " + textBox1.Text.Substring(11));
-					}
-					else if (comm.StartsWith("comment"))
-					{
-						string linenumstr = comm.Substring(7).Trim();
-						int linenum;
-						if (!int.TryParse(linenumstr, out linenum)) appendLogTextbox("Cannot obtain line number from: " + comm.Substring(7));
-						else
-						{
-							appendLogTextbox("Commenting line number " + linenum.ToString());
-							List<string> tmpLines = new List<string>();
-							StreamReader sr = new StreamReader(filePath);
-							string line = sr.ReadLine();
-							int counter = 1;
-							while (!sr.EndOfStream)
-							{
-								if (counter == linenum && !line.Trim().StartsWith("::")) line = "::" + line;
-								tmpLines.Add(line);
-								counter++;
-								line = sr.ReadLine();
-							}
-							sr.Close();
-							StreamWriter sw = new StreamWriter(filePath);
-							try
-							{
-								foreach (string s in tmpLines) sw.WriteLine(s);
-							}
-							finally { sw.Close(); }
-							appendLogTextbox("Successfully commented line number " + linenum.ToString());
-						}
-					}
-					else if (comm.StartsWith("uncomment"))
-					{
-						string linenumstr = comm.Substring(9).Trim();
-						int linenum;
-						if (!int.TryParse(linenumstr, out linenum)) appendLogTextbox("Cannot obtain line number from: " + comm.Substring(9));
-						else
-						{
-							appendLogTextbox("Unommenting line number " + linenum.ToString());
-							List<string> tmpLines = new List<string>();
-							StreamReader sr = new StreamReader(filePath);
-							string line = sr.ReadLine();
-							int counter = 1;
-							while (!sr.EndOfStream)
-							{
-								if (counter == linenum && line.Trim().StartsWith("::")) line = line.Substring(2);
-								tmpLines.Add(line);
-								counter++;
-								line = sr.ReadLine();
-							}
-							sr.Close();
-							StreamWriter sw = new StreamWriter(filePath);
-							try
-							{
-								foreach (string s in tmpLines) sw.WriteLine(s);
-							}
-							finally { sw.Close(); }
-							appendLogTextbox("Successfully uncommented line number " + linenum.ToString());
-						}
-					}
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("CALL ") && textBox1.Text.Length >= 6)
-				{
-					//call yolwork/imqs/kerry/adrian/deon/johann/wesley
-					string name = textBox1.Text.ToLower().Substring(5);
-					if (name == "yolwork") appendLogTextbox("Yolande work: (021) 853 3564");
-					else if (name == "imqs") appendLogTextbox("IMQS office: 021-880 2712 / 880 1632");
-					else if (name == "kerry") appendLogTextbox("Kerry extension: 107");
-					else if (name == "adrian") appendLogTextbox("Adrian extension: 106");
-					else if (name == "deon") appendLogTextbox("Deon extension: 121");
-					else if (name == "johann") appendLogTextbox("Johann extension: 119");
-					else if (name == "wesley") appendLogTextbox("Wesley extension: 111");
-					else if (name == "honda") appendLogTextbox("Honda Tygervalley: 021 910 8300");
-					else appendLogTextbox("Name not regocnized to call: " + name);
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("CMD ") && textBox1.Text.Length >= 5)
-				{
-					string cmdpath = textBox1.Text.Substring(4).ToLower();
-					if (cmdpath == "firepuma")
-						System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + @"c:\francois\websites\firepuma" + "\"");
-					else if (Directory.Exists(cmdpath))
-						System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + cmdpath + "\"");
-					else
-						appendLogTextbox("Folder does not exist, cannot start cmd: " + cmdpath);
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("BTW ") && textBox1.Text.Length >= 5)
-				{
-					string btwtext = textBox1.Text.Substring(4).ToLower();
-					string responsestr = "";
-					PerformVoidFunctionSeperateThread(() =>
-						{
-							responsestr = PostPHP("http://firepuma.com/btw/directadd/f/" + PhpEncryption.StringToHex(btwtext), "");
-						});
-					appendLogTextbox(responsestr);
-					if (responsestr.ToLower().StartsWith("success:"))
-						textBox1.Text = "";
-					//appendLogTextbox("Folder does not exist, cannot start cmd: " + cmdpath);
-				}
-				else if (textBox1.Text.ToUpper().StartsWith("SVNCOMMIT ") && textBox1.Text.Length >= 11)
-				{
-					//svncommit proj User32stuff;Log message
-					string svncommandwithargs = textBox1.Text.ToLower().Substring(10);
-					if (svncommandwithargs.Contains(' '))
-					{
-						string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
-						string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
-						if (projnameAndlogmessage.Contains(';'))
-						{
-							string projname = projnameAndlogmessage.Split(';')[0];
-							string logmessage = projnameAndlogmessage.Split(';')[1];
-							try
-							{
-								string commitDir = "";
-								if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
-								else appendLogTextbox("Error: command not regognized, " + svncommand);
-								//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-								string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
-								if (!File.Exists(svnpath)) svnpath = "svn";
-								string placedherebecauseSvnPathMustBeRemoved;
-								if (Directory.Exists(commitDir))
-								{
-									PerformVoidFunctionSeperateThread(() =>
-									{
-										//TODO: Should still remove the path of svn from the next line
-										//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-										ProcessStartInfo start = new ProcessStartInfo(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-										start.UseShellExecute = false;
-										start.CreateNoWindow = true;
-										start.RedirectStandardOutput = true;
-										start.RedirectStandardError = true;
-										System.Diagnostics.Process svnproc = new Process();
-										svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-										{
-											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
-											else appendLogTextbox("Svn output empty");
-										};
-										svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-										{
-											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
-											else appendLogTextbox("Svn error empty");
-										};
-										svnproc.StartInfo = start;
-										if (svnproc.Start())
-											appendLogTextbox("Performing svn commit, please wait...");
-										else appendLogTextbox("Error: Could not run svn commit.");
-
-										svnproc.BeginOutputReadLine();
-										svnproc.BeginErrorReadLine();
-
-										svnproc.WaitForExit();
-									});
-								}
-								else appendLogTextbox("Error: folder not found: " + commitDir);
-							}
-							catch (Exception exc)
-							{
-								appendLogTextbox("Exception on running svn: " + exc.Message);
-							}
-						}
-						else appendLogTextbox("Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
-					}
-					else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
-				}
-				/*else if (textBox1.Text.ToUpper().StartsWith("UNHIDE ") && textBox1.Text.Length >= 8)
-				{
-					string processName = textBox1.Text.Substring(7);
-					Process[] processes = Process.GetProcessesByName(processName);
-					if (processes.Length > 1) appendLogTextbox("More than one process found, cannot unhide multiple");
-					else if (processes.Length == 0) appendLogTextbox("Cannot unhide, unable to find process with name " + processName);
-					else
-					{
-						
-						//IntPtr handle = FindWindowByCaption(IntPtr.Zero, "Skype");
-						//appendLogTextbox("Skype window handle = " + handle);
-						//if (!ShowWindow(handle, SW_SHOW))
-						//  appendLogTextbox("Unable to unhide " + processName + ", ShowWindow command failed");
-						//else
-						//  appendLogTextbox("Process unhide successful: " + processName);
-					}
-				}*/
-
-				textBox1.Select(textBox1.Text.Length, 0);
-				//e.SuppressKeyPress = true;
-				//e.Handled = true;
-			}
 		}
 
 		private void Form1_MouseClick(object sender, MouseEventArgs e)
