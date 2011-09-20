@@ -110,6 +110,17 @@ namespace QuickAccess
 				AddToCommandList("svncommit", null, "svncommit proj User32stuff;Log message");
 			}
 
+			public static CommandDetails GetCommandDetailsFromTextboxText(string TextboxTextIn)
+			{
+				if (CommandList != null && TextboxTextIn.Contains(' '))
+				{
+					string tmpkey = TextboxTextIn.Substring(0, TextboxTextIn.IndexOf(' ')).ToLower();
+					if (CommandList.ContainsKey(tmpkey))
+						return CommandList[tmpkey];
+				}
+				return null;
+			}
+
 			private static void RepopulateAutoCompleteAllactionList()
 			{
 				if (AutoCompleteAllactionList != null) AutoCompleteAllactionList.Clear();
@@ -586,16 +597,14 @@ namespace QuickAccess
 			if (textBox1.Text.ToLower().IndexOf(' ') != -1)
 				tmpkey = textBox1.Text.ToLower().Substring(0, textBox1.Text.ToLower().IndexOf(' '));
 			if (Commands.CommandList.ContainsKey(tmpkey))
-				label1.Text = Commands.CommandList[tmpkey].UserLabel;
-			else
-				label1.Text = AvailableActionList;
-
-			lock (this)
 			{
-				if (Commands.CommandList.ContainsKey(textBox1.Text.ToLower()))
-					SetAutoCompleteForAction(textBox1.Text.ToLower());
-				//if (textBox1.Text.ToUpper().StartsWith("RUN")) SetAutoCompleteForAction("run");
-				else if (textBox1.Text.Length == 0) SetAutocompleteActionList();
+				label1.Text = Commands.CommandList[tmpkey].UserLabel;
+				SetAutoCompleteForAction(tmpkey);
+			}
+			else
+			{
+				label1.Text = AvailableActionList;
+				if (textBox1.Text.Length == 0) SetAutocompleteActionList();
 			}
 		}
 
@@ -622,6 +631,14 @@ namespace QuickAccess
 		{
 			if (e.KeyCode == Keys.Enter)
 			{
+				/*Commands.CommandDetails command = Commands.GetCommandDetailsFromTextboxText(textBox1.Text);
+				if (command != null)
+				{
+
+				}
+				else if (textBox1.Text.Contains(' '))
+					appendLogTextbox("Command not regonized: " + textBox1.Text + "(" + textBox1.AutoScrollOffset.ToString() + ")");*/
+				
 				if (textBox1.Text.ToUpper().StartsWith("TODO ") && textBox1.Text.Length >= 12 && textBox1.Text.Split(';').Length == 4)
 				{
 					string tmpstr = textBox1.Text.Substring(5);
@@ -849,10 +866,10 @@ namespace QuickAccess
 				else if (textBox1.Text.ToUpper().StartsWith("SVNCOMMIT ") && textBox1.Text.Length >= 11)
 				{
 					//svncommit proj User32stuff;Log message
-					string svncommandwithargs = textBox1.Text.ToLower().Substring(11);
+					string svncommandwithargs = textBox1.Text.ToLower().Substring(10);
 					if (svncommandwithargs.Contains(' '))
 					{
-						string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' '));
+						string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
 						string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
 						if (projnameAndlogmessage.Contains(';'))
 						{
@@ -860,9 +877,12 @@ namespace QuickAccess
 							string logmessage = projnameAndlogmessage.Split(';')[1];
 							try
 							{
-								string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+								string commitDir = "";
+								if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+								else appendLogTextbox("Error: command not regognized, " + svncommand);
 								//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
 								string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
+								if (!File.Exists(svnpath)) svnpath = "svn";
 								string placedherebecauseSvnPathMustBeRemoved;
 								if (Directory.Exists(commitDir))
 								{
