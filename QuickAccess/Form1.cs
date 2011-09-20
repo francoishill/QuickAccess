@@ -74,7 +74,7 @@ namespace QuickAccess
 			public static Dictionary<string, CommandDetails> CommandList = new Dictionary<string, CommandDetails>();
 			public static AutoCompleteStringCollection AutoCompleteAllactionList;
 
-			private static void AddToCommandList(string commandNameIn, List<string> commandAutocompleteArgumentsIn, string UserLabelIn, List<CommandDetails.CommandArgumentClass> commandArgumentsIn)
+			private static void AddToCommandList(string commandNameIn, List<string> commandAutocompleteArgumentsIn, string UserLabelIn, List<CommandDetails.CommandArgumentClass> commandArgumentsIn, CommandDetails.PerformCommandTypeEnum PerformCommandTypeIn)
 			{
 				bool requiredFoundAfterOptional = false;
 				if (commandArgumentsIn != null)
@@ -89,7 +89,7 @@ namespace QuickAccess
 				}
 				if (!requiredFoundAfterOptional)
 				{
-					CommandList.Add(commandNameIn.ToLower(), new CommandDetails(commandNameIn, commandAutocompleteArgumentsIn, UserLabelIn, commandArgumentsIn));
+					CommandList.Add(commandNameIn.ToLower(), new CommandDetails(commandNameIn, commandAutocompleteArgumentsIn, UserLabelIn, commandArgumentsIn, PerformCommandTypeIn));
 					RepopulateAutoCompleteAllactionList();
 				}
 				else MessageBox.Show("Cannot have required parameter after optional: " + commandNameIn, "Error in argument list", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -105,11 +105,12 @@ namespace QuickAccess
 					"todo MinutesFromNow;Autosnooze;Item name;Description",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("MinutesFromNow", true, CommandDetails.TypeArg.Int),
-						new CommandDetails.CommandArgumentClass("AutosnoozeInterval", true, CommandDetails.TypeArg.Int),
-						new CommandDetails.CommandArgumentClass("ItemName", true, CommandDetails.TypeArg.Text),
-						new CommandDetails.CommandArgumentClass("ItemDescription", false, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("MinutesFromNow", true, CommandDetails.TypeArg.Int, null),
+						new CommandDetails.CommandArgumentClass("AutosnoozeInterval", true, CommandDetails.TypeArg.Int, null),
+						new CommandDetails.CommandArgumentClass("ItemName", true, CommandDetails.TypeArg.Text, null),
+						new CommandDetails.CommandArgumentClass("ItemDescription", false, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
 
 				AddToCommandList("run",
 					new List<string>()
@@ -124,40 +125,61 @@ namespace QuickAccess
 					"run chrome/canary/delphi2010/delphi2007/phpstorm",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text,
+							new Dictionary<string,string>()
+							{
+								{ "chrome", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\Application\chrome.exe" },
+								{ "canary", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome SxS\Application\chrome.exe" },
+								{ "delphi2007", @"C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\bds.exe" },
+								{ "delphi2010", @"C:\Program Files (x86)\Embarcadero\RAD Studio\7.0\bin\bds.exe" },
+								{ "phpstorm", @"C:\Program Files (x86)\JetBrains\PhpStorm 2.1.4\bin\PhpStorm.exe" },
+								{ "sqlitespy", @"C:\Francois\Programs\SQLiteSpy_1.9.1\SQLiteSpy.exe" }
+							})
+					},
+					CommandDetails.PerformCommandTypeEnum.CheckFileExistRun_ElseTryRun);
 
 				AddToCommandList("mail", null, "mail to;subject;body",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("Toaddress", true, CommandDetails.TypeArg.Text),
-						new CommandDetails.CommandArgumentClass("Subject", true, CommandDetails.TypeArg.Text),
-						new CommandDetails.CommandArgumentClass("Body", false, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("Toaddress", true, CommandDetails.TypeArg.Text, null),
+						new CommandDetails.CommandArgumentClass("Subject", true, CommandDetails.TypeArg.Text, null),
+						new CommandDetails.CommandArgumentClass("Body", false, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
 
 				AddToCommandList("explore", null, "explore franother/prog/docs/folderpath",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text,
+							new Dictionary<string,string>()
+							{
+								{ "franother", @"c:\francois\other" },
+								{ "prog", @"c:\programming" },
+								{ "docs", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) }
+							})
+					},
+					CommandDetails.PerformCommandTypeEnum.CheckDirectoryExistRun_ElseTryRun);
 
 				AddToCommandList("web", null, "web google.com",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("TokenOrUrl", true, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("TokenOrUrl", true, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
 
 				AddToCommandList("google", null, "google search on google",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("StringToSearchInGoogle", true, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("StringToSearchInGoogle", true, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
 
 				AddToCommandList("kill", null, "kill processNameToKill",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("TokenOrProcessname", true, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("TokenOrProcessname", true, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
 
 				AddToCommandList("startupbat",
 					new List<string>()
@@ -171,27 +193,42 @@ namespace QuickAccess
 					"startupbat open/getall/getline xxx/comment #/uncomment #",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("Command", true, CommandDetails.TypeArg.Text),
-						new CommandDetails.CommandArgumentClass("ArgumentForCommand", false, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("Command", true, CommandDetails.TypeArg.Text, null),
+						new CommandDetails.CommandArgumentClass("ArgumentForCommand", false, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
 
-				AddToCommandList("call", null, "call yolwork/imqs/kerry/deon/johann/wesley/honda",
+				AddToCommandList("call",
+					new List<string>()
+					{
+						"yolwork",
+						"imqs",
+						"kerry",
+						"deon",
+						"johann",
+						"wesley",
+						"honda"
+					},
+					"call yolwork/imqs/kerry/deon/johann/wesley/honda",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("Token", true, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("Token", true, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
 
 				AddToCommandList("cmd", null, "cmd firepuma/folderpath",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
 
 				AddToCommandList("btw", null, "btw text",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("TextToUploadToBtw", true, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("TextToUploadToBtw", true, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
 
 				//AddToCommandList("svncommit", null, "svncommit proj User32stuff;Log message",
 				AddToCommandList("svncommit",
@@ -202,10 +239,40 @@ namespace QuickAccess
 					"svncommit User32stuff;Log message",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text),
-						new CommandDetails.CommandArgumentClass("LogMessage", true, CommandDetails.TypeArg.Text)
-					});
+						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text, null),
+						new CommandDetails.CommandArgumentClass("LogMessage", true, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
+
+				AddToCommandList("svnupdate",
+					new List<string>()
+					{
+						"quickaccess",
+					},
+					"svnupdate User32stuff",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
+
+				AddToCommandList("svnstatusboth",
+					new List<string>()
+					{
+						"quickaccess",
+					},
+					"svnstatusboth User32stuff",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text, null)
+					},
+					CommandDetails.PerformCommandTypeEnum.Undefined);
 			}
+
+			/*public static void appendLogTextbox(string text)
+			{
+				MessageBox.Show("Functionality not yet build in to link to actual appendLogTextbox event:\r\n" + text);
+			}*/
 
 			public static CommandDetails GetCommandDetailsFromTextboxText(string TextboxTextIn)
 			{
@@ -231,17 +298,19 @@ namespace QuickAccess
 				foreach (string key in CommandList.Keys)
 					AutoCompleteAllactionList.Add(CommandList[key].commandName);
 			}
-			
+
 			public class CommandDetails
 			{
 				public enum TypeArg { Int, Text };
+				public enum PerformCommandTypeEnum { CheckFileExistRun_ElseTryRun, CheckDirectoryExistRun_ElseTryRun, Undefined };
 				private const char ArgumentSeparator = ';';
 
 				public string commandName;
 				public AutoCompleteStringCollection commandAutocompleteArguments;
 				public string UserLabel;
 				public List<CommandArgumentClass> commandArguments;
-				public CommandDetails(string commandNameIn, List<string> commandAutocompleteArgumentsIn, string UserLabelIn, List<CommandArgumentClass> commandArgumentsIn)
+				public PerformCommandTypeEnum PerformCommandType;
+				public CommandDetails(string commandNameIn, List<string> commandAutocompleteArgumentsIn, string UserLabelIn, List<CommandArgumentClass> commandArgumentsIn, PerformCommandTypeEnum PerformCommandTypeIn)
 				{
 					commandName = commandNameIn;
 					commandAutocompleteArguments = new AutoCompleteStringCollection();
@@ -250,6 +319,51 @@ namespace QuickAccess
 							commandAutocompleteArguments.Add(commandNameIn + " " + arg);
 					UserLabel = UserLabelIn;
 					commandArguments = commandArgumentsIn;
+					PerformCommandType = PerformCommandTypeIn;
+				}
+
+				public void PerformCommand(TextBox messagesTextbox, string TextboxTextIn)
+				{
+					string argStr = TextboxTextIn.Substring(TextboxTextIn.IndexOf(' ') + 1);
+
+					switch (PerformCommandType)
+					{
+						case PerformCommandTypeEnum.CheckFileExistRun_ElseTryRun: case PerformCommandTypeEnum.CheckDirectoryExistRun_ElseTryRun:
+							if (commandArguments.Count > 1) MessageBox.Show("More than one command argument not yet incorporated");
+							else
+							{
+								string exepath = argStr;
+								if (commandArguments[0].TokenWithReplaceStringPair.ContainsKey(exepath))
+									exepath = commandArguments[0].TokenWithReplaceStringPair[exepath];
+								if (
+									(File.Exists(exepath) && PerformCommandType == PerformCommandTypeEnum.CheckFileExistRun_ElseTryRun) ||
+									(Directory.Exists(exepath) && PerformCommandType == PerformCommandTypeEnum.CheckDirectoryExistRun_ElseTryRun))
+									System.Diagnostics.Process.Start(exepath);
+								else
+								{
+									try
+									{
+										System.Diagnostics.Process.Start(exepath);
+									}
+									catch (Exception exc) { appendLogTextbox_OfPassedTextbox(messagesTextbox, exc.Message); }
+								}
+							}
+							break;
+
+						case PerformCommandTypeEnum.Undefined:
+							MessageBox.Show("PerformCommandType is not defined");
+							break;
+						default:
+							MessageBox.Show("PerformCommandType is not defined");
+							break;
+					}
+				}
+
+				private void appendLogTextbox_OfPassedTextbox(TextBox messagesTextbox, string str)
+				{
+					//label1.Text = str;
+					messagesTextbox.Text = str + (messagesTextbox.Text.Length > 0 ? Environment.NewLine : "") + messagesTextbox.Text;
+					Application.DoEvents();
 				}
 
 				public bool CommandHasRequiredArguments()
@@ -320,16 +434,33 @@ namespace QuickAccess
 					return true;
 				}
 
+				public class CommandArgumentsAndFunctionArguments
+				{
+					public CommandArgumentClass commandDetails;
+					public Object FunctionArgumentObject;
+					public CommandArgumentsAndFunctionArguments(CommandArgumentClass commandDetailsIn, Object FunctionArgumentObjectIn)
+					{
+						commandDetails = commandDetailsIn;
+						FunctionArgumentObject = FunctionArgumentObjectIn;
+					}
+				}
+
 				public class CommandArgumentClass
 				{
+					public delegate void functionDelegate(CommandArgumentsAndFunctionArguments args);
+
 					public string ArgumentName;
 					public bool Required;
 					public TypeArg TypeOfArgument;
-					public CommandArgumentClass(string ArgumentNameIn, bool RequiredIn, TypeArg TypeOfArgumentIn)
+					public Dictionary<string, string> TokenWithReplaceStringPair;
+					//public functionDelegate function;
+					public CommandArgumentClass(string ArgumentNameIn, bool RequiredIn, TypeArg TypeOfArgumentIn, Dictionary<string, string> TokenWithReplaceStringPairIn)//, functionDelegate functionIn)
 					{
 						ArgumentName = ArgumentNameIn;
 						Required = RequiredIn;
 						TypeOfArgument = TypeOfArgumentIn;
+						TokenWithReplaceStringPair = TokenWithReplaceStringPairIn;
+						//function = functionIn;
 					}
 				}
 			}
@@ -484,8 +615,9 @@ namespace QuickAccess
 					appendLogTextbox("Error: " + errorMsg);
 				else
 				{
-
-				}*/
+					command.PerformCommand(textBox_Messages, textBox1.Text);
+				}
+				return;*/
 
 				if (textBox1.Text.ToLower().StartsWith("todo ") && textBox1.Text.Length >= 12 && textBox1.Text.Split(';').Length == 4)
 				{
@@ -714,15 +846,15 @@ namespace QuickAccess
 				else if (textBox1.Text.ToLower().StartsWith("svncommit ") && textBox1.Text.Length >= 11)
 				{
 					//svncommit proj User32stuff;Log message
-					string svncommandwithargs = textBox1.Text.ToLower().Substring(10);
-					if (svncommandwithargs.Contains(' '))
+					string svncommitargs = textBox1.Text.ToLower().Substring(10);
+					//if (svncommitargs.Contains(' '))
 					{
 						//string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
 						//string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
-						if (svncommandwithargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
+						if (svncommitargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
 						{
-							string projname = svncommandwithargs.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
-							string logmessage = svncommandwithargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
+							string projname = svncommitargs.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
+							string logmessage = svncommitargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
 							logmessage = logmessage.Replace("\\", "\\\\");
 							logmessage = logmessage.Replace("\"", "\\\"");
 							try
@@ -759,7 +891,7 @@ namespace QuickAccess
 										svnproc.StartInfo = start;
 										if (svnproc.Start())
 											appendLogTextbox("Performing svn commit, please wait...");
-										else appendLogTextbox("Error: Could not run svn commit.");
+										else appendLogTextbox("Error: Could not start process svn commit.");
 
 										svnproc.BeginOutputReadLine();
 										svnproc.BeginErrorReadLine();
@@ -776,7 +908,141 @@ namespace QuickAccess
 						}
 						else appendLogTextbox("Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
 					}
-					else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
+					//else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
+				}
+				else if (textBox1.Text.ToLower().StartsWith("svnupdate ") && textBox1.Text.Length >= 11)
+				{
+					//svncommit proj User32stuff;Log message
+					string svnupdateargs = textBox1.Text.ToLower().Substring(10);
+					//if (svnupdateargs.Contains(' '))
+					{
+						//string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
+						//string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
+						//if (svnupdateargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
+						//{
+							string projname = svnupdateargs;//.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
+							//string logmessage = svnupdateargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
+							//logmessage = logmessage.Replace("\\", "\\\\");
+							//logmessage = logmessage.Replace("\"", "\\\"");
+							try
+							{
+								string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
+								/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+								else appendLogTextbox("Error: command not regognized, " + svncommand);*/
+								//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+								string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
+								if (!File.Exists(svnpath)) svnpath = "svn";
+								string placedherebecauseSvnPathMustBeRemoved;
+								if (Directory.Exists(commitDir))
+								{
+									PerformVoidFunctionSeperateThread(() =>
+									{
+										//TODO: Should still remove the path of svn from the next line
+										//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+										ProcessStartInfo start = new ProcessStartInfo(svnpath, "update \"" + commitDir + "\"");
+										start.UseShellExecute = false;
+										start.CreateNoWindow = true;
+										start.RedirectStandardOutput = true;
+										start.RedirectStandardError = true;
+										System.Diagnostics.Process svnproc = new Process();
+										svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+										{
+											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
+											//else appendLogTextbox("Svn output empty");
+										};
+										svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+										{
+											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
+											//else appendLogTextbox("Svn error empty");
+										};
+										svnproc.StartInfo = start;
+										if (svnproc.Start())
+											appendLogTextbox("Performing svn udpate, please wait...");
+										else appendLogTextbox("Error: Could not start process svn update.");
+
+										svnproc.BeginOutputReadLine();
+										svnproc.BeginErrorReadLine();
+
+										svnproc.WaitForExit();
+									});
+								}
+								else appendLogTextbox("Error: folder not found: " + commitDir);
+							}
+							catch (Exception exc)
+							{
+								appendLogTextbox("Exception on running svn: " + exc.Message);
+							}
+						//}
+						//else appendLogTextbox("Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
+					}
+					//else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
+				}
+				else if (textBox1.Text.ToLower().StartsWith("svnstatusboth ") && textBox1.Text.Length >= 15)
+				{
+					//svncommit proj User32stuff;Log message
+					string svnstatusargs = textBox1.Text.ToLower().Substring(14);
+					//if (svnupdateargs.Contains(' '))
+					{
+						//string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
+						//string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
+						//if (svnupdateargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
+						//{
+						string projname = svnstatusargs;//.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
+						//string logmessage = svnupdateargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
+						//logmessage = logmessage.Replace("\\", "\\\\");
+						//logmessage = logmessage.Replace("\"", "\\\"");
+						try
+						{
+							string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
+							/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+							else appendLogTextbox("Error: command not regognized, " + svncommand);*/
+							//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+							string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
+							if (!File.Exists(svnpath)) svnpath = "svn";
+							string placedherebecauseSvnPathMustBeRemoved;
+							if (Directory.Exists(commitDir))
+							{
+								PerformVoidFunctionSeperateThread(() =>
+								{
+									//TODO: Should still remove the path of svn from the next line
+									//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+									ProcessStartInfo start = new ProcessStartInfo(svnpath, "status --show-updates \"" + commitDir + "\"");
+									start.UseShellExecute = false;
+									start.CreateNoWindow = true;
+									start.RedirectStandardOutput = true;
+									start.RedirectStandardError = true;
+									System.Diagnostics.Process svnproc = new Process();
+									svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+									{
+										if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
+										//else appendLogTextbox("Svn output empty");
+									};
+									svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+									{
+										if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
+										//else appendLogTextbox("Svn error empty");
+									};
+									svnproc.StartInfo = start;
+									if (svnproc.Start())
+										appendLogTextbox("Checking svn status for both local and server revision (locstatus servstatus rev), please wait...");
+									else appendLogTextbox("Error: Could not start process svn status.");
+
+									svnproc.BeginOutputReadLine();
+									svnproc.BeginErrorReadLine();
+
+									svnproc.WaitForExit();
+								});
+							}
+							else appendLogTextbox("Error: folder not found: " + commitDir);
+						}
+						catch (Exception exc)
+						{
+							appendLogTextbox("Exception on running svn: " + exc.Message);
+						}
+						//}
+						//else appendLogTextbox("Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
+					}
+					//else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
 				}
 				/*else if (textBox1.Text.ToUpper().StartsWith("UNHIDE ") && textBox1.Text.Length >= 8)
 				{
