@@ -749,7 +749,7 @@ namespace QuickAccess
 										svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
 										{
 											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
-											else appendLogTextbox("Svn output empty");
+											//else appendLogTextbox("Svn output empty");
 										};
 										svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
 										{
