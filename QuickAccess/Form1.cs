@@ -754,7 +754,7 @@ namespace QuickAccess
 										svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
 										{
 											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
-											else appendLogTextbox("Svn error empty");
+											//else appendLogTextbox("Svn error empty");
 										};
 										svnproc.StartInfo = start;
 										if (svnproc.Start())
