@@ -1372,6 +1372,7 @@ namespace QuickAccess
 		private void Form1_VisibleChanged(object sender, EventArgs e)
 		{
 			notifyIcon1.Visible = !this.Visible;
+			if (notifyIcon1.Visible) textBox1.Focus();
 		}
 
 		private void Form1_MouseClick(object sender, MouseEventArgs e)
