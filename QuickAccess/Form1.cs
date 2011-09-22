@@ -138,7 +138,13 @@ namespace QuickAccess
 					},
 					CommandDetails.PerformCommandTypeEnum.CheckFileExistRun_ElseTryRun);
 
-				AddToCommandList("mail", null, "mail to;subject;body",
+				AddToCommandList("mail",
+					new List<string>()
+					{
+						"fhill@gls.co.za;",
+						"francoishill11@gmail.com;"
+					},
+					"mail to;subject;body",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
 						new CommandDetails.CommandArgumentClass("Toaddress", true, CommandDetails.TypeArg.Text, null),
@@ -419,11 +425,14 @@ namespace QuickAccess
 							break;
 
 						case PerformCommandTypeEnum.CreateNewOutlookMessage:
-							CreateNewOutlookMessage(
-								form1,
-								argStr.Split(';')[0],
-								argStr.Split(';')[1],
-								argStr.Split(';')[2]);
+							PerformVoidFunctionSeperateThread(() =>
+								{
+									CreateNewOutlookMessage(
+										form1,
+										argStr.Split(';')[0],
+										argStr.Split(';')[1],
+										argStr.Split(';').Length >= 3 ? argStr.Split(';')[2] : "");
+								});
 							break;
 
 						case PerformCommandTypeEnum.WebOpenUrl:
@@ -453,7 +462,9 @@ namespace QuickAccess
 							string filePath = @"C:\Francois\Other\Startup\work Startup.bat";
 							string comm = argStr;
 							//getall/getline 'xxx'/comment #/uncomment #
-							if (comm.StartsWith("open"))
+							if (!File.Exists(filePath))
+								appendLogTextbox_OfPassedTextbox(messagesTextbox, "File not found: " + filePath);
+							else if (comm.StartsWith("open"))
 							{
 								System.Diagnostics.Process.Start("notepad", filePath);
 							}
@@ -711,6 +722,7 @@ namespace QuickAccess
 					form1.TopMost = false;
 					mic.Display(true);
 					form1.TopMost = true;
+					form1.ShowAndActivateThisForm();
 				}
 
 				private bool PerformDesktopAppDoTask(TextBox messagesTextbox, string UsernameIn, string TaskName, List<string> ArgumentList, bool CheckForSpecificResult = false, string SuccessSpecificResult = "", bool MustWriteResultToLogsTextbox = false)
@@ -1110,19 +1122,24 @@ namespace QuickAccess
 
 		private void notifyIcon1_Click(object sender, EventArgs e)
 		{
-			ToggleWindowActivation();//this.Show();
+			ShowAndActivateThisForm();
 		}
 
 		private void ToggleWindowActivation()
 		{
 			if (GetForegroundWindow() != this.Handle)
 			{
-				this.Visible = true;
-				this.Activate();
-				this.WindowState = FormWindowState.Normal;
+				ShowAndActivateThisForm();
 				//textBox1.Focus();
 			}
 			else this.Hide();
+		}
+
+		private void ShowAndActivateThisForm()
+		{
+			this.Visible = true;
+			this.Activate();
+			this.WindowState = FormWindowState.Normal;
 		}
 
 		void SetAutocompleteActionList()
@@ -1159,7 +1176,9 @@ namespace QuickAccess
 					appendLogTextbox("Error: " + errorMsg);
 				else
 				{
+					appendLogTextbox("Performing command: " + textBox1.Text);
 					command.PerformCommand(this, textBox1.Text);
+					textBox1.Text = "";
 				}
 				//return;
 
