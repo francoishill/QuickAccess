@@ -24,7 +24,6 @@ namespace QuickAccess
 		private const string doWorkAddress = ServerAddress + "/desktopapp";
 		private static string Username = "f";
 		private static string Password = "f";
-		private const string MySQLdateformat = "yyyy-MM-dd HH:mm:ss";
 
 		private const string AvailableActionList = "Type tasks: todo, run, mail, explore, web, google, kill, startupbat, call, cmd, btw, svncommit, etc";
 
@@ -311,11 +310,6 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.Svnstatus);
 			}
 
-			/*public static void appendLogTextbox(string text)
-			{
-				MessageBox.Show("Functionality not yet build in to link to actual appendLogTextbox event:\r\n" + text);
-			}*/
-
 			public static CommandDetails GetCommandDetailsFromTextboxText(string TextboxTextIn)
 			{
 				if (CommandList != null && TextboxTextIn.Contains(' '))
@@ -404,14 +398,18 @@ namespace QuickAccess
 									{
 										System.Diagnostics.Process.Start(exepath);
 									}
-									catch (Exception exc) { appendLogTextbox_OfPassedTextbox(messagesTextbox, exc.Message); }
+									catch (Exception exc) { Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, exc.Message); }
 								}
 							}
 							break;
 
 						case PerformCommandTypeEnum.AddTodoitemFirepuma:
-							AddTodoItemFirepuma(
+							PhpInterop.AddTodoItemFirepuma(
 								messagesTextbox,
+								ServerAddress,
+								doWorkAddress,
+								Username,
+								Password,
 							 "QuickAccess",
 							 "Quick todo",
 							 argStr.Split(';')[2],
@@ -425,14 +423,11 @@ namespace QuickAccess
 							break;
 
 						case PerformCommandTypeEnum.CreateNewOutlookMessage:
-							PerformVoidFunctionSeperateThread(() =>
-								{
-									CreateNewOutlookMessage(
-										form1,
+							MicrosoftOfficeInterop.CreateNewOutlookMessage(
+								form1,
 										argStr.Split(';')[0],
 										argStr.Split(';')[1],
 										argStr.Split(';').Length >= 3 ? argStr.Split(';')[2] : "");
-								});
 							break;
 
 						case PerformCommandTypeEnum.WebOpenUrl:
@@ -449,12 +444,12 @@ namespace QuickAccess
 						case PerformCommandTypeEnum.KillProcess:
 							string processName = argStr;
 							Process[] processes = Process.GetProcessesByName(processName);
-							if (processes.Length > 1) appendLogTextbox_OfPassedTextbox(messagesTextbox, "More than one process found, cannot kill");
-							else if (processes.Length == 0) appendLogTextbox_OfPassedTextbox(messagesTextbox, "Cannot find process with name " + processName);
+							if (processes.Length > 1) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "More than one process found, cannot kill");
+							else if (processes.Length == 0) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Cannot find process with name " + processName);
 							else
 							{
 								processes[0].Kill();
-								appendLogTextbox_OfPassedTextbox(messagesTextbox, "Process killed: " + processName);
+								Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Process killed: " + processName);
 							}
 							break;
 
@@ -462,106 +457,13 @@ namespace QuickAccess
 							string filePath = @"C:\Francois\Other\Startup\work Startup.bat";
 							string comm = argStr;
 							//getall/getline 'xxx'/comment #/uncomment #
-							if (!File.Exists(filePath))
-								appendLogTextbox_OfPassedTextbox(messagesTextbox, "File not found: " + filePath);
-							else if (comm.StartsWith("open"))
-							{
-								System.Diagnostics.Process.Start("notepad", filePath);
-							}
-							else if (comm.StartsWith("getall"))
-							{
-								StreamReader sr = new StreamReader(filePath);
-								string line = sr.ReadLine();
-								int counter = 1;
-								while (!sr.EndOfStream)
-								{
-									appendLogTextbox_OfPassedTextbox(messagesTextbox, (counter++) + ": " + line);
-									line = sr.ReadLine();
-								}
-								sr.Close();
-							}
-							else if (comm.StartsWith("getline"))
-							{
-								if (comm.StartsWith("getline ") && comm.Length >= 9)
-								{
-									string searchstr = comm.Substring(8);//comm.Split('\'')[1];
-									StreamReader sr = new StreamReader(filePath);
-									string line = sr.ReadLine();
-									int counter = 1;
-									while (!sr.EndOfStream)
-									{
-										if (line.ToLower().Contains(searchstr)) appendLogTextbox_OfPassedTextbox(messagesTextbox, counter + ": " + line);
-										counter++;
-										line = sr.ReadLine();
-									}
-									sr.Close();
-								}
-								else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Getline search string not defined (must be i.e. getline skype): " + comm);
-							}
-							else if (comm.StartsWith("comment"))
-							{
-								string linenumstr = comm.Substring(7).Trim();
-								int linenum;
-								if (!int.TryParse(linenumstr, out linenum)) appendLogTextbox_OfPassedTextbox(messagesTextbox, "Cannot obtain line number from: " + comm.Substring(7));
-								else
-								{
-									appendLogTextbox_OfPassedTextbox(messagesTextbox, "Commenting line number " + linenum.ToString());
-									List<string> tmpLines = new List<string>();
-									StreamReader sr = new StreamReader(filePath);
-									string line = sr.ReadLine();
-									int counter = 1;
-									while (!sr.EndOfStream)
-									{
-										if (counter == linenum && !line.Trim().StartsWith("::")) line = "::" + line;
-										tmpLines.Add(line);
-										counter++;
-										line = sr.ReadLine();
-									}
-									sr.Close();
-									StreamWriter sw = new StreamWriter(filePath);
-									try
-									{
-										foreach (string s in tmpLines) sw.WriteLine(s);
-									}
-									finally { sw.Close(); }
-									appendLogTextbox_OfPassedTextbox(messagesTextbox, "Successfully commented line number " + linenum.ToString());
-								}
-							}
-							else if (comm.StartsWith("uncomment"))
-							{
-								string linenumstr = comm.Substring(9).Trim();
-								int linenum;
-								if (!int.TryParse(linenumstr, out linenum)) appendLogTextbox_OfPassedTextbox(messagesTextbox, "Cannot obtain line number from: " + comm.Substring(9));
-								else
-								{
-									appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unommenting line number " + linenum.ToString());
-									List<string> tmpLines = new List<string>();
-									StreamReader sr = new StreamReader(filePath);
-									string line = sr.ReadLine();
-									int counter = 1;
-									while (!sr.EndOfStream)
-									{
-										if (counter == linenum && line.Trim().StartsWith("::")) line = line.Substring(2);
-										tmpLines.Add(line);
-										counter++;
-										line = sr.ReadLine();
-									}
-									sr.Close();
-									StreamWriter sw = new StreamWriter(filePath);
-									try
-									{
-										foreach (string s in tmpLines) sw.WriteLine(s);
-									}
-									finally { sw.Close(); }
-									appendLogTextbox_OfPassedTextbox(messagesTextbox, "Successfully uncommented line number " + linenum.ToString());
-								}
-							}
+							StartupbatInterop.PerformStartupbatCommand(messagesTextbox, filePath, comm);
 							break;
 
 						case PerformCommandTypeEnum.Call:
 							if (commandArguments[0].TokenWithReplaceStringPair != null && commandArguments[0].TokenWithReplaceStringPair.ContainsKey(argStr))
-								appendLogTextbox_OfPassedTextbox(messagesTextbox, commandArguments[0].TokenWithReplaceStringPair[argStr]);
-							else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Call command not recognized: " + argStr);
+								Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, commandArguments[0].TokenWithReplaceStringPair[argStr]);
+							else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Call command not recognized: " + argStr);
 							break;
 
 						case PerformCommandTypeEnum.Cmd: case PerformCommandTypeEnum.VsCmd:
@@ -569,42 +471,11 @@ namespace QuickAccess
 							if (commandArguments[0].TokenWithReplaceStringPair != null && commandArguments[0].TokenWithReplaceStringPair.ContainsKey(cmdpath))
 								cmdpath = commandArguments[0].TokenWithReplaceStringPair[cmdpath];
 
-							const string vsbatfile = @"c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat";
-
-							string processArgs = 
-								//PerformCommandType == PerformCommandTypeEnum.Cmd ? ""
-								//:
-								PerformCommandType == PerformCommandTypeEnum.VsCmd ? @"/k """ + vsbatfile + @""" x86"
-								: "";
-							//if (PerformCommandType == PerformCommandTypeEnum.VsCmd)
-
-							if (Directory.Exists(cmdpath))
-							{
-								if (PerformCommandType == PerformCommandTypeEnum.Cmd || (PerformCommandType == PerformCommandTypeEnum.VsCmd && File.Exists(vsbatfile)))
-								{
-									Process proc = new Process();
-									proc.StartInfo = new ProcessStartInfo("cmd", processArgs);
-									proc.StartInfo.WorkingDirectory = cmdpath;
-									proc.Start();
-								}
-								else appendLogTextbox_OfPassedTextbox(messagesTextbox, @"Unable to start Visual Studio Command Prompt, cannot find file: """ + vsbatfile + @"""" + cmdpath);
-								//System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + cmdpath + "\"");
-							}
-							else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Folder does not exist, cannot start cmd: " + cmdpath);
+							WindowsInterop.StartCommandPromptOrVScommandPrompt(messagesTextbox, cmdpath, PerformCommandType == PerformCommandTypeEnum.VsCmd);
 							break;
 
 						case PerformCommandTypeEnum.Btw:
-							string responsestr = "";
-							appendLogTextbox_OfPassedTextbox(messagesTextbox, "Sending btw text, please wait...");
-							PerformVoidFunctionSeperateThread(() =>
-							{
-								responsestr = PostPHP(messagesTextbox, "http://firepuma.com/btw/directadd/f/" + PhpEncryption.StringToHex(argStr), "");
-							});
-
-							appendLogTextbox_OfPassedTextbox(messagesTextbox, responsestr);
-							if (responsestr.ToLower().StartsWith("success:"))
-								form1.textBox1.Text = "";
-								//textBox1.Text = "";
+							PhpInterop.AddBtwTextFirepuma(form1, messagesTextbox, argStr);
 							break;
 
 						case PerformCommandTypeEnum.Svncommit: case PerformCommandTypeEnum.Svnupdate: case PerformCommandTypeEnum.Svnstatus:
@@ -615,7 +486,12 @@ namespace QuickAccess
 							//string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
 							//if (svncommitargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
 							//{
-							PerformSvn(messagesTextbox, svnargs);
+							SvnInterop.SvnCommand svnCommand =
+								PerformCommandType == PerformCommandTypeEnum.Svncommit ? SvnInterop.SvnCommand.Commit
+								: PerformCommandType == PerformCommandTypeEnum.Svnupdate ? SvnInterop.SvnCommand.Update
+								: PerformCommandType == PerformCommandTypeEnum.Svnstatus ? SvnInterop.SvnCommand.Status
+								: SvnInterop.SvnCommand.Status;
+							SvnInterop.PerformSvn(messagesTextbox, svnargs, svnCommand);
 							//}
 							//else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
 							//}
@@ -628,298 +504,6 @@ namespace QuickAccess
 							MessageBox.Show("PerformCommandType is not defined");
 							break;
 					}
-				}
-
-				private void PerformSvn(TextBox messagesTextbox, string svnargs)
-				{
-					string projname = svnargs.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
-					string logmessage = null;
-					if (PerformCommandType == PerformCommandTypeEnum.Svncommit)
-					{
-						logmessage = svnargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
-						logmessage = logmessage.Replace("\\", "\\\\");
-						logmessage = logmessage.Replace("\"", "\\\"");
-					}
-					try
-					{
-						string projDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
-						/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
-						else appendLogTextbox("Error: command not regognized, " + svncommand);*/
-						//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-						string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
-						if (!File.Exists(svnpath)) svnpath = "svn";
-						string placedherebecauseSvnPathMustBeRemoved;
-						if (Directory.Exists(projDir))
-						{
-							PerformVoidFunctionSeperateThread(() =>
-							{
-								//TODO: Should still remove the path of svn from the next line
-								//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-								string processArguments =
-											PerformCommandType ==
-									PerformCommandTypeEnum.Svncommit ? "commit -m\"" + logmessage + "\" \"" + projDir + "\""
-									: PerformCommandType == PerformCommandTypeEnum.Svnupdate ? "update \"" + projDir + "\""
-									: PerformCommandType == PerformCommandTypeEnum.Svnstatus ? "status --show-updates \"" + projDir + "\""
-									: "";
-
-								ProcessStartInfo start = new ProcessStartInfo(svnpath, processArguments);//"commit -m\"" + logmessage + "\" \"" + projDir + "\"");
-								start.UseShellExecute = false;
-								start.CreateNoWindow = true;
-								start.RedirectStandardOutput = true;
-								start.RedirectStandardError = true;
-								System.Diagnostics.Process svnproc = new Process();
-								svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-								{
-									if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox_OfPassedTextbox(messagesTextbox, "Svn output: " + outLine.Data);
-									//else appendLogTextbox("Svn output empty");
-								};
-								svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-								{
-									if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox_OfPassedTextbox(messagesTextbox, "Svn error: " + outLine.Data);
-									//else appendLogTextbox("Svn error empty");
-								};
-								svnproc.StartInfo = start;
-
-								string performingPleasewaitMsg = 
-											PerformCommandType ==
-									PerformCommandTypeEnum.Svncommit ? "Performing svn commit, please wait..."
-									: PerformCommandType == PerformCommandTypeEnum.Svnupdate ? "Performing svn update, please wait..."
-									: PerformCommandType == PerformCommandTypeEnum.Svnstatus ? "Check status of svn (local and server), please wait..."
-									: "";
-								if (svnproc.Start())
-									appendLogTextbox_OfPassedTextbox(messagesTextbox, performingPleasewaitMsg);
-								else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: Could not start SVN process.");
-
-								svnproc.BeginOutputReadLine();
-								svnproc.BeginErrorReadLine();
-
-								svnproc.WaitForExit();
-							});
-						}
-						else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: folder not found: " + projDir);
-					}
-					catch (Exception exc)
-					{
-						appendLogTextbox_OfPassedTextbox(messagesTextbox, "Exception on running svn: " + exc.Message);
-					}
-				}
-
-				private void CreateNewOutlookMessage(Form1 form1, string To, string Subject, string Body)
-				{
-					if (Process.GetProcessesByName("Outlook").Length == 0)
-					{
-						appendLogTextbox_OfPassedTextbox(form1.textBox_Messages, "Starting Outlook, please wait...");
-						Process p = System.Diagnostics.Process.Start("Outlook");
-					}
-
-					// Creates a new Outlook Application Instance
-					Outlook.Application objOutlook = new Outlook.Application();
-					// Creating a new Outlook Message from the Outlook Application Instance
-					Outlook.MailItem mic = (Outlook.MailItem)(objOutlook.CreateItem(Outlook.OlItemType.olMailItem));
-					mic.To = To;
-					mic.Subject = Subject;
-					mic.Body = Body;
-					form1.TopMost = false;
-					mic.Display(true);
-					form1.TopMost = true;
-					form1.ShowAndActivateThisForm();
-				}
-
-				private bool PerformDesktopAppDoTask(TextBox messagesTextbox, string UsernameIn, string TaskName, List<string> ArgumentList, bool CheckForSpecificResult = false, string SuccessSpecificResult = "", bool MustWriteResultToLogsTextbox = false)
-				{
-					string result = GetResultOfPerformingDesktopAppDoTask(messagesTextbox, UsernameIn, TaskName, ArgumentList, MustWriteResultToLogsTextbox);
-					if (CheckForSpecificResult && result == SuccessSpecificResult)
-						return true;
-					return false;
-				}
-
-				public void PerformVoidFunctionSeperateThread(MethodInvoker method)
-				{
-					System.Threading.Thread th = new System.Threading.Thread(() =>
-					{
-						method.Invoke();
-					});
-					th.Start();
-					//th.Join();
-					while (th.IsAlive) { Application.DoEvents(); }
-				}
-
-				private string GetResultOfPerformingDesktopAppDoTask(TextBox messagesTextbox, string UsernameIn, string TaskName, List<string> ArgumentList, bool MustWriteResultToLogsTextbox = false)
-				{
-					string tmpkey = GetPrivateKey(messagesTextbox);
-					appendLogTextbox_OfPassedTextbox(messagesTextbox, "Obtained private key");
-
-					if (tmpkey != null)
-					{
-						HttpWebRequest addrequest = null;
-						HttpWebResponse addresponse = null;
-						StreamReader input = null;
-
-						try
-						{
-							if (UsernameIn != null && UsernameIn.Length > 0
-																		 && tmpkey != null && tmpkey.Length > 0)
-							{
-								string encryptedstring;
-								string decryptedstring = "";
-								bool mustreturn = false;
-								PerformVoidFunctionSeperateThread(() =>
-								{
-									string ArgumentListTabSeperated = "";
-									foreach (string s in ArgumentList)
-										ArgumentListTabSeperated += (ArgumentListTabSeperated.Length > 0 ? "\t" : "") + s;
-
-									string tmpRequest = doWorkAddress + "/dotask/" +
-											PhpEncryption.SimpleTripleDesEncrypt(UsernameIn, "123456789abcdefghijklmno") + "/" +
-											PhpEncryption.SimpleTripleDesEncrypt(TaskName, tmpkey) + "/" +
-											PhpEncryption.SimpleTripleDesEncrypt(ArgumentListTabSeperated, tmpkey);
-									addrequest = (HttpWebRequest)WebRequest.Create(tmpRequest);// + "/");
-									//appendLogTextbox(addrequest.RequestUri.ToString());
-									try
-									{
-										addresponse = (HttpWebResponse)addrequest.GetResponse();
-										input = new StreamReader(addresponse.GetResponseStream());
-										encryptedstring = input.ReadToEnd();
-										//appendLogTextbox("Encrypted response: " + encryptedstring);
-
-										decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
-										//appendLogTextbox("Decrypted response: " + decryptedstring);
-										decryptedstring = decryptedstring.Replace("\0", "").Trim();
-										//MessageBox.Show(this, decryptedstring);
-										if (MustWriteResultToLogsTextbox) appendLogTextbox_OfPassedTextbox(messagesTextbox, "Result for " + TaskName + ": " + decryptedstring);
-										mustreturn = true;
-									}
-									catch (Exception exc) { MessageBox.Show("Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-								});
-								if (mustreturn) return decryptedstring;
-							}
-						}
-						catch (Exception exc)
-						{
-							appendLogTextbox_OfPassedTextbox(messagesTextbox, "Obtain php: " + exc.Message);
-						}
-						finally
-						{
-							if (addresponse != null) addresponse.Close();
-							if (input != null) input.Close();
-						}
-					}
-					return null;
-				}
-
-				private string GetPrivateKey(TextBox messagesTextbox)
-				{
-					try
-					{
-						//toolStripStatusLabelCurrentStatus.Text = "Obtaining pvt key...";
-						string tmpkey = null;
-
-						PerformVoidFunctionSeperateThread(() =>
-						{
-							tmpkey = PostPHP(messagesTextbox, ServerAddress + "/generateprivatekey.php", "username=" + Username + "&password=" + Password);
-						});
-
-						string tmpSuccessKeyString = "Success: Key=";
-						if (tmpkey != null && tmpkey.Length > 0 && tmpkey.ToUpper().StartsWith(tmpSuccessKeyString.ToUpper()))
-						{
-							tmpkey = tmpkey.Substring(tmpSuccessKeyString.Length).Replace("\n", "").Replace("\r", "");
-							//toolStripStatusLabelCurrentStatus.Text = tmpkey;
-						}
-						return tmpkey;
-					}
-					catch (Exception exc)
-					{
-						appendLogTextbox_OfPassedTextbox(messagesTextbox, "Obtain private key exception: " + exc.Message);
-						return null;
-					}
-				}
-
-				/// <summary>
-				/// Post data to php, maximum length of data is 8Mb
-				/// </summary>
-				/// <param name="url">The url of the php, do not include the ?</param>
-				/// <param name="data">The data, i.e. "name=koos&surname=koekemoer". Note to not include the ?</param>
-				/// <returns>Returns the data received from the php (usually the "echo" statements in the php.</returns>
-				public string PostPHP(TextBox messagesTextbox, string url, string data)
-				{
-					string vystup = "";
-					try
-					{
-						data = data.Replace("+", "[|]");
-						//Our postvars
-						byte[] buffer = Encoding.ASCII.GetBytes(data);
-						//Initialisation, we use localhost, change if appliable
-						HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(url);
-						//Our method is post, otherwise the buffer (postvars) would be useless
-						WebReq.Method = "POST";
-						//We use form contentType, for the postvars.
-						WebReq.ContentType = "application/x-www-form-urlencoded";
-						//The length of the buffer (postvars) is used as contentlength.
-						WebReq.ContentLength = buffer.Length;
-						//We open a stream for writing the postvars
-						Stream PostData = WebReq.GetRequestStream();
-						//Now we write, and afterwards, we close. Closing is always important!
-						PostData.Write(buffer, 0, buffer.Length);
-						PostData.Close();
-						//Get the response handle, we have no true response yet!
-						HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
-						//Let's show some information about the response
-						//System.Windows.Forms.MessageBox.Show(WebResp.StatusCode.ToString());
-						//System.Windows.Forms.MessageBox.Show(WebResp.Server);
-
-						//Now, we read the response (the string), and output it.
-						Stream Answer = WebResp.GetResponseStream();
-						StreamReader _Answer = new StreamReader(Answer);
-						vystup = _Answer.ReadToEnd();
-
-						//Congratulations, you just requested your first POST page, you
-						//can now start logging into most login forms, with your application
-						//Or other examples.
-						string tmpresult = vystup.Trim() + "\n";
-					}
-					catch (Exception exc)
-					{
-						if (!exc.Message.ToUpper().StartsWith("The remote name could not be resolved:".ToUpper()))
-							//LoggingClass.AddToLogList(UserMessages.MessageTypes.PostPHP, exc.Message);
-							appendLogTextbox_OfPassedTextbox(messagesTextbox, "Post php: " + exc.Message);
-						else //LoggingClass.AddToLogList(UserMessages.MessageTypes.PostPHPremotename, exc.Message);
-							appendLogTextbox_OfPassedTextbox(messagesTextbox, "Post php remote name: " + exc.Message);
-						//SysWinForms.MessageBox.Show("Error (092892): " + Environment.NewLine + exc.Message, "Exception error", SysWinForms.MessageBoxButtons.OK, SysWinForms.MessageBoxIcon.Error);
-					}
-					return vystup;
-				}
-
-				private void AddTodoItemFirepuma(TextBox messagesTextbox, string Category, string Subcat, string Items, string Description, bool Completed, DateTime Due, DateTime Created, int RemindedCount, bool StopSnooze, int AutosnoozeInterval)
-				{
-					appendLogTextbox_OfPassedTextbox(messagesTextbox, "Adding new item, please wait...");
-					bool successfulAdd = PerformDesktopAppDoTask(
-						messagesTextbox,
-							Username,
-							"addtolist",
-							new List<string>()
-                {
-                    Category,
-                    Subcat,
-                    Items,
-                    Description,
-                    Due.ToString(MySQLdateformat),
-                    StopSnooze ? "1" : "0",
-                    AutosnoozeInterval.ToString()
-                },
-							true,
-							"1");
-					if (successfulAdd)
-					{
-						appendLogTextbox_OfPassedTextbox(messagesTextbox, "Successfully added todo item.");
-						//textBox1.Text = "";
-					}
-				}
-
-				private void appendLogTextbox_OfPassedTextbox(TextBox messagesTextbox, string str)
-				{
-					//label1.Text = str;
-					messagesTextbox.Text = str + (messagesTextbox.Text.Length > 0 ? Environment.NewLine : "") + messagesTextbox.Text;
-					Application.DoEvents();
 				}
 
 				public bool CommandHasRequiredArguments()
@@ -1120,22 +704,16 @@ namespace QuickAccess
 				this.Location = new Point(this.Location.X, Screen.GetWorkingArea(this.Location).Bottom - this.Height);
 		}
 
-		private void notifyIcon1_Click(object sender, EventArgs e)
-		{
-			ShowAndActivateThisForm();
-		}
-
 		private void ToggleWindowActivation()
 		{
 			if (GetForegroundWindow() != this.Handle)
 			{
 				ShowAndActivateThisForm();
-				//textBox1.Focus();
 			}
 			else this.Hide();
 		}
 
-		private void ShowAndActivateThisForm()
+		public void ShowAndActivateThisForm()
 		{
 			this.Visible = true;
 			this.Activate();
@@ -1180,454 +758,6 @@ namespace QuickAccess
 					command.PerformCommand(this, textBox1.Text);
 					textBox1.Text = "";
 				}
-				//return;
-
-				/*if (textBox1.Text.ToLower().StartsWith("todo ") && textBox1.Text.Length >= 12 && textBox1.Text.Split(';').Length == 4)
-				{
-					string tmpstr = textBox1.Text.Substring(5);
-					AddTodoItemNow(
-							"QuickAccess",
-							"Quick todo",
-							tmpstr.Split(';')[2],
-							tmpstr.Split(';')[3],
-							false,
-							DateTime.Now.AddMinutes(Convert.ToInt32(tmpstr.Split(';')[0])),
-							DateTime.Now,
-							0,
-							false,
-							Convert.ToInt32(tmpstr.Split(';')[1]));
-				}
-				else if (textBox1.Text.ToLower().StartsWith("run ") && textBox1.Text.Length >= 5)
-				{
-					string appname = textBox1.Text.Substring(4).ToLower();
-					string exepath = "";
-					if (appname == "chrome")
-						exepath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\Application\chrome.exe";
-					else if (appname == "canary")
-						exepath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome SxS\Application\chrome.exe";
-					else if (appname == "delphi2007")
-						exepath = @"C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\bds.exe";
-					else if (appname == "delphi2010")
-						exepath = @"C:\Program Files (x86)\Embarcadero\RAD Studio\7.0\bin\bds.exe";
-					else if (appname == "phpstorm")
-						exepath = @"C:\Program Files (x86)\JetBrains\PhpStorm 2.1.4\bin\PhpStorm.exe";
-					else if (appname == "sqlitespy")
-						exepath = @"C:\Francois\Programs\SQLiteSpy_1.9.1\SQLiteSpy.exe";
-
-					if (File.Exists(exepath))
-						System.Diagnostics.Process.Start(exepath);
-					else
-					{
-						try
-						{
-							System.Diagnostics.Process.Start(appname);
-						}
-						catch (Exception exc) { appendLogTextbox(exc.Message); }
-					}
-				}
-				else if (textBox1.Text.ToLower().StartsWith("mail ") && textBox1.Text.Length >= 15 && textBox1.Text.Split(';').Length == 3)
-				{
-					string tmpstr = textBox1.Text.Substring(5);
-					CreateNewOutlookMessage(
-							tmpstr.Split(';')[0],
-							tmpstr.Split(';')[1],
-							tmpstr.Split(';')[2]);
-				}
-				else if (textBox1.Text.ToLower().StartsWith("explore ") && textBox1.Text.Length >= 9)
-				{
-					string explorepath = textBox1.Text.Substring(8).ToLower();
-					if (explorepath == "franother")
-						System.Diagnostics.Process.Start(@"c:\francois\other");
-					else if (explorepath == "prog")
-						System.Diagnostics.Process.Start(@"c:\programming");
-					else if (explorepath == "docs")
-						System.Diagnostics.Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-					else if (Directory.Exists(explorepath))
-						System.Diagnostics.Process.Start(explorepath);
-					else
-						appendLogTextbox("Unrecognized command to explore, and directory not found: " + explorepath);
-				}
-				else if (textBox1.Text.ToLower().StartsWith("web ") && textBox1.Text.Length >= 7)
-				{
-					string url = textBox1.Text.Substring(4).ToLower();
-					if (!url.StartsWith("http://") && !url.StartsWith("https://") && !url.StartsWith("www."))
-						url = "http://" + url;
-					System.Diagnostics.Process.Start(url);
-				}
-				else if (textBox1.Text.ToLower().StartsWith("google ") && textBox1.Text.Length >= 8)
-				{
-					string searchtxt = textBox1.Text.Substring(7);
-					System.Diagnostics.Process.Start("http://www.google.co.za/search?q=" + searchtxt);
-				}
-				else if (textBox1.Text.ToLower().StartsWith("kill ") && textBox1.Text.Length >= 6)
-				{
-					string processName = textBox1.Text.Substring(5);
-					Process[] processes = Process.GetProcessesByName(processName);
-					if (processes.Length > 1) appendLogTextbox("More than one process found, cannot kill");
-					else if (processes.Length == 0) appendLogTextbox("Cannot find process with name " + processName);
-					else
-					{
-						processes[0].Kill();
-						appendLogTextbox("Process killed: " + processName);
-					}
-				}
-				else if (textBox1.Text.ToLower().StartsWith("startupbat ") && textBox1.Text.Length >= 12)
-				{
-					string filePath = @"C:\Francois\Other\Startup\work Startup.bat";
-					string comm = textBox1.Text.Substring(11).ToLower();
-					//getall/getline 'xxx'/comment #/uncomment #
-					if (comm.StartsWith("open"))
-					{
-						System.Diagnostics.Process.Start("notepad", filePath);
-					}
-					else if (comm.StartsWith("getall"))
-					{
-						StreamReader sr = new StreamReader(filePath);
-						string line = sr.ReadLine();
-						int counter = 1;
-						while (!sr.EndOfStream)
-						{
-							appendLogTextbox((counter++) + ": " + line);
-							line = sr.ReadLine();
-						}
-						sr.Close();
-					}
-					else if (comm.StartsWith("getline"))
-					{
-						if (comm.StartsWith("getline ") && comm.Length >= 9)
-						{
-							string searchstr = comm.Substring(8);//comm.Split('\'')[1];
-							StreamReader sr = new StreamReader(filePath);
-							string line = sr.ReadLine();
-							int counter = 1;
-							while (!sr.EndOfStream)
-							{
-								if (line.ToLower().Contains(searchstr)) appendLogTextbox(counter + ": " + line);
-								counter++;
-								line = sr.ReadLine();
-							}
-							sr.Close();
-						}
-						else appendLogTextbox("Getline search string not defined (must be i.e. getline skype): " + textBox1.Text.Substring(11));
-					}
-					else if (comm.StartsWith("comment"))
-					{
-						string linenumstr = comm.Substring(7).Trim();
-						int linenum;
-						if (!int.TryParse(linenumstr, out linenum)) appendLogTextbox("Cannot obtain line number from: " + comm.Substring(7));
-						else
-						{
-							appendLogTextbox("Commenting line number " + linenum.ToString());
-							List<string> tmpLines = new List<string>();
-							StreamReader sr = new StreamReader(filePath);
-							string line = sr.ReadLine();
-							int counter = 1;
-							while (!sr.EndOfStream)
-							{
-								if (counter == linenum && !line.Trim().StartsWith("::")) line = "::" + line;
-								tmpLines.Add(line);
-								counter++;
-								line = sr.ReadLine();
-							}
-							sr.Close();
-							StreamWriter sw = new StreamWriter(filePath);
-							try
-							{
-								foreach (string s in tmpLines) sw.WriteLine(s);
-							}
-							finally { sw.Close(); }
-							appendLogTextbox("Successfully commented line number " + linenum.ToString());
-						}
-					}
-					else if (comm.StartsWith("uncomment"))
-					{
-						string linenumstr = comm.Substring(9).Trim();
-						int linenum;
-						if (!int.TryParse(linenumstr, out linenum)) appendLogTextbox("Cannot obtain line number from: " + comm.Substring(9));
-						else
-						{
-							appendLogTextbox("Unommenting line number " + linenum.ToString());
-							List<string> tmpLines = new List<string>();
-							StreamReader sr = new StreamReader(filePath);
-							string line = sr.ReadLine();
-							int counter = 1;
-							while (!sr.EndOfStream)
-							{
-								if (counter == linenum && line.Trim().StartsWith("::")) line = line.Substring(2);
-								tmpLines.Add(line);
-								counter++;
-								line = sr.ReadLine();
-							}
-							sr.Close();
-							StreamWriter sw = new StreamWriter(filePath);
-							try
-							{
-								foreach (string s in tmpLines) sw.WriteLine(s);
-							}
-							finally { sw.Close(); }
-							appendLogTextbox("Successfully uncommented line number " + linenum.ToString());
-						}
-					}
-				}
-				else if (textBox1.Text.ToLower().StartsWith("call ") && textBox1.Text.Length >= 6)
-				{
-					//call yolwork/imqs/kerry/adrian/deon/johann/wesley
-					string name = textBox1.Text.ToLower().Substring(5);
-					if (name == "yolwork") appendLogTextbox("Yolande work: (021) 853 3564");
-					else if (name == "imqs") appendLogTextbox("IMQS office: 021-880 2712 / 880 1632");
-					else if (name == "kerry") appendLogTextbox("Kerry extension: 107");
-					else if (name == "adrian") appendLogTextbox("Adrian extension: 106");
-					else if (name == "deon") appendLogTextbox("Deon extension: 121");
-					else if (name == "johann") appendLogTextbox("Johann extension: 119");
-					else if (name == "wesley") appendLogTextbox("Wesley extension: 111");
-					else if (name == "honda") appendLogTextbox("Honda Tygervalley: 021 910 8300");
-					else appendLogTextbox("Name not regocnized to call: " + name);
-				}
-				else if (textBox1.Text.ToLower().StartsWith("cmd ") && textBox1.Text.Length >= 5)
-				{
-					string cmdpath = textBox1.Text.Substring(4).ToLower();
-					if (cmdpath == "firepuma")
-						System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + @"c:\francois\websites\firepuma" + "\"");
-					else if (Directory.Exists(cmdpath))
-						System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + cmdpath + "\"");
-					else
-						appendLogTextbox("Folder does not exist, cannot start cmd: " + cmdpath);
-				}
-				else if (textBox1.Text.ToLower().StartsWith("btw ") && textBox1.Text.Length >= 5)
-				{
-					string btwtext = textBox1.Text.Substring(4).ToLower();
-					string responsestr = "";
-					PerformVoidFunctionSeperateThread(() =>
-					{
-						responsestr = PostPHP("http://firepuma.com/btw/directadd/f/" + PhpEncryption.StringToHex(btwtext), "");
-					});
-					appendLogTextbox(responsestr);
-					if (responsestr.ToLower().StartsWith("success:"))
-						textBox1.Text = "";
-					//appendLogTextbox("Folder does not exist, cannot start cmd: " + cmdpath);
-				}
-				else if (textBox1.Text.ToLower().StartsWith("svncommit ") && textBox1.Text.Length >= 11)
-				{
-					//svncommit proj User32stuff;Log message
-					string svncommitargs = textBox1.Text.ToLower().Substring(10);
-					//if (svncommitargs.Contains(' '))
-					{
-						//string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
-						//string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
-						if (svncommitargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
-						{
-							string projname = svncommitargs.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
-							string logmessage = svncommitargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
-							logmessage = logmessage.Replace("\\", "\\\\");
-							logmessage = logmessage.Replace("\"", "\\\"");
-							try
-							{
-								string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
-								//if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
-								//else appendLogTextbox("Error: command not regognized, " + svncommand);
-								//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-								string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
-								if (!File.Exists(svnpath)) svnpath = "svn";
-								string placedherebecauseSvnPathMustBeRemoved;
-								if (Directory.Exists(commitDir))
-								{
-									PerformVoidFunctionSeperateThread(() =>
-									{
-										//TODO: Should still remove the path of svn from the next line
-										//System.Diagnostics.Process.Start(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-										ProcessStartInfo start = new ProcessStartInfo(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-										start.UseShellExecute = false;
-										start.CreateNoWindow = true;
-										start.RedirectStandardOutput = true;
-										start.RedirectStandardError = true;
-										System.Diagnostics.Process svnproc = new Process();
-										svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-										{
-											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
-											//else appendLogTextbox("Svn output empty");
-										};
-										svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-										{
-											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
-											//else appendLogTextbox("Svn error empty");
-										};
-										svnproc.StartInfo = start;
-										if (svnproc.Start())
-											appendLogTextbox("Performing svn commit, please wait...");
-										else appendLogTextbox("Error: Could not start process svn commit.");
-
-										svnproc.BeginOutputReadLine();
-										svnproc.BeginErrorReadLine();
-
-										svnproc.WaitForExit();
-									});
-								}
-								else appendLogTextbox("Error: folder not found: " + commitDir);
-							}
-							catch (Exception exc)
-							{
-								appendLogTextbox("Exception on running svn: " + exc.Message);
-							}
-						}
-						else appendLogTextbox("Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
-					}
-					//else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
-				}
-				else if (textBox1.Text.ToLower().StartsWith("svnupdate ") && textBox1.Text.Length >= 11)
-				{
-					//svncommit proj User32stuff;Log message
-					string svnupdateargs = textBox1.Text.ToLower().Substring(10);
-					//if (svnupdateargs.Contains(' '))
-					{
-						//string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
-						//string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
-						//if (svnupdateargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
-						//{
-							string projname = svnupdateargs;//.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
-							//string logmessage = svnupdateargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
-							//logmessage = logmessage.Replace("\\", "\\\\");
-							//logmessage = logmessage.Replace("\"", "\\\"");
-							try
-							{
-								string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
-								//if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
-								//else appendLogTextbox("Error: command not regognized, " + svncommand);
-								//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-								string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
-								if (!File.Exists(svnpath)) svnpath = "svn";
-								string placedherebecauseSvnPathMustBeRemoved;
-								if (Directory.Exists(commitDir))
-								{
-									PerformVoidFunctionSeperateThread(() =>
-									{
-										//TODO: Should still remove the path of svn from the next line
-										//System.Diagnostics.Process.Start(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-										ProcessStartInfo start = new ProcessStartInfo(svnpath, "update \"" + commitDir + "\"");
-										start.UseShellExecute = false;
-										start.CreateNoWindow = true;
-										start.RedirectStandardOutput = true;
-										start.RedirectStandardError = true;
-										System.Diagnostics.Process svnproc = new Process();
-										svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-										{
-											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
-											//else appendLogTextbox("Svn output empty");
-										};
-										svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-										{
-											if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
-											//else appendLogTextbox("Svn error empty");
-										};
-										svnproc.StartInfo = start;
-										if (svnproc.Start())
-											appendLogTextbox("Performing svn udpate, please wait...");
-										else appendLogTextbox("Error: Could not start process svn update.");
-
-										svnproc.BeginOutputReadLine();
-										svnproc.BeginErrorReadLine();
-
-										svnproc.WaitForExit();
-									});
-								}
-								else appendLogTextbox("Error: folder not found: " + commitDir);
-							}
-							catch (Exception exc)
-							{
-								appendLogTextbox("Exception on running svn: " + exc.Message);
-							}
-						//}
-						//else appendLogTextbox("Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
-					}
-					//else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
-				}
-				else if (textBox1.Text.ToLower().StartsWith("svnstatusboth ") && textBox1.Text.Length >= 15)
-				{
-					//svncommit proj User32stuff;Log message
-					string svnstatusargs = textBox1.Text.ToLower().Substring(14);
-					//if (svnupdateargs.Contains(' '))
-					{
-						//string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
-						//string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
-						//if (svnupdateargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
-						//{
-						string projname = svnstatusargs;//.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
-						//string logmessage = svnupdateargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
-						//logmessage = logmessage.Replace("\\", "\\\\");
-						//logmessage = logmessage.Replace("\"", "\\\"");
-						try
-						{
-							string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
-							//if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
-							//else appendLogTextbox("Error: command not regognized, " + svncommand);
-							//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-							string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
-							if (!File.Exists(svnpath)) svnpath = "svn";
-							string placedherebecauseSvnPathMustBeRemoved;
-							if (Directory.Exists(commitDir))
-							{
-								PerformVoidFunctionSeperateThread(() =>
-								{
-									//TODO: Should still remove the path of svn from the next line
-									//System.Diagnostics.Process.Start(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-									ProcessStartInfo start = new ProcessStartInfo(svnpath, "status --show-updates \"" + commitDir + "\"");
-									start.UseShellExecute = false;
-									start.CreateNoWindow = true;
-									start.RedirectStandardOutput = true;
-									start.RedirectStandardError = true;
-									System.Diagnostics.Process svnproc = new Process();
-									svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-									{
-										if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn output: " + outLine.Data);
-										//else appendLogTextbox("Svn output empty");
-									};
-									svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-									{
-										if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox("Svn error: " + outLine.Data);
-										//else appendLogTextbox("Svn error empty");
-									};
-									svnproc.StartInfo = start;
-									if (svnproc.Start())
-										appendLogTextbox("Checking svn status for both local and server revision (locstatus servstatus rev), please wait...");
-									else appendLogTextbox("Error: Could not start process svn status.");
-
-									svnproc.BeginOutputReadLine();
-									svnproc.BeginErrorReadLine();
-
-									svnproc.WaitForExit();
-								});
-							}
-							else appendLogTextbox("Error: folder not found: " + commitDir);
-						}
-						catch (Exception exc)
-						{
-							appendLogTextbox("Exception on running svn: " + exc.Message);
-						}
-						//}
-						//else appendLogTextbox("Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
-					}
-					//else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
-				}
-				//else if (textBox1.Text.ToUpper().StartsWith("UNHIDE ") && textBox1.Text.Length >= 8)
-				//{
-				//  string processName = textBox1.Text.Substring(7);
-				//  Process[] processes = Process.GetProcessesByName(processName);
-				//  if (processes.Length > 1) appendLogTextbox("More than one process found, cannot unhide multiple");
-				//  else if (processes.Length == 0) appendLogTextbox("Cannot unhide, unable to find process with name " + processName);
-				//  else
-				//  {
-						
-				//    //IntPtr handle = FindWindowByCaption(IntPtr.Zero, "Skype");
-				//    //appendLogTextbox("Skype window handle = " + handle);
-				//    //if (!ShowWindow(handle, SW_SHOW))
-				//    //  appendLogTextbox("Unable to unhide " + processName + ", ShowWindow command failed");
-				//    //else
-				//    //  appendLogTextbox("Process unhide successful: " + processName);
-				//  }
-				//}
-
-				textBox1.Select(textBox1.Text.Length, 0);
-				//e.SuppressKeyPress = true;
-				//e.Handled = true;*/
 			}
 		}
 
@@ -1648,7 +778,6 @@ namespace QuickAccess
 				case MouseButtons.Left:
 					break;
 				case MouseButtons.Middle:
-					//else notifyIcon1.ShowBalloonTip(300, "Middle", activeTitle, ToolTipIcon.Info);
 					break;
 				case MouseButtons.None:
 					break;
@@ -1692,215 +821,6 @@ namespace QuickAccess
 			Application.DoEvents();
 		}
 
-		/// <summary>
-		/// Post data to php, maximum length of data is 8Mb
-		/// </summary>
-		/// <param name="url">The url of the php, do not include the ?</param>
-		/// <param name="data">The data, i.e. "name=koos&surname=koekemoer". Note to not include the ?</param>
-		/// <returns>Returns the data received from the php (usually the "echo" statements in the php.</returns>
-		public string PostPHP(string url, string data)
-		{
-			string vystup = "";
-			try
-			{
-				data = data.Replace("+", "[|]");
-				//Our postvars
-				byte[] buffer = Encoding.ASCII.GetBytes(data);
-				//Initialisation, we use localhost, change if appliable
-				HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(url);
-				//Our method is post, otherwise the buffer (postvars) would be useless
-				WebReq.Method = "POST";
-				//We use form contentType, for the postvars.
-				WebReq.ContentType = "application/x-www-form-urlencoded";
-				//The length of the buffer (postvars) is used as contentlength.
-				WebReq.ContentLength = buffer.Length;
-				//We open a stream for writing the postvars
-				Stream PostData = WebReq.GetRequestStream();
-				//Now we write, and afterwards, we close. Closing is always important!
-				PostData.Write(buffer, 0, buffer.Length);
-				PostData.Close();
-				//Get the response handle, we have no true response yet!
-				HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
-				//Let's show some information about the response
-				//System.Windows.Forms.MessageBox.Show(WebResp.StatusCode.ToString());
-				//System.Windows.Forms.MessageBox.Show(WebResp.Server);
-
-				//Now, we read the response (the string), and output it.
-				Stream Answer = WebResp.GetResponseStream();
-				StreamReader _Answer = new StreamReader(Answer);
-				vystup = _Answer.ReadToEnd();
-
-				//Congratulations, you just requested your first POST page, you
-				//can now start logging into most login forms, with your application
-				//Or other examples.
-				string tmpresult = vystup.Trim() + "\n";
-			}
-			catch (Exception exc)
-			{
-				if (!exc.Message.ToUpper().StartsWith("The remote name could not be resolved:".ToUpper()))
-					//LoggingClass.AddToLogList(UserMessages.MessageTypes.PostPHP, exc.Message);
-					appendLogTextbox("Post php: " + exc.Message);
-				else //LoggingClass.AddToLogList(UserMessages.MessageTypes.PostPHPremotename, exc.Message);
-					appendLogTextbox("Post php remote name: " + exc.Message);
-				//SysWinForms.MessageBox.Show("Error (092892): " + Environment.NewLine + exc.Message, "Exception error", SysWinForms.MessageBoxButtons.OK, SysWinForms.MessageBoxIcon.Error);
-			}
-			return vystup;
-		}
-
-		public void PerformVoidFunctionSeperateThread(MethodInvoker method)
-		{
-			System.Threading.Thread th = new System.Threading.Thread(() =>
-			{
-				method.Invoke();
-			});
-			th.Start();
-			//th.Join();
-			while (th.IsAlive) { Application.DoEvents(); }
-		}
-
-		private string GetPrivateKey()
-		{
-			try
-			{
-				//toolStripStatusLabelCurrentStatus.Text = "Obtaining pvt key...";
-				string tmpkey = null;
-
-				PerformVoidFunctionSeperateThread(() =>
-				{
-					tmpkey = PostPHP(ServerAddress + "/generateprivatekey.php", "username=" + Username + "&password=" + Password);
-				});
-
-				string tmpSuccessKeyString = "Success: Key=";
-				if (tmpkey != null && tmpkey.Length > 0 && tmpkey.ToUpper().StartsWith(tmpSuccessKeyString.ToUpper()))
-				{
-					tmpkey = tmpkey.Substring(tmpSuccessKeyString.Length).Replace("\n", "").Replace("\r", "");
-					//toolStripStatusLabelCurrentStatus.Text = tmpkey;
-				}
-				return tmpkey;
-			}
-			catch (Exception exc)
-			{
-				appendLogTextbox("Obtain private key exception: " + exc.Message);
-				return null;
-			}
-		}
-
-		private bool PerformDesktopAppDoTask(string UsernameIn, string TaskName, List<string> ArgumentList, bool CheckForSpecificResult = false, string SuccessSpecificResult = "", bool MustWriteResultToLogsTextbox = false)
-		{
-			string result = GetResultOfPerformingDesktopAppDoTask(UsernameIn, TaskName, ArgumentList, MustWriteResultToLogsTextbox);
-			if (CheckForSpecificResult && result == SuccessSpecificResult)
-				return true;
-			return false;
-		}
-
-		private string GetResultOfPerformingDesktopAppDoTask(string UsernameIn, string TaskName, List<string> ArgumentList, bool MustWriteResultToLogsTextbox = false)
-		{
-			string tmpkey = GetPrivateKey();
-			appendLogTextbox("Obtained private key");
-
-			if (tmpkey != null)
-			{
-				HttpWebRequest addrequest = null;
-				HttpWebResponse addresponse = null;
-				StreamReader input = null;
-
-				try
-				{
-					if (UsernameIn != null && UsernameIn.Length > 0
-																 && tmpkey != null && tmpkey.Length > 0)
-					{
-						string encryptedstring;
-						string decryptedstring = "";
-						bool mustreturn = false;
-						PerformVoidFunctionSeperateThread(() =>
-						{
-							string ArgumentListTabSeperated = "";
-							foreach (string s in ArgumentList)
-								ArgumentListTabSeperated += (ArgumentListTabSeperated.Length > 0 ? "\t" : "") + s;
-
-							string tmpRequest = doWorkAddress + "/dotask/" +
-									PhpEncryption.SimpleTripleDesEncrypt(UsernameIn, "123456789abcdefghijklmno") + "/" +
-									PhpEncryption.SimpleTripleDesEncrypt(TaskName, tmpkey) + "/" +
-									PhpEncryption.SimpleTripleDesEncrypt(ArgumentListTabSeperated, tmpkey);
-							addrequest = (HttpWebRequest)WebRequest.Create(tmpRequest);// + "/");
-							//appendLogTextbox(addrequest.RequestUri.ToString());
-							try
-							{
-								addresponse = (HttpWebResponse)addrequest.GetResponse();
-								input = new StreamReader(addresponse.GetResponseStream());
-								encryptedstring = input.ReadToEnd();
-								//appendLogTextbox("Encrypted response: " + encryptedstring);
-
-								decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
-								//appendLogTextbox("Decrypted response: " + decryptedstring);
-								decryptedstring = decryptedstring.Replace("\0", "").Trim();
-								//MessageBox.Show(this, decryptedstring);
-								if (MustWriteResultToLogsTextbox) appendLogTextbox("Result for " + TaskName + ": " + decryptedstring);
-								mustreturn = true;
-							}
-							catch (Exception exc) { MessageBox.Show(this, "Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-						});
-						if (mustreturn) return decryptedstring;
-					}
-				}
-				catch (Exception exc)
-				{
-					appendLogTextbox("Obtain php: " + exc.Message);
-				}
-				finally
-				{
-					if (addresponse != null) addresponse.Close();
-					if (input != null) input.Close();
-				}
-			}
-			return null;
-		}
-
-		private void AddTodoItemNow(string Category, string Subcat, string Items, string Description, bool Completed, DateTime Due, DateTime Created, int RemindedCount, bool StopSnooze, int AutosnoozeInterval)
-		{
-			appendLogTextbox("Adding new item, please wait...");
-			bool successfulAdd = PerformDesktopAppDoTask(
-					Username,
-					"addtolist",
-					new List<string>()
-                {
-                    Category,
-                    Subcat,
-                    Items,
-                    Description,
-                    Due.ToString(MySQLdateformat),
-                    StopSnooze ? "1" : "0",
-                    AutosnoozeInterval.ToString()
-                },
-					true,
-					"1");
-			if (successfulAdd)
-			{
-				appendLogTextbox("Successfully added todo item.");
-				textBox1.Text = "";
-			}
-		}
-
-		private void CreateNewOutlookMessage(string To, string Subject, string Body)
-		{
-			if (Process.GetProcessesByName("Outlook").Length == 0)
-			{
-				appendLogTextbox("Starting Outlook, please wait...");
-				Process p = System.Diagnostics.Process.Start("Outlook");
-			}
-
-			// Creates a new Outlook Application Instance
-			Outlook.Application objOutlook = new Outlook.Application();
-			// Creating a new Outlook Message from the Outlook Application Instance
-			Outlook.MailItem mic = (Outlook.MailItem)(objOutlook.CreateItem(Outlook.OlItemType.olMailItem));
-			mic.To = To;
-			mic.Subject = Subject;
-			mic.Body = Body;
-			this.TopMost = false;
-			mic.Display(true);
-			this.TopMost = true;
-		}
-
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
 			string tmpkey = "987654321abcde";
@@ -1942,65 +862,532 @@ namespace QuickAccess
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Right) this.Hide();
 		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
+
+		private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (e.Button == System.Windows.Forms.MouseButtons.Left)
+				ShowAndActivateThisForm();
+		}
 	}
 
-	public class PhpEncryption
+	public class PhpInterop
 	{
-		public static string SimpleTripleDesEncrypt(string Data, string keystring)
+		public const string MySQLdateformat = "yyyy-MM-dd HH:mm:ss";
+
+		public static string GetPrivateKey(TextBox messagesTextbox, string ServerAddress, string Username, string Password)
 		{
-			byte[] key = Encoding.ASCII.GetBytes(keystring);
-			byte[] iv = Encoding.ASCII.GetBytes("password");
-			byte[] data = Encoding.ASCII.GetBytes(Data);
-			byte[] enc = new byte[0];
-			TripleDES tdes = TripleDES.Create();
-			tdes.IV = iv;
-			tdes.Key = key;
-			tdes.Mode = CipherMode.CBC;
-			tdes.Padding = PaddingMode.Zeros;
-			ICryptoTransform ict = tdes.CreateEncryptor();
-			enc = ict.TransformFinalBlock(data, 0, data.Length);
-			return ByteArrayToString(enc);
+			try
+			{
+				//toolStripStatusLabelCurrentStatus.Text = "Obtaining pvt key...";
+				string tmpkey = null;
+
+				ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+				{
+					tmpkey = PhpInterop.PostPHP(messagesTextbox, ServerAddress + "/generateprivatekey.php", "username=" + Username + "&password=" + Password);
+				});
+
+				string tmpSuccessKeyString = "Success: Key=";
+				if (tmpkey != null && tmpkey.Length > 0 && tmpkey.ToUpper().StartsWith(tmpSuccessKeyString.ToUpper()))
+				{
+					tmpkey = tmpkey.Substring(tmpSuccessKeyString.Length).Replace("\n", "").Replace("\r", "");
+					//toolStripStatusLabelCurrentStatus.Text = tmpkey;
+				}
+				return tmpkey;
+			}
+			catch (Exception exc)
+			{
+				Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Obtain private key exception: " + exc.Message);
+				return null;
+			}
 		}
 
-		public static string SimpleTripleDesDecrypt(string Data, string keystring)
+		/// <summary>
+		/// Post data to php, maximum length of data is 8Mb
+		/// </summary>
+		/// <param name="url">The url of the php, do not include the ?</param>
+		/// <param name="data">The data, i.e. "name=koos&surname=koekemoer". Note to not include the ?</param>
+		/// <returns>Returns the data received from the php (usually the "echo" statements in the php.</returns>
+		public static string PostPHP(TextBox messagesTextbox, string url, string data)
 		{
-			byte[] key = Encoding.ASCII.GetBytes(keystring);
-			byte[] iv = Encoding.ASCII.GetBytes("password");
-			byte[] data = StringToByteArray(Data);
-			byte[] enc = new byte[0];
-			TripleDES tdes = TripleDES.Create();
-			tdes.IV = iv;
-			tdes.Key = key;
-			tdes.Mode = CipherMode.CBC;
-			tdes.Padding = PaddingMode.Zeros;
-			ICryptoTransform ict = tdes.CreateDecryptor();
-			enc = ict.TransformFinalBlock(data, 0, data.Length);
-			return Encoding.ASCII.GetString(enc);
+			string vystup = "";
+			ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+				{
+					try
+					{
+						data = data.Replace("+", "[|]");
+						//Our postvars
+						byte[] buffer = Encoding.ASCII.GetBytes(data);
+						//Initialisation, we use localhost, change if appliable
+						HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(url);
+						//Our method is post, otherwise the buffer (postvars) would be useless
+						WebReq.Method = "POST";
+						//We use form contentType, for the postvars.
+						WebReq.ContentType = "application/x-www-form-urlencoded";
+						//The length of the buffer (postvars) is used as contentlength.
+						WebReq.ContentLength = buffer.Length;
+						//We open a stream for writing the postvars
+						Stream PostData = WebReq.GetRequestStream();
+						//Now we write, and afterwards, we close. Closing is always important!
+						PostData.Write(buffer, 0, buffer.Length);
+						PostData.Close();
+						//Get the response handle, we have no true response yet!
+						HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
+						//Let's show some information about the response
+						//System.Windows.Forms.MessageBox.Show(WebResp.StatusCode.ToString());
+						//System.Windows.Forms.MessageBox.Show(WebResp.Server);
+
+						//Now, we read the response (the string), and output it.
+						Stream Answer = WebResp.GetResponseStream();
+						StreamReader _Answer = new StreamReader(Answer);
+						vystup = _Answer.ReadToEnd();
+
+						//Congratulations, you just requested your first POST page, you
+						//can now start logging into most login forms, with your application
+						//Or other examples.
+						string tmpresult = vystup.Trim() + "\n";
+					}
+					catch (Exception exc)
+					{
+						if (!exc.Message.ToUpper().StartsWith("The remote name could not be resolved:".ToUpper()))
+							//LoggingClass.AddToLogList(UserMessages.MessageTypes.PostPHP, exc.Message);
+							Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Post php: " + exc.Message);
+						else //LoggingClass.AddToLogList(UserMessages.MessageTypes.PostPHPremotename, exc.Message);
+							Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Post php remote name: " + exc.Message);
+						//SysWinForms.MessageBox.Show("Error (092892): " + Environment.NewLine + exc.Message, "Exception error", SysWinForms.MessageBoxButtons.OK, SysWinForms.MessageBoxIcon.Error);
+					}
+				});
+			return vystup;
 		}
 
-		public static string ByteArrayToString(byte[] ba)
+		public static void AddTodoItemFirepuma(TextBox messagesTextbox, string ServerAddress, string doWorkAddress, string Username, string Password, string Category, string Subcat, string Items, string Description, bool Completed, DateTime Due, DateTime Created, int RemindedCount, bool StopSnooze, int AutosnoozeInterval)
 		{
-			string hex = BitConverter.ToString(ba);
-			return hex.Replace("-", "");
+			Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Adding new item, please wait...");
+			bool successfulAdd = PerformDesktopAppDoTask(
+				messagesTextbox,
+					ServerAddress,
+					doWorkAddress,
+					Username,
+					Password,
+					"addtolist",
+					new List<string>()
+                {
+                    Category,
+                    Subcat,
+                    Items,
+                    Description,
+                    Due.ToString(MySQLdateformat),
+                    StopSnooze ? "1" : "0",
+                    AutosnoozeInterval.ToString()
+                },
+					true,
+					"1");
+			if (successfulAdd)
+			{
+				Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Successfully added todo item.");
+				//textBox1.Text = "";
+			}
 		}
 
-		public static string StringToHex(string stringIn)
+		public static void AddBtwTextFirepuma(Form1 form1, TextBox messagesTextbox, string btwtext)
 		{
-			return PhpEncryption.ByteArrayToString(Encoding.Default.GetBytes(stringIn));
+			Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Sending btw text, please wait...");
+			string responsestr  = PhpInterop.PostPHP(messagesTextbox, "http://firepuma.com/btw/directadd/f/" + PhpInterop.PhpEncryption.StringToHex(btwtext), "");
+
+			Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, responsestr);
+			if (responsestr.ToLower().StartsWith("success:"))
+				form1.textBox1.Text = "";
+			//textBox1.Text = "";
 		}
 
-		public static byte[] StringToByteArray(String hex)
+		private static bool PerformDesktopAppDoTask(TextBox messagesTextbox, string ServerAddress, string doWorkAddress, string UsernameIn, string Password, string TaskName, List<string> ArgumentList, bool CheckForSpecificResult = false, string SuccessSpecificResult = "", bool MustWriteResultToLogsTextbox = false)
 		{
-			int NumberChars = hex.Length;
-			byte[] bytes = new byte[NumberChars / 2];
-			for (int i = 0; i < NumberChars; i += 2)
-				bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-			return bytes;
+			string result = GetResultOfPerformingDesktopAppDoTask(messagesTextbox, ServerAddress, doWorkAddress, UsernameIn, Password, TaskName, ArgumentList, MustWriteResultToLogsTextbox);
+			if (CheckForSpecificResult && result == SuccessSpecificResult)
+				return true;
+			return false;
 		}
 
-		public static string HexToString(string hexIn)
+		private static string GetResultOfPerformingDesktopAppDoTask(TextBox messagesTextbox, string ServerAddress,string doWorkAddress, string Username, string Password, string TaskName, List<string> ArgumentList, bool MustWriteResultToLogsTextbox = false)
 		{
-			return Encoding.Default.GetString(StringToByteArray(hexIn));
+			string tmpkey = GetPrivateKey(messagesTextbox, ServerAddress, Username, Password);
+			Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Obtained private key");
+
+			if (tmpkey != null)
+			{
+				HttpWebRequest addrequest = null;
+				HttpWebResponse addresponse = null;
+				StreamReader input = null;
+
+				try
+				{
+					if (Username != null && Username.Length > 0
+																 && tmpkey != null && tmpkey.Length > 0)
+					{
+						string encryptedstring;
+						string decryptedstring = "";
+						bool mustreturn = false;
+						ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+						{
+							string ArgumentListTabSeperated = "";
+							foreach (string s in ArgumentList)
+								ArgumentListTabSeperated += (ArgumentListTabSeperated.Length > 0 ? "\t" : "") + s;
+
+							string tmpRequest = doWorkAddress + "/dotask/" +
+									PhpInterop.PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" +
+									PhpInterop.PhpEncryption.SimpleTripleDesEncrypt(TaskName, tmpkey) + "/" +
+									PhpInterop.PhpEncryption.SimpleTripleDesEncrypt(ArgumentListTabSeperated, tmpkey);
+							addrequest = (HttpWebRequest)WebRequest.Create(tmpRequest);// + "/");
+							//appendLogTextbox(addrequest.RequestUri.ToString());
+							try
+							{
+								addresponse = (HttpWebResponse)addrequest.GetResponse();
+								input = new StreamReader(addresponse.GetResponseStream());
+								encryptedstring = input.ReadToEnd();
+								//appendLogTextbox("Encrypted response: " + encryptedstring);
+
+								decryptedstring = PhpInterop.PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
+								//appendLogTextbox("Decrypted response: " + decryptedstring);
+								decryptedstring = decryptedstring.Replace("\0", "").Trim();
+								//MessageBox.Show(this, decryptedstring);
+								if (MustWriteResultToLogsTextbox) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Result for " + TaskName + ": " + decryptedstring);
+								mustreturn = true;
+							}
+							catch (Exception exc) { MessageBox.Show("Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+						});
+						if (mustreturn) return decryptedstring;
+					}
+				}
+				catch (Exception exc)
+				{
+					Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Obtain php: " + exc.Message);
+				}
+				finally
+				{
+					if (addresponse != null) addresponse.Close();
+					if (input != null) input.Close();
+				}
+			}
+			return null;
+		}
+
+		public class PhpEncryption
+		{
+			public static string SimpleTripleDesEncrypt(string Data, string keystring)
+			{
+				byte[] key = Encoding.ASCII.GetBytes(keystring);
+				byte[] iv = Encoding.ASCII.GetBytes("password");
+				byte[] data = Encoding.ASCII.GetBytes(Data);
+				byte[] enc = new byte[0];
+				TripleDES tdes = TripleDES.Create();
+				tdes.IV = iv;
+				tdes.Key = key;
+				tdes.Mode = CipherMode.CBC;
+				tdes.Padding = PaddingMode.Zeros;
+				ICryptoTransform ict = tdes.CreateEncryptor();
+				enc = ict.TransformFinalBlock(data, 0, data.Length);
+				return ByteArrayToString(enc);
+			}
+
+			public static string SimpleTripleDesDecrypt(string Data, string keystring)
+			{
+				byte[] key = Encoding.ASCII.GetBytes(keystring);
+				byte[] iv = Encoding.ASCII.GetBytes("password");
+				byte[] data = StringToByteArray(Data);
+				byte[] enc = new byte[0];
+				TripleDES tdes = TripleDES.Create();
+				tdes.IV = iv;
+				tdes.Key = key;
+				tdes.Mode = CipherMode.CBC;
+				tdes.Padding = PaddingMode.Zeros;
+				ICryptoTransform ict = tdes.CreateDecryptor();
+				enc = ict.TransformFinalBlock(data, 0, data.Length);
+				return Encoding.ASCII.GetString(enc);
+			}
+
+			public static string ByteArrayToString(byte[] ba)
+			{
+				string hex = BitConverter.ToString(ba);
+				return hex.Replace("-", "");
+			}
+
+			public static string StringToHex(string stringIn)
+			{
+				return PhpEncryption.ByteArrayToString(Encoding.Default.GetBytes(stringIn));
+			}
+
+			public static byte[] StringToByteArray(String hex)
+			{
+				int NumberChars = hex.Length;
+				byte[] bytes = new byte[NumberChars / 2];
+				for (int i = 0; i < NumberChars; i += 2)
+					bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+				return bytes;
+			}
+
+			public static string HexToString(string hexIn)
+			{
+				return Encoding.Default.GetString(StringToByteArray(hexIn));
+			}
+		}
+	}
+
+	public class Logging
+	{
+		public static void appendLogTextbox_OfPassedTextbox(TextBox messagesTextbox, string str)
+		{
+			//label1.Text = str;
+			messagesTextbox.Text = str + (messagesTextbox.Text.Length > 0 ? Environment.NewLine : "") + messagesTextbox.Text;
+			Application.DoEvents();
+		}
+	}
+
+	public class ThreadingInterop
+	{
+		public static void PerformVoidFunctionSeperateThread(MethodInvoker method)
+		{
+			System.Threading.Thread th = new System.Threading.Thread(() =>
+			{
+				method.Invoke();
+			});
+			th.Start();
+			//th.Join();
+			while (th.IsAlive) { Application.DoEvents(); }
+		}
+	}
+
+	public class MicrosoftOfficeInterop
+	{
+		public static void CreateNewOutlookMessage(Form1 form1, string To, string Subject, string Body)
+		{
+			ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+				{
+					if (Process.GetProcessesByName("Outlook").Length == 0)
+					{
+						Logging.appendLogTextbox_OfPassedTextbox(form1.textBox_Messages, "Starting Outlook, please wait...");
+						Process p = System.Diagnostics.Process.Start("Outlook");
+					}
+
+					// Creates a new Outlook Application Instance
+					Outlook.Application objOutlook = new Outlook.Application();
+					// Creating a new Outlook Message from the Outlook Application Instance
+					Outlook.MailItem mic = (Outlook.MailItem)(objOutlook.CreateItem(Outlook.OlItemType.olMailItem));
+					mic.To = To;
+					mic.Subject = Subject;
+					mic.Body = Body;
+					form1.TopMost = false;
+					mic.Display(true);
+					form1.TopMost = true;
+					form1.ShowAndActivateThisForm();
+				});
+		}
+	}
+
+	public class SvnInterop
+	{
+		public enum SvnCommand { Commit, Update, Status };
+
+		public static void PerformSvn(TextBox messagesTextbox, string svnargs, SvnCommand svnCommand)
+		{
+			string projname = svnargs.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
+			string logmessage = null;
+			if (svnCommand == SvnCommand.Commit)
+			{
+				logmessage = svnargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
+				logmessage = logmessage.Replace("\\", "\\\\");
+				logmessage = logmessage.Replace("\"", "\\\"");
+			}
+			try
+			{
+				string projDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
+				/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+				else appendLogTextbox("Error: command not regognized, " + svncommand);*/
+				//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+				string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
+				if (!File.Exists(svnpath)) svnpath = "svn";
+				string placedherebecauseSvnPathMustBeRemoved;
+				if (Directory.Exists(projDir))
+				{
+					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+					{
+						//TODO: Should still remove the path of svn from the next line
+						//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+						string processArguments =
+											svnCommand ==
+							SvnCommand.Commit ? "commit -m\"" + logmessage + "\" \"" + projDir + "\""
+							: svnCommand == SvnCommand.Update ? "update \"" + projDir + "\""
+							: svnCommand == SvnCommand.Status ? "status --show-updates \"" + projDir + "\""
+							: "";
+
+						ProcessStartInfo start = new ProcessStartInfo(svnpath, processArguments);//"commit -m\"" + logmessage + "\" \"" + projDir + "\"");
+						start.UseShellExecute = false;
+						start.CreateNoWindow = true;
+						start.RedirectStandardOutput = true;
+						start.RedirectStandardError = true;
+						System.Diagnostics.Process svnproc = new Process();
+						svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+						{
+							if (outLine.Data != null && outLine.Data.Trim().Length > 0) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Svn output: " + outLine.Data);
+							//else appendLogTextbox("Svn output empty");
+						};
+						svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+						{
+							if (outLine.Data != null && outLine.Data.Trim().Length > 0) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Svn error: " + outLine.Data);
+							//else appendLogTextbox("Svn error empty");
+						};
+						svnproc.StartInfo = start;
+
+						string performingPleasewaitMsg = 
+							svnCommand == SvnCommand.Commit ? "Performing svn commit, please wait..."
+							: svnCommand == SvnCommand.Update ? "Performing svn update, please wait..."
+							: svnCommand == SvnCommand.Status ? "Check status of svn (local and server), please wait..."
+							: "";
+						if (svnproc.Start())
+							Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, performingPleasewaitMsg);
+						else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: Could not start SVN process.");
+
+						svnproc.BeginOutputReadLine();
+						svnproc.BeginErrorReadLine();
+
+						svnproc.WaitForExit();
+					});
+				}
+				else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: folder not found: " + projDir);
+			}
+			catch (Exception exc)
+			{
+				Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Exception on running svn: " + exc.Message);
+			}
+		}
+	}
+
+	public class StartupbatInterop
+	{
+		public static void PerformStartupbatCommand(TextBox messagesTextbox, string filePath, string comm)
+		{
+			if (!File.Exists(filePath))
+				Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "File not found: " + filePath);
+			else if (comm.StartsWith("open"))
+			{
+				System.Diagnostics.Process.Start("notepad", filePath);
+			}
+			else if (comm.StartsWith("getall"))
+			{
+				StreamReader sr = new StreamReader(filePath);
+				string line = sr.ReadLine();
+				int counter = 1;
+				while (!sr.EndOfStream)
+				{
+					Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, (counter++) + ": " + line);
+					line = sr.ReadLine();
+				}
+				sr.Close();
+			}
+			else if (comm.StartsWith("getline"))
+			{
+				if (comm.StartsWith("getline ") && comm.Length >= 9)
+				{
+					string searchstr = comm.Substring(8);//comm.Split('\'')[1];
+					StreamReader sr = new StreamReader(filePath);
+					string line = sr.ReadLine();
+					int counter = 1;
+					while (!sr.EndOfStream)
+					{
+						if (line.ToLower().Contains(searchstr)) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, counter + ": " + line);
+						counter++;
+						line = sr.ReadLine();
+					}
+					sr.Close();
+				}
+				else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Getline search string not defined (must be i.e. getline skype): " + comm);
+			}
+			else if (comm.StartsWith("comment"))
+			{
+				string linenumstr = comm.Substring(7).Trim();
+				int linenum;
+				if (!int.TryParse(linenumstr, out linenum)) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Cannot obtain line number from: " + comm.Substring(7));
+				else
+				{
+					Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Commenting line number " + linenum.ToString());
+					List<string> tmpLines = new List<string>();
+					StreamReader sr = new StreamReader(filePath);
+					string line = sr.ReadLine();
+					int counter = 1;
+					while (!sr.EndOfStream)
+					{
+						if (counter == linenum && !line.Trim().StartsWith("::")) line = "::" + line;
+						tmpLines.Add(line);
+						counter++;
+						line = sr.ReadLine();
+					}
+					sr.Close();
+					StreamWriter sw = new StreamWriter(filePath);
+					try
+					{
+						foreach (string s in tmpLines) sw.WriteLine(s);
+					}
+					finally { sw.Close(); }
+					Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Successfully commented line number " + linenum.ToString());
+				}
+			}
+			else if (comm.StartsWith("uncomment"))
+			{
+				string linenumstr = comm.Substring(9).Trim();
+				int linenum;
+				if (!int.TryParse(linenumstr, out linenum)) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Cannot obtain line number from: " + comm.Substring(9));
+				else
+				{
+					Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unommenting line number " + linenum.ToString());
+					List<string> tmpLines = new List<string>();
+					StreamReader sr = new StreamReader(filePath);
+					string line = sr.ReadLine();
+					int counter = 1;
+					while (!sr.EndOfStream)
+					{
+						if (counter == linenum && line.Trim().StartsWith("::")) line = line.Substring(2);
+						tmpLines.Add(line);
+						counter++;
+						line = sr.ReadLine();
+					}
+					sr.Close();
+					StreamWriter sw = new StreamWriter(filePath);
+					try
+					{
+						foreach (string s in tmpLines) sw.WriteLine(s);
+					}
+					finally { sw.Close(); }
+					Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Successfully uncommented line number " + linenum.ToString());
+				}
+			}
+		}
+	}
+
+	public class WindowsInterop
+	{
+		public static void StartCommandPromptOrVScommandPrompt(TextBox messagesTextbox, string cmdpath, bool VisualStudioMode)
+		{
+			const string vsbatfile = @"c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat";
+
+			string processArgs = 
+								VisualStudioMode ? @"/k """ + vsbatfile + @""" x86"
+				: "";
+
+			if (Directory.Exists(cmdpath))
+			{
+				if (!VisualStudioMode || (VisualStudioMode && File.Exists(vsbatfile)))
+				{
+					Process proc = new Process();
+					proc.StartInfo = new ProcessStartInfo("cmd", processArgs);
+					proc.StartInfo.WorkingDirectory = cmdpath;
+					proc.Start();
+				}
+				else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, @"Unable to start Visual Studio Command Prompt, cannot find file: """ + vsbatfile + @"""" + cmdpath);
+			}
+			else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Folder does not exist, cannot start cmd: " + cmdpath);
 		}
 	}
 }
