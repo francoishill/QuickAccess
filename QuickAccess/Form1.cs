@@ -1069,7 +1069,7 @@ namespace QuickAccess
 
 		private void notifyIcon1_Click(object sender, EventArgs e)
 		{
-			this.Show();
+			ToggleWindowActivation();//this.Show();
 		}
 
 		private void ToggleWindowActivation()
