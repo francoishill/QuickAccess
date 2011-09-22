@@ -558,84 +558,15 @@ namespace QuickAccess
 						case PerformCommandTypeEnum.Svncommit: case PerformCommandTypeEnum.Svnupdate: case PerformCommandTypeEnum.Svnstatus:
 							string svnargs = argStr;// textBox1.Text.ToLower().Substring(10);
 							//if (svncommitargs.Contains(' '))
-							{
-								//string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
-								//string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
-								//if (svncommitargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
-								//{
-								string projname = svnargs.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
-								string logmessage = null;
-								if (PerformCommandType == PerformCommandTypeEnum.Svncommit)
-								{
-									logmessage = svnargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
-									logmessage = logmessage.Replace("\\", "\\\\");
-									logmessage = logmessage.Replace("\"", "\\\"");
-								}
-								try
-								{
-									string projDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
-									/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
-									else appendLogTextbox("Error: command not regognized, " + svncommand);*/
-									//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-									string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
-									if (!File.Exists(svnpath)) svnpath = "svn";
-									string placedherebecauseSvnPathMustBeRemoved;
-									if (Directory.Exists(projDir))
-									{
-										PerformVoidFunctionSeperateThread(() =>
-										{
-											//TODO: Should still remove the path of svn from the next line
-											//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-											string processArguments =
-												PerformCommandType ==
-												PerformCommandTypeEnum.Svncommit ? "commit -m\"" + logmessage + "\" \"" + projDir + "\""
-												: PerformCommandType == PerformCommandTypeEnum.Svnupdate ? "update \"" + projDir + "\""
-												: PerformCommandType == PerformCommandTypeEnum.Svnstatus ? "status --show-updates \"" + projDir + "\""
-												: "";
-
-											ProcessStartInfo start = new ProcessStartInfo(svnpath, processArguments);//"commit -m\"" + logmessage + "\" \"" + projDir + "\"");
-											start.UseShellExecute = false;
-											start.CreateNoWindow = true;
-											start.RedirectStandardOutput = true;
-											start.RedirectStandardError = true;
-											System.Diagnostics.Process svnproc = new Process();
-											svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-											{
-												if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox_OfPassedTextbox(messagesTextbox, "Svn output: " + outLine.Data);
-												//else appendLogTextbox("Svn output empty");
-											};
-											svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-											{
-												if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox_OfPassedTextbox(messagesTextbox, "Svn error: " + outLine.Data);
-												//else appendLogTextbox("Svn error empty");
-											};
-											svnproc.StartInfo = start;
-
-											string performingPleasewaitMsg = 
-												PerformCommandType ==
-												PerformCommandTypeEnum.Svncommit ? "Performing svn commit, please wait..."
-												: PerformCommandType == PerformCommandTypeEnum.Svnupdate ? "Performing svn update, please wait..."
-												: PerformCommandType == PerformCommandTypeEnum.Svnstatus ? "Check status of svn (local and server), please wait..."
-												: "";
-											if (svnproc.Start())
-												appendLogTextbox_OfPassedTextbox(messagesTextbox, performingPleasewaitMsg);
-											else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: Could not start SVN process.");
-
-											svnproc.BeginOutputReadLine();
-											svnproc.BeginErrorReadLine();
-
-											svnproc.WaitForExit();
-										});
-									}
-									else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: folder not found: " + projDir);
-								}
-								catch (Exception exc)
-								{
-									appendLogTextbox_OfPassedTextbox(messagesTextbox, "Exception on running svn: " + exc.Message);
-								}
-								//}
-								//else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
-							}
+							//{
+							//string svncommand = svncommandwithargs.Substring(0, svncommandwithargs.IndexOf(' ')).ToLower();
+							//string projnameAndlogmessage = svncommandwithargs.Substring(svncommandwithargs.IndexOf(' ') + 1);
+							//if (svncommitargs.Contains(';'))//projnameAndlogmessage.Contains(';'))
+							//{
+							PerformSvn(messagesTextbox, svnargs);
+							//}
+							//else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
+							//}
 							break;
 
 						case PerformCommandTypeEnum.Undefined:
@@ -644,6 +575,80 @@ namespace QuickAccess
 						default:
 							MessageBox.Show("PerformCommandType is not defined");
 							break;
+					}
+				}
+
+				private void PerformSvn(TextBox messagesTextbox, string svnargs)
+				{
+					string projname = svnargs.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
+					string logmessage = null;
+					if (PerformCommandType == PerformCommandTypeEnum.Svncommit)
+					{
+						logmessage = svnargs.Split(';')[1];//projnameAndlogmessage.Split(';')[1];
+						logmessage = logmessage.Replace("\\", "\\\\");
+						logmessage = logmessage.Replace("\"", "\\\"");
+					}
+					try
+					{
+						string projDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
+						/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+						else appendLogTextbox("Error: command not regognized, " + svncommand);*/
+						//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+						string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
+						if (!File.Exists(svnpath)) svnpath = "svn";
+						string placedherebecauseSvnPathMustBeRemoved;
+						if (Directory.Exists(projDir))
+						{
+							PerformVoidFunctionSeperateThread(() =>
+							{
+								//TODO: Should still remove the path of svn from the next line
+								//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+								string processArguments =
+											PerformCommandType ==
+									PerformCommandTypeEnum.Svncommit ? "commit -m\"" + logmessage + "\" \"" + projDir + "\""
+									: PerformCommandType == PerformCommandTypeEnum.Svnupdate ? "update \"" + projDir + "\""
+									: PerformCommandType == PerformCommandTypeEnum.Svnstatus ? "status --show-updates \"" + projDir + "\""
+									: "";
+
+								ProcessStartInfo start = new ProcessStartInfo(svnpath, processArguments);//"commit -m\"" + logmessage + "\" \"" + projDir + "\"");
+								start.UseShellExecute = false;
+								start.CreateNoWindow = true;
+								start.RedirectStandardOutput = true;
+								start.RedirectStandardError = true;
+								System.Diagnostics.Process svnproc = new Process();
+								svnproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+								{
+									if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox_OfPassedTextbox(messagesTextbox, "Svn output: " + outLine.Data);
+									//else appendLogTextbox("Svn output empty");
+								};
+								svnproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+								{
+									if (outLine.Data != null && outLine.Data.Trim().Length > 0) appendLogTextbox_OfPassedTextbox(messagesTextbox, "Svn error: " + outLine.Data);
+									//else appendLogTextbox("Svn error empty");
+								};
+								svnproc.StartInfo = start;
+
+								string performingPleasewaitMsg = 
+											PerformCommandType ==
+									PerformCommandTypeEnum.Svncommit ? "Performing svn commit, please wait..."
+									: PerformCommandType == PerformCommandTypeEnum.Svnupdate ? "Performing svn update, please wait..."
+									: PerformCommandType == PerformCommandTypeEnum.Svnstatus ? "Check status of svn (local and server), please wait..."
+									: "";
+								if (svnproc.Start())
+									appendLogTextbox_OfPassedTextbox(messagesTextbox, performingPleasewaitMsg);
+								else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: Could not start SVN process.");
+
+								svnproc.BeginOutputReadLine();
+								svnproc.BeginErrorReadLine();
+
+								svnproc.WaitForExit();
+							});
+						}
+						else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: folder not found: " + projDir);
+					}
+					catch (Exception exc)
+					{
+						appendLogTextbox_OfPassedTextbox(messagesTextbox, "Exception on running svn: " + exc.Message);
 					}
 				}
 
@@ -1115,9 +1120,9 @@ namespace QuickAccess
 				{
 					command.PerformCommand(this, textBox1.Text);
 				}
-				return;
+				//return;
 
-				if (textBox1.Text.ToLower().StartsWith("todo ") && textBox1.Text.Length >= 12 && textBox1.Text.Split(';').Length == 4)
+				/*if (textBox1.Text.ToLower().StartsWith("todo ") && textBox1.Text.Length >= 12 && textBox1.Text.Split(';').Length == 4)
 				{
 					string tmpstr = textBox1.Text.Substring(5);
 					AddTodoItemNow(
@@ -1358,8 +1363,8 @@ namespace QuickAccess
 							try
 							{
 								string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
-								/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
-								else appendLogTextbox("Error: command not regognized, " + svncommand);*/
+								//if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+								//else appendLogTextbox("Error: command not regognized, " + svncommand);
 								//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
 								string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
 								if (!File.Exists(svnpath)) svnpath = "svn";
@@ -1369,7 +1374,7 @@ namespace QuickAccess
 									PerformVoidFunctionSeperateThread(() =>
 									{
 										//TODO: Should still remove the path of svn from the next line
-										//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+										//System.Diagnostics.Process.Start(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
 										ProcessStartInfo start = new ProcessStartInfo(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
 										start.UseShellExecute = false;
 										start.CreateNoWindow = true;
@@ -1425,8 +1430,8 @@ namespace QuickAccess
 							try
 							{
 								string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
-								/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
-								else appendLogTextbox("Error: command not regognized, " + svncommand);*/
+								//if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+								//else appendLogTextbox("Error: command not regognized, " + svncommand);
 								//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
 								string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
 								if (!File.Exists(svnpath)) svnpath = "svn";
@@ -1436,7 +1441,7 @@ namespace QuickAccess
 									PerformVoidFunctionSeperateThread(() =>
 									{
 										//TODO: Should still remove the path of svn from the next line
-										//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+										//System.Diagnostics.Process.Start(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
 										ProcessStartInfo start = new ProcessStartInfo(svnpath, "update \"" + commitDir + "\"");
 										start.UseShellExecute = false;
 										start.CreateNoWindow = true;
@@ -1492,8 +1497,8 @@ namespace QuickAccess
 						try
 						{
 							string commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
-							/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
-							else appendLogTextbox("Error: command not regognized, " + svncommand);*/
+							//if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
+							//else appendLogTextbox("Error: command not regognized, " + svncommand);
 							//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
 							string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
 							if (!File.Exists(svnpath)) svnpath = "svn";
@@ -1503,7 +1508,7 @@ namespace QuickAccess
 								PerformVoidFunctionSeperateThread(() =>
 								{
 									//TODO: Should still remove the path of svn from the next line
-									//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
+									//System.Diagnostics.Process.Start(svnpath, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
 									ProcessStartInfo start = new ProcessStartInfo(svnpath, "status --show-updates \"" + commitDir + "\"");
 									start.UseShellExecute = false;
 									start.CreateNoWindow = true;
@@ -1542,27 +1547,27 @@ namespace QuickAccess
 					}
 					//else appendLogTextbox("Error: No space after svncommit. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
 				}
-				/*else if (textBox1.Text.ToUpper().StartsWith("UNHIDE ") && textBox1.Text.Length >= 8)
-				{
-					string processName = textBox1.Text.Substring(7);
-					Process[] processes = Process.GetProcessesByName(processName);
-					if (processes.Length > 1) appendLogTextbox("More than one process found, cannot unhide multiple");
-					else if (processes.Length == 0) appendLogTextbox("Cannot unhide, unable to find process with name " + processName);
-					else
-					{
+				//else if (textBox1.Text.ToUpper().StartsWith("UNHIDE ") && textBox1.Text.Length >= 8)
+				//{
+				//  string processName = textBox1.Text.Substring(7);
+				//  Process[] processes = Process.GetProcessesByName(processName);
+				//  if (processes.Length > 1) appendLogTextbox("More than one process found, cannot unhide multiple");
+				//  else if (processes.Length == 0) appendLogTextbox("Cannot unhide, unable to find process with name " + processName);
+				//  else
+				//  {
 						
-						//IntPtr handle = FindWindowByCaption(IntPtr.Zero, "Skype");
-						//appendLogTextbox("Skype window handle = " + handle);
-						//if (!ShowWindow(handle, SW_SHOW))
-						//  appendLogTextbox("Unable to unhide " + processName + ", ShowWindow command failed");
-						//else
-						//  appendLogTextbox("Process unhide successful: " + processName);
-					}
-				}*/
+				//    //IntPtr handle = FindWindowByCaption(IntPtr.Zero, "Skype");
+				//    //appendLogTextbox("Skype window handle = " + handle);
+				//    //if (!ShowWindow(handle, SW_SHOW))
+				//    //  appendLogTextbox("Unable to unhide " + processName + ", ShowWindow command failed");
+				//    //else
+				//    //  appendLogTextbox("Process unhide successful: " + processName);
+				//  }
+				//}
 
 				textBox1.Select(textBox1.Text.Length, 0);
 				//e.SuppressKeyPress = true;
-				//e.Handled = true;
+				//e.Handled = true;*/
 			}
 		}
 
