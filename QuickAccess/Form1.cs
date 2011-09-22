@@ -227,7 +227,12 @@ namespace QuickAccess
 					},
 					CommandDetails.PerformCommandTypeEnum.Call);
 
-				AddToCommandList("cmd", null, "cmd firepuma/folderpath",
+				AddToCommandList("cmd",
+					new List<string>()
+					{
+						"firepuma"
+					},
+					"cmd firepuma/folderpath",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
 						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text,
@@ -237,6 +242,22 @@ namespace QuickAccess
 							})
 					},
 					CommandDetails.PerformCommandTypeEnum.Cmd);
+
+				AddToCommandList("vscmd",
+					new List<string>()
+					{
+						"albionx86"
+					},
+					"vscmd albionx86/folderpath",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text,
+							new Dictionary<string,string>()
+							{
+								{ "albionx86", @"c:\devx86\Albion" }
+							})
+					},
+					CommandDetails.PerformCommandTypeEnum.VsCmd);
 
 				AddToCommandList("btw", null, "btw text",
 					new List<CommandDetails.CommandArgumentClass>()
@@ -328,6 +349,7 @@ namespace QuickAccess
 					StartupBat,
 					Call,
 					Cmd,
+					VsCmd,
 					Btw,
 					Svncommit,
 					Svnupdate,
@@ -531,14 +553,33 @@ namespace QuickAccess
 							else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Call command not recognized: " + argStr);
 							break;
 
-						case PerformCommandTypeEnum.Cmd:
+						case PerformCommandTypeEnum.Cmd: case PerformCommandTypeEnum.VsCmd:
 							string cmdpath = argStr;
 							if (commandArguments[0].TokenWithReplaceStringPair != null && commandArguments[0].TokenWithReplaceStringPair.ContainsKey(cmdpath))
 								cmdpath = commandArguments[0].TokenWithReplaceStringPair[cmdpath];
+
+							const string vsbatfile = @"c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat";
+
+							string processArgs = 
+								//PerformCommandType == PerformCommandTypeEnum.Cmd ? ""
+								//:
+								PerformCommandType == PerformCommandTypeEnum.VsCmd ? @"/k """ + vsbatfile + @""" x86"
+								: "";
+							//if (PerformCommandType == PerformCommandTypeEnum.VsCmd)
+
 							if (Directory.Exists(cmdpath))
-								System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + cmdpath + "\"");
-							else
-								appendLogTextbox_OfPassedTextbox(messagesTextbox, "Folder does not exist, cannot start cmd: " + cmdpath);
+							{
+								if (PerformCommandType == PerformCommandTypeEnum.Cmd || (PerformCommandType == PerformCommandTypeEnum.VsCmd && File.Exists(vsbatfile)))
+								{
+									Process proc = new Process();
+									proc.StartInfo = new ProcessStartInfo("cmd", processArgs);
+									proc.StartInfo.WorkingDirectory = cmdpath;
+									proc.Start();
+								}
+								else appendLogTextbox_OfPassedTextbox(messagesTextbox, @"Unable to start Visual Studio Command Prompt, cannot find file: """ + vsbatfile + @"""" + cmdpath);
+								//System.Diagnostics.Process.Start("cmd", "/k pushd " + "\"" + cmdpath + "\"");
+							}
+							else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Folder does not exist, cannot start cmd: " + cmdpath);
 							break;
 
 						case PerformCommandTypeEnum.Btw:
