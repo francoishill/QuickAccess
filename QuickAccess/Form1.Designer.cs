@@ -47,6 +47,7 @@
 					this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
 					this.notifyIcon1.Text = "Press Ctrl + Q";
 					this.notifyIcon1.Visible = true;
+					this.notifyIcon1.BalloonTipClicked += new System.EventHandler(this.notifyIcon1_BalloonTipClicked);
 					this.notifyIcon1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseClick);
 					// 
 					// contextMenuStrip_TrayIcon
@@ -55,20 +56,20 @@
             this.exitToolStripMenuItem,
             this.commandsToolStripMenuItem});
 					this.contextMenuStrip_TrayIcon.Name = "contextMenuStrip_TrayIcon";
-					this.contextMenuStrip_TrayIcon.Size = new System.Drawing.Size(153, 70);
+					this.contextMenuStrip_TrayIcon.Size = new System.Drawing.Size(137, 48);
 					this.contextMenuStrip_TrayIcon.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_TrayIcon_Opening);
 					// 
 					// exitToolStripMenuItem
 					// 
 					this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-					this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+					this.exitToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
 					this.exitToolStripMenuItem.Text = "E&xit";
 					this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 					// 
 					// commandsToolStripMenuItem
 					// 
 					this.commandsToolStripMenuItem.Name = "commandsToolStripMenuItem";
-					this.commandsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+					this.commandsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
 					this.commandsToolStripMenuItem.Text = "&Commands";
 					// 
 					// textBox1

@@ -27,7 +27,7 @@
     <ProductName>QuickAccess</ProductName>
     <PublisherName>Francois Hill</PublisherName>
     <SuiteName>Own applications</SuiteName>
-    <ApplicationRevision>23</ApplicationRevision>
+    <ApplicationRevision>25</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>

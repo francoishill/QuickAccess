@@ -654,6 +654,7 @@ namespace QuickAccess
 				if (m.WParam == new IntPtr(Hotkey2))
 				{
 					contextMenuStrip_TrayIcon.Show(new Point(0, 0));//Screen.PrimaryScreen.WorkingArea.Right, Screen.PrimaryScreen.WorkingArea.Bottom));//MousePosition);
+					this.Activate();
 					contextMenuStrip_TrayIcon.Focus();
 					if (commandsToolStripMenuItem.HasDropDownItems)
 						//The following line actually dows nothing
@@ -1003,6 +1004,11 @@ namespace QuickAccess
 					}
 					commandsToolStripMenuItem.DropDownItems.Add(commanditem);
 				}
+		}
+
+		private void notifyIcon1_BalloonTipClicked(object sender, EventArgs e)
+		{
+			ShowAndActivateThisForm();
 		}
 	}
 
