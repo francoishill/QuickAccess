@@ -49,7 +49,8 @@ namespace QuickAccess
 		const uint MOD_CONTROL = 2;
 		const uint MOD_SHIFT = 4;
 		const uint MOD_WIN = 8;
-		const int Id = 500;
+		const int Hotkey1 = 500;
+		const int Hotkey2 = 501;
 
 		[DllImport("user32.dll")]
 		private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
@@ -358,17 +359,17 @@ namespace QuickAccess
 				private const char ArgumentSeparator = ';';
 
 				public string commandName;
-				public AutoCompleteStringCollection commandAutocompleteArguments;
+				public AutoCompleteStringCollection commandPredefinedArguments;
 				public string UserLabel;
 				public List<CommandArgumentClass> commandArguments;
 				public PerformCommandTypeEnum PerformCommandType;
-				public CommandDetails(string commandNameIn, List<string> commandAutocompleteArgumentsIn, string UserLabelIn, List<CommandArgumentClass> commandArgumentsIn, PerformCommandTypeEnum PerformCommandTypeIn)
+				public CommandDetails(string commandNameIn, List<string> commandPredefinedArgumentsIn, string UserLabelIn, List<CommandArgumentClass> commandArgumentsIn, PerformCommandTypeEnum PerformCommandTypeIn)
 				{
 					commandName = commandNameIn;
-					commandAutocompleteArguments = new AutoCompleteStringCollection();
-					if (commandAutocompleteArgumentsIn != null)
-						foreach (string arg in commandAutocompleteArgumentsIn)
-							commandAutocompleteArguments.Add(commandNameIn + " " + arg);
+					commandPredefinedArguments = new AutoCompleteStringCollection();
+					if (commandPredefinedArgumentsIn != null)
+						foreach (string arg in commandPredefinedArgumentsIn)
+							commandPredefinedArguments.Add(commandNameIn + " " + arg);
 					UserLabel = UserLabelIn;
 					commandArguments = commandArgumentsIn;
 					PerformCommandType = PerformCommandTypeIn;
@@ -513,6 +514,16 @@ namespace QuickAccess
 					return commandArguments[0].Required;
 				}
 
+				public bool CommandHasArguments()
+				{
+					return commandArguments != null && commandArguments.Count > 0;
+				}
+
+				public bool CommandHasAutocompleteArguments()
+				{
+					return commandPredefinedArguments != null && commandPredefinedArguments.Count > 0;
+				}
+
 				public bool TextHasAllRequiredArguments(string TextboxTextIn)
 				{
 					if (!CommandHasRequiredArguments()) return true;
@@ -625,7 +636,8 @@ namespace QuickAccess
 		private void Form1_Shown(object sender, EventArgs e)
 		{
 			this.ShowInTaskbar = true;
-			if (!RegisterHotKey(this.Handle, Id, MOD_CONTROL, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Q");
+			if (!RegisterHotKey(this.Handle, Hotkey1, MOD_CONTROL, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Q");
+			if (!RegisterHotKey(this.Handle, Hotkey2, MOD_CONTROL + MOD_SHIFT, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Shift + Q");
 			label1.Text = AvailableActionList;
 			SetAutocompleteActionList();
 			//InitializeHooks(false, true);
@@ -637,7 +649,18 @@ namespace QuickAccess
 		{
 			if (m.Msg == WM_HOTKEY)
 			{
-				ToggleWindowActivation();
+				if (m.WParam == new IntPtr(Hotkey1))
+					ToggleWindowActivation();
+				if (m.WParam == new IntPtr(Hotkey2))
+				{
+					contextMenuStrip_TrayIcon.Show(new Point(0, 0));//Screen.PrimaryScreen.WorkingArea.Right, Screen.PrimaryScreen.WorkingArea.Bottom));//MousePosition);
+					contextMenuStrip_TrayIcon.Focus();
+					if (commandsToolStripMenuItem.HasDropDownItems)
+						//The following line actually dows nothing
+						commandsToolStripMenuItem.DropDownItems[0].Select();
+					else
+						commandsToolStripMenuItem.Select();
+				}
 			}
 			base.WndProc(ref m);
 		}
@@ -730,9 +753,9 @@ namespace QuickAccess
 
 		void SetAutoCompleteForAction(string action)
 		{
-			if (textBox1.AutoCompleteCustomSource != Commands.CommandList[action].commandAutocompleteArguments && textBox1.TextLength > 2)//SelectionLength == 0)
+			if (textBox1.AutoCompleteCustomSource != Commands.CommandList[action].commandPredefinedArguments && textBox1.TextLength > 2)//SelectionLength == 0)
 			{
-				textBox1.AutoCompleteCustomSource = Commands.CommandList[action].commandAutocompleteArguments;
+				textBox1.AutoCompleteCustomSource = Commands.CommandList[action].commandPredefinedArguments;
 			}
 		}
 
@@ -740,24 +763,29 @@ namespace QuickAccess
 		{
 			if (e.KeyCode == Keys.Enter)
 			{
-				string errorMsg;
-				Commands.CommandDetails command = Commands.GetCommandDetailsFromTextboxText(textBox1.Text);
-				string text = textBox1.Text;
-				if (command == null && text.Contains(' '))
-					appendLogTextbox("Command not regonized: " + text);
-				else if (command != null && text.Contains(' ') && text.Length < command.commandName.Length + 2
-					&& command.CommandHasRequiredArguments())
-					appendLogTextbox("No arguments for command: " + command.commandName);
-				else if (!command.TextHasAllRequiredArguments(text))
-					appendLogTextbox("Not all required arguments found");
-				else if (!command.TextValidateArguments(text, out errorMsg))
-					appendLogTextbox("Error: " + errorMsg);
-				else
-				{
-					appendLogTextbox("Performing command: " + textBox1.Text);
-					command.PerformCommand(this, textBox1.Text);
-					textBox1.Text = "";
-				}
+				PerformCommandNow(textBox1.Text);
+			}
+		}
+
+		private void PerformCommandNow(string text, bool ClearCommandTextboxOnSuccess = true, bool HideAfterSuccess = false)
+		{
+			string errorMsg;
+			Commands.CommandDetails command = Commands.GetCommandDetailsFromTextboxText(text);
+			if (command == null && text.Contains(' '))
+				appendLogTextbox("Command not regonized: " + text);
+			else if (command != null && text.Contains(' ') && text.Length < command.commandName.Length + 2
+				&& command.CommandHasRequiredArguments())
+				appendLogTextbox("No arguments for command: " + command.commandName);
+			else if (!command.TextHasAllRequiredArguments(text))
+				appendLogTextbox("Not all required arguments found");
+			else if (!command.TextValidateArguments(text, out errorMsg))
+				appendLogTextbox("Error: " + errorMsg);
+			else
+			{
+				appendLogTextbox("Performing command: " + text);
+				command.PerformCommand(this, text);
+				if (ClearCommandTextboxOnSuccess) textBox1.Text = "";
+				if (HideAfterSuccess) this.Hide();
 			}
 		}
 
@@ -849,7 +877,7 @@ namespace QuickAccess
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			UnregisterHotKey(this.Handle, Id);
+			UnregisterHotKey(this.Handle, Hotkey1);
 		}
 
 		private void Form1_VisibleChanged(object sender, EventArgs e)
@@ -872,6 +900,109 @@ namespace QuickAccess
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
 				ShowAndActivateThisForm();
+		}
+
+		private void contextMenuStrip_TrayIcon_Opening(object sender, CancelEventArgs e)
+		{
+			ToolStripDropDownDirection defaultDropDirection = ToolStripDropDownDirection.Right;//Left;
+
+			commandsToolStripMenuItem.DropDownItems.Clear();
+			commandsToolStripMenuItem.DropDownDirection = defaultDropDirection;
+			if (Commands.CommandList != null)
+				foreach (string key in Commands.CommandList.Keys)
+				{
+					Commands.CommandDetails commandDetails = Commands.CommandList[key];
+
+					ToolStripMenuItem commanditem = new ToolStripMenuItem(key) { Tag = commandDetails };
+					commanditem.DropDownDirection = defaultDropDirection;
+
+					if (commandDetails.CommandHasArguments() || commandDetails.CommandHasAutocompleteArguments())
+					{
+						ToolStripMenuItem customArguments = new ToolStripMenuItem("_Custom arguments");
+						customArguments.AutoSize = true;
+						customArguments.DropDownDirection = defaultDropDirection;
+						commanditem.DropDownItems.Add(customArguments);
+
+						if (commandDetails.CommandHasAutocompleteArguments())
+							foreach (string predefinedArguments in Commands.CommandList[key].commandPredefinedArguments)
+							{
+								ToolStripMenuItem subcommanditem = new ToolStripMenuItem(predefinedArguments.Substring(key.Length + 1)) { Tag = predefinedArguments };
+								subcommanditem.AutoSize = true;
+								subcommanditem.DropDownDirection = defaultDropDirection;
+								subcommanditem.Click += delegate
+								{
+									PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
+								};
+								/*subcommanditem.DropDownOpened += delegate
+								{
+									PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
+								};*/
+								commanditem.DropDownItems.Add(subcommanditem);
+							}
+
+						for (int i = 0; i < commanditem.DropDownItems.Count; i++)
+						{
+							ToolStripMenuItem tmpsubcommandItem = commanditem.DropDownItems[i] as ToolStripMenuItem;
+							if (commandDetails.CommandHasArguments())
+							{
+								foreach (Commands.CommandDetails.CommandArgumentClass arg in Commands.CommandList[key].commandArguments)
+								{
+									ToolStripTextBox subcommandTextboxitem = new ToolStripTextBox();
+									subcommandTextboxitem.BackColor = arg.Required ? Color.LightGreen : Color.LightGray;
+									subcommandTextboxitem.KeyDown += (sender1, e1) =>
+									{
+										if (e1.KeyCode == Keys.Enter)
+										{
+											if (subcommandTextboxitem.OwnerItem is ToolStripMenuItem
+												&& (subcommandTextboxitem.OwnerItem as ToolStripMenuItem).OwnerItem is ToolStripMenuItem)
+											{
+												ToolStripMenuItem tmpCommandMenuItem = (subcommandTextboxitem.OwnerItem as ToolStripMenuItem).OwnerItem as ToolStripMenuItem;
+												ToolStripMenuItem tmpArgumentsOwner = subcommandTextboxitem.OwnerItem as ToolStripMenuItem;
+
+												bool EmptyRequiredArguments = false;
+												Commands.CommandDetails commdet = (Commands.CommandDetails)commanditem.Tag;
+												for (int j = 0; j < commdet.commandArguments.Count; j++)
+													if (commdet.commandArguments[j].Required && tmpArgumentsOwner.DropDownItems[j].Text.Length == 0)
+													{
+														EmptyRequiredArguments = true;
+														MessageBox.Show("Please complete all required textboxes (green), textbox " + (j + 1).ToString() + " is empty");
+													}
+
+												if (!EmptyRequiredArguments)
+												{
+													string concatString = "";
+													foreach (ToolStripItem ti1 in tmpArgumentsOwner.DropDownItems)
+													{
+														if (ti1 is ToolStripTextBox)
+															concatString += (concatString.Length > 0 ? ";" : "") + ((ToolStripTextBox)ti1).Text;
+													}
+													PerformCommandNow(((Commands.CommandDetails)commanditem.Tag).commandName + " " + concatString, false, true);
+												}
+												//MessageBox.Show((subcommandTextboxitem.OwnerItem as ToolStripMenuItem).Text);
+											}
+										}
+									};
+									tmpsubcommandItem.DropDownItems.Add(subcommandTextboxitem);
+								}
+
+								if (i > 0)
+								{
+									string[] splittedArgs = tmpsubcommandItem.Tag.ToString().Substring(key.Length + 1).Split(';');
+									for (int k = 0; k < splittedArgs.Length; k++)
+										tmpsubcommandItem.DropDownItems[k].Text = splittedArgs[k];
+								}
+							}
+						}						
+					}
+					else
+					{
+						commanditem.Click += delegate
+						{
+							MessageBox.Show("No subcommands");
+						};
+					}
+					commandsToolStripMenuItem.DropDownItems.Add(commanditem);
+				}
 		}
 	}
 
@@ -1141,6 +1272,10 @@ namespace QuickAccess
 		public static void appendLogTextbox_OfPassedTextbox(TextBox messagesTextbox, string str)
 		{
 			//label1.Text = str;
+			Control topParent = messagesTextbox;
+			while (topParent != null && topParent != messagesTextbox.Parent) topParent = messagesTextbox.Parent;
+			if (topParent is Form1)// && (topParent as Form1).Visible)
+				(topParent as Form1).notifyIcon1.ShowBalloonTip(3000, "Message", str, ToolTipIcon.Info);
 			messagesTextbox.Text = str + (messagesTextbox.Text.Length > 0 ? Environment.NewLine : "") + messagesTextbox.Text;
 			Application.DoEvents();
 		}
@@ -1207,9 +1342,10 @@ namespace QuickAccess
 				/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
 				else appendLogTextbox("Error: command not regognized, " + svncommand);*/
 				//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-				string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
-				if (!File.Exists(svnpath)) svnpath = "svn";
-				string placedherebecauseSvnPathMustBeRemoved;
+				//string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
+				//if (!File.Exists(svnpath)) svnpath = "svn";
+				string svnpath = "svn";
+				//string placedherebecauseSvnPathMustBeRemoved;
 				if (Directory.Exists(projDir))
 				{
 					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>

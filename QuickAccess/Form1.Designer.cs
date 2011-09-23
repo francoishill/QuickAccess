@@ -33,6 +33,7 @@
 					this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
 					this.contextMenuStrip_TrayIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
 					this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+					this.commandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 					this.textBox1 = new System.Windows.Forms.TextBox();
 					this.label1 = new System.Windows.Forms.Label();
 					this.textBox_Messages = new System.Windows.Forms.TextBox();
@@ -51,9 +52,11 @@
 					// contextMenuStrip_TrayIcon
 					// 
 					this.contextMenuStrip_TrayIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem});
+            this.exitToolStripMenuItem,
+            this.commandsToolStripMenuItem});
 					this.contextMenuStrip_TrayIcon.Name = "contextMenuStrip_TrayIcon";
-					this.contextMenuStrip_TrayIcon.Size = new System.Drawing.Size(153, 48);
+					this.contextMenuStrip_TrayIcon.Size = new System.Drawing.Size(153, 70);
+					this.contextMenuStrip_TrayIcon.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_TrayIcon_Opening);
 					// 
 					// exitToolStripMenuItem
 					// 
@@ -61,6 +64,12 @@
 					this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 					this.exitToolStripMenuItem.Text = "E&xit";
 					this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+					// 
+					// commandsToolStripMenuItem
+					// 
+					this.commandsToolStripMenuItem.Name = "commandsToolStripMenuItem";
+					this.commandsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+					this.commandsToolStripMenuItem.Text = "&Commands";
 					// 
 					// textBox1
 					// 
@@ -158,13 +167,14 @@
 
         #endregion
 
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        public System.Windows.Forms.NotifyIcon notifyIcon1;
         public System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
 				public System.Windows.Forms.TextBox textBox_Messages;
 				private System.Windows.Forms.Label label2;
 				private System.Windows.Forms.ContextMenuStrip contextMenuStrip_TrayIcon;
 				private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+				private System.Windows.Forms.ToolStripMenuItem commandsToolStripMenuItem;
     }
 }
 
