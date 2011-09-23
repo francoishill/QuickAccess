@@ -74,7 +74,7 @@ namespace QuickAccess
 			public static Dictionary<string, CommandDetails> CommandList = new Dictionary<string, CommandDetails>();
 			public static AutoCompleteStringCollection AutoCompleteAllactionList;
 
-			private static void AddToCommandList(string commandNameIn, List<string> commandAutocompleteArgumentsIn, string UserLabelIn, List<CommandDetails.CommandArgumentClass> commandArgumentsIn, CommandDetails.PerformCommandTypeEnum PerformCommandTypeIn)
+			private static void AddToCommandList(string commandNameIn, List<string> commandPredefinedArgumentsIn, string UserLabelIn, List<CommandDetails.CommandArgumentClass> commandArgumentsIn, CommandDetails.PerformCommandTypeEnum PerformCommandTypeIn)
 			{
 				bool requiredFoundAfterOptional = false;
 				if (commandArgumentsIn != null)
@@ -89,7 +89,7 @@ namespace QuickAccess
 				}
 				if (!requiredFoundAfterOptional)
 				{
-					CommandList.Add(commandNameIn.ToLower(), new CommandDetails(commandNameIn, commandAutocompleteArgumentsIn, UserLabelIn, commandArgumentsIn, PerformCommandTypeIn));
+					CommandList.Add(commandNameIn.ToLower(), new CommandDetails(commandNameIn, commandPredefinedArgumentsIn, UserLabelIn, commandArgumentsIn, PerformCommandTypeIn));
 					RepopulateAutoCompleteAllactionList();
 				}
 				else MessageBox.Show("Cannot have required parameter after optional: " + commandNameIn, "Error in argument list", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -272,16 +272,30 @@ namespace QuickAccess
 					},
 					CommandDetails.PerformCommandTypeEnum.Btw);
 
-				//AddToCommandList("svncommit", null, "svncommit proj User32stuff;Log message",
 				AddToCommandList("svncommit",
 					new List<string>()
 					{
 						"quickaccess;",
+						"wadiso5;",
+						"glscore_programming;",
+						"glscore_srmsdata;",
+						"delphichromiumembedded;",
+						"glsreports_cssjs;",
+						"glsreports_xmlsql;"
 					},
 					"svncommit User32stuff;Log message",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text, null),
+						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text,
+							new Dictionary<string,string>()
+							{
+								{ "wadiso5", @"C:\Programming\Wadiso5\W5Source" },
+								{ "glscore_programming", @"C:\Programming\GLSCore" },
+								{ "glscore_srmsdata", @"C:\Data\Delphi\GLSCore" },
+								{ "delphichromiumembedded", @"C:\Users\francois.GLS\Documents\RAD Studio\Projects\TestChrome_working_svn" },
+								{ "glsreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
+								{ "glsreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" }
+							}),
 						new CommandDetails.CommandArgumentClass("LogMessage", true, CommandDetails.TypeArg.Text, null)
 					},
 					CommandDetails.PerformCommandTypeEnum.Svncommit);
@@ -290,11 +304,26 @@ namespace QuickAccess
 					new List<string>()
 					{
 						"quickaccess",
+						"wadiso5",
+						"glscore_programming",
+						"glscore_srmsdata",
+						"delphichromiumembedded",
+						"glsreports_cssjs",
+						"glsreports_xmlsql"
 					},
 					"svnupdate User32stuff",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text, null)
+						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text,
+							new Dictionary<string,string>()
+							{
+								{ "wadiso5", @"C:\Programming\Wadiso5\W5Source" },
+								{ "glscore_programming", @"C:\Programming\GLSCore" },
+								{ "glscore_srmsdata", @"C:\Data\Delphi\GLSCore" },
+								{ "delphichromiumembedded", @"C:\Users\francois.GLS\Documents\RAD Studio\Projects\TestChrome_working_svn" },
+								{ "glsreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
+								{ "glsreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" }
+							})
 					},
 					CommandDetails.PerformCommandTypeEnum.Svnupdate);
 
@@ -302,11 +331,26 @@ namespace QuickAccess
 					new List<string>()
 					{
 						"quickaccess",
+						"wadiso5",
+						"glscore_programming",
+						"glscore_srmsdata",
+						"delphichromiumembedded",
+						"glsreports_cssjs",
+						"glsreports_xmlsql"
 					},
 					"svnstatusboth User32stuff",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text, null)
+						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text,
+							new Dictionary<string,string>()
+							{
+								{ "wadiso5", @"C:\Programming\Wadiso5\W5Source" },
+								{ "glscore_programming", @"C:\Programming\GLSCore" },
+								{ "glscore_srmsdata", @"C:\Data\Delphi\GLSCore" },
+								{ "delphichromiumembedded", @"C:\Users\francois.GLS\Documents\RAD Studio\Projects\TestChrome_working_svn" },
+								{ "glsreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
+								{ "glsreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" }
+							})
 					},
 					CommandDetails.PerformCommandTypeEnum.Svnstatus);
 			}
@@ -492,6 +536,11 @@ namespace QuickAccess
 								: PerformCommandType == PerformCommandTypeEnum.Svnupdate ? SvnInterop.SvnCommand.Update
 								: PerformCommandType == PerformCommandTypeEnum.Svnstatus ? SvnInterop.SvnCommand.Status
 								: SvnInterop.SvnCommand.Status;
+
+							string svnprojname = svnargs.Contains(ArgumentSeparator) ? svnargs.Split(ArgumentSeparator)[0] : svnargs;
+							string svnlogmessage = svnargs.Contains(ArgumentSeparator) ? svnargs.Split(ArgumentSeparator)[1] : "";
+							if (commandArguments[0].TokenWithReplaceStringPair != null && commandArguments[0].TokenWithReplaceStringPair.ContainsKey(svnprojname))
+								svnargs = commandArguments[0].TokenWithReplaceStringPair[svnprojname] + (svnargs.Contains(ArgumentSeparator) ? ArgumentSeparator + svnlogmessage : "");
 							SvnInterop.PerformSvn(messagesTextbox, svnargs, svnCommand);
 							//}
 							//else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
@@ -657,8 +706,11 @@ namespace QuickAccess
 					this.Activate();
 					contextMenuStrip_TrayIcon.Focus();
 					if (commandsToolStripMenuItem.HasDropDownItems)
-						//The following line actually dows nothing
+					{
+						//TODO: The following line actually dows nothing
+						commandsToolStripMenuItem.ShowDropDown();//.DropDownItems[0].Select();
 						commandsToolStripMenuItem.DropDownItems[0].Select();
+					}
 					else
 						commandsToolStripMenuItem.Select();
 				}
@@ -783,6 +835,7 @@ namespace QuickAccess
 				appendLogTextbox("Error: " + errorMsg);
 			else
 			{
+				appendLogTextbox("");
 				appendLogTextbox("Performing command: " + text);
 				command.PerformCommand(this, text);
 				if (ClearCommandTextboxOnSuccess) textBox1.Text = "";
@@ -981,6 +1034,12 @@ namespace QuickAccess
 												}
 												//MessageBox.Show((subcommandTextboxitem.OwnerItem as ToolStripMenuItem).Text);
 											}
+										}
+										else if (e1.KeyCode == Keys.Left)
+										{
+											if (subcommandTextboxitem.Text.Length == 0 || subcommandTextboxitem.SelectionStart == 0)
+												if (subcommandTextboxitem.OwnerItem is ToolStripMenuItem)
+													(subcommandTextboxitem.OwnerItem as ToolStripMenuItem).HideDropDown();
 										}
 									};
 									tmpsubcommandItem.DropDownItems.Add(subcommandTextboxitem);
@@ -1334,7 +1393,7 @@ namespace QuickAccess
 
 		public static void PerformSvn(TextBox messagesTextbox, string svnargs, SvnCommand svnCommand)
 		{
-			string projname = svnargs.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
+			string projnameOrDir = svnargs.Split(';')[0];//projnameAndlogmessage.Split(';')[0];
 			string logmessage = null;
 			if (svnCommand == SvnCommand.Commit)
 			{
@@ -1344,20 +1403,14 @@ namespace QuickAccess
 			}
 			try
 			{
-				string projDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;//"";
-				/*if (svncommand == "proj") commitDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projname;
-				else appendLogTextbox("Error: command not regognized, " + svncommand);*/
-				//appendLogTextbox("Log: commitDir = " + "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
-				//string svnpath = @"C:\Program Files\BitNami Trac Stack\subversion\bin\svn.exe";
-				//if (!File.Exists(svnpath)) svnpath = "svn";
+				string projDir =
+					Directory.Exists(projnameOrDir) ? projnameOrDir :
+					Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projnameOrDir;//"";
 				string svnpath = "svn";
-				//string placedherebecauseSvnPathMustBeRemoved;
 				if (Directory.Exists(projDir))
 				{
 					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 					{
-						//TODO: Should still remove the path of svn from the next line
-						//System.Diagnostics.Process.Start(svnpath/*"svn"*/, "commit -m\"" + logmessage + "\" \"" + commitDir + "\"");
 						string processArguments =
 											svnCommand ==
 							SvnCommand.Commit ? "commit -m\"" + logmessage + "\" \"" + projDir + "\""
