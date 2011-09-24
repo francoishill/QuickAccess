@@ -115,6 +115,7 @@ namespace QuickAccess
 				AddToCommandList("run",
 					new List<string>()
 					{
+						//TODO: Must still refactor the predefinedArguments to be part of each CommandArgumentClass
 						"canary",
 						"chrome",
 			      "delphi2010",
@@ -134,7 +135,8 @@ namespace QuickAccess
 								{ "delphi2010", @"C:\Program Files (x86)\Embarcadero\RAD Studio\7.0\bin\bds.exe" },
 								{ "phpstorm", @"C:\Program Files (x86)\JetBrains\PhpStorm 2.1.4\bin\PhpStorm.exe" },
 								{ "sqlitespy", @"C:\Francois\Programs\SQLiteSpy_1.9.1\SQLiteSpy.exe" }
-							})
+							},
+							CommandDetails.PathAutocompleteEnum.Both)
 					},
 					CommandDetails.PerformCommandTypeEnum.CheckFileExistRun_ElseTryRun);
 
@@ -153,7 +155,14 @@ namespace QuickAccess
 					},
 					CommandDetails.PerformCommandTypeEnum.CreateNewOutlookMessage);
 
-				AddToCommandList("explore", null, "explore franother/prog/docs/folderpath",
+				AddToCommandList("explore",
+					new List<string>()
+					{
+						"franother",
+						"prog",
+						"docs"
+					},
+					"explore franother/prog/docs/folderpath",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
 						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text,
@@ -162,7 +171,8 @@ namespace QuickAccess
 								{ "franother", @"c:\francois\other" },
 								{ "prog", @"c:\programming" },
 								{ "docs", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) }
-							})
+							},
+							CommandDetails.PathAutocompleteEnum.Directories)
 					},
 					CommandDetails.PerformCommandTypeEnum.CheckDirectoryExistRun_ElseTryRun);
 
@@ -245,7 +255,8 @@ namespace QuickAccess
 							new Dictionary<string,string>()
 							{
 								{ "firepuma", @"c:\francois\websites\firepuma" }
-							})
+							},
+							CommandDetails.PathAutocompleteEnum.Directories)
 					},
 					CommandDetails.PerformCommandTypeEnum.Cmd);
 
@@ -261,7 +272,8 @@ namespace QuickAccess
 							new Dictionary<string,string>()
 							{
 								{ "albionx86", @"c:\devx86\Albion" }
-							})
+							},
+							CommandDetails.PathAutocompleteEnum.Directories)
 					},
 					CommandDetails.PerformCommandTypeEnum.VsCmd);
 
@@ -295,7 +307,8 @@ namespace QuickAccess
 								{ "delphichromiumembedded", @"C:\Users\francois.GLS\Documents\RAD Studio\Projects\TestChrome_working_svn" },
 								{ "glsreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
 								{ "glsreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" }
-							}),
+							},
+							CommandDetails.PathAutocompleteEnum.Both),
 						new CommandDetails.CommandArgumentClass("LogMessage", true, CommandDetails.TypeArg.Text, null)
 					},
 					CommandDetails.PerformCommandTypeEnum.Svncommit);
@@ -323,7 +336,8 @@ namespace QuickAccess
 								{ "delphichromiumembedded", @"C:\Users\francois.GLS\Documents\RAD Studio\Projects\TestChrome_working_svn" },
 								{ "glsreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
 								{ "glsreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" }
-							})
+							},
+							CommandDetails.PathAutocompleteEnum.Both)
 					},
 					CommandDetails.PerformCommandTypeEnum.Svnupdate);
 
@@ -350,7 +364,8 @@ namespace QuickAccess
 								{ "delphichromiumembedded", @"C:\Users\francois.GLS\Documents\RAD Studio\Projects\TestChrome_working_svn" },
 								{ "glsreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
 								{ "glsreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" }
-							})
+							},
+							CommandDetails.PathAutocompleteEnum.Both)
 					},
 					CommandDetails.PerformCommandTypeEnum.Svnstatus);
 			}
@@ -383,6 +398,7 @@ namespace QuickAccess
 			public class CommandDetails
 			{
 				public enum TypeArg { Int, Text };
+				public enum PathAutocompleteEnum { Directories, Files, Both, None };
 				public enum PerformCommandTypeEnum {
 					CheckFileExistRun_ElseTryRun,
 					CheckDirectoryExistRun_ElseTryRun,
@@ -400,10 +416,10 @@ namespace QuickAccess
 					Svnupdate,
 					Svnstatus,
 					Undefined };
-				private const char ArgumentSeparator = ';';
+				public const char ArgumentSeparator = ';';
 
 				public string commandName;
-				public AutoCompleteStringCollection commandPredefinedArguments;
+				public AutoCompleteStringCollection commandPredefinedArguments, originalPredefinedArguments;
 				public string UserLabel;
 				public List<CommandArgumentClass> commandArguments;
 				public PerformCommandTypeEnum PerformCommandType;
@@ -411,9 +427,38 @@ namespace QuickAccess
 				{
 					commandName = commandNameIn;
 					commandPredefinedArguments = new AutoCompleteStringCollection();
+					originalPredefinedArguments = new AutoCompleteStringCollection();
 					if (commandPredefinedArgumentsIn != null)
 						foreach (string arg in commandPredefinedArgumentsIn)
-							commandPredefinedArguments.Add(commandNameIn + " " + arg);
+						//for (int i = 0; i < commandPredefinedArgumentsIn.Count; i++)
+						{
+							if (arg.Length > 0)
+							{
+								//string arg = commandPredefinedArgumentsIn[i];
+								commandPredefinedArguments.Add(commandNameIn + " " + arg);
+								originalPredefinedArguments.Add(commandNameIn + " " + arg);
+								/*string[] argsSplitted = arg.Split(ArgumentSeparator);
+								string argwithpaths = "";
+								bool atleastOneMatchFound = false;
+								for (int i = 0; i < argsSplitted.Length; i++)
+								{
+									if (commandArgumentsIn != null && commandArgumentsIn.Count > i
+										&& (commandArgumentsIn[i].PathAutocomplete == PathAutocompleteEnum.Directories
+											|| commandArgumentsIn[i].PathAutocomplete == PathAutocompleteEnum.Files
+											|| commandArgumentsIn[i].PathAutocomplete == PathAutocompleteEnum.Both))
+									{
+										argwithpaths += (argwithpaths.Length > 0 ? ";" : "") + @"c:\";
+										atleastOneMatchFound = true;
+									}
+									else argwithpaths += (argwithpaths.Length > 0 ? ";" : "") + argsSplitted[i];
+								}
+								if (atleastOneMatchFound)
+								{
+									commandPredefinedArguments.Add(commandName + " " + argwithpaths);
+									originalPredefinedArguments.Add(commandNameIn + " " + argwithpaths);
+								}*/
+							}
+						}
 					UserLabel = UserLabelIn;
 					commandArguments = commandArgumentsIn;
 					PerformCommandType = PerformCommandTypeIn;
@@ -653,13 +698,15 @@ namespace QuickAccess
 					public bool Required;
 					public TypeArg TypeOfArgument;
 					public Dictionary<string, string> TokenWithReplaceStringPair;
+					public PathAutocompleteEnum PathAutocomplete;
 					//public functionDelegate function;
-					public CommandArgumentClass(string ArgumentNameIn, bool RequiredIn, TypeArg TypeOfArgumentIn, Dictionary<string, string> TokenWithReplaceStringPairIn)//, functionDelegate functionIn)
+					public CommandArgumentClass(string ArgumentNameIn, bool RequiredIn, TypeArg TypeOfArgumentIn, Dictionary<string, string> TokenWithReplaceStringPairIn, PathAutocompleteEnum PathAutocompleteIn = PathAutocompleteEnum.None)//, functionDelegate functionIn)
 					{
 						ArgumentName = ArgumentNameIn;
 						Required = RequiredIn;
 						TypeOfArgument = TypeOfArgumentIn;
 						TokenWithReplaceStringPair = TokenWithReplaceStringPairIn;
+						PathAutocomplete = PathAutocompleteIn;
 						//function = functionIn;
 					}
 				}
@@ -806,9 +853,10 @@ namespace QuickAccess
 
 		void SetAutoCompleteForAction(string action)
 		{
-			if (textBox1.AutoCompleteCustomSource != Commands.CommandList[action].commandPredefinedArguments && textBox1.TextLength > 2)//SelectionLength == 0)
+			Commands.CommandDetails commDetails = Commands.CommandList[action];
+			if (textBox1.AutoCompleteCustomSource != commDetails.commandPredefinedArguments && textBox1.TextLength > 2)
 			{
-				textBox1.AutoCompleteCustomSource = Commands.CommandList[action].commandPredefinedArguments;
+				textBox1.AutoCompleteCustomSource = commDetails.commandPredefinedArguments;
 			}
 		}
 
@@ -911,7 +959,52 @@ namespace QuickAccess
 			if (Commands.CommandList.ContainsKey(tmpkey))
 			{
 				label1.Text = Commands.CommandList[tmpkey].UserLabel;
-				SetAutoCompleteForAction(tmpkey);
+
+				string textboxArgsString = textBox1.Text.Substring(textBox1.Text.IndexOf(' ') + 1);
+
+				string[] textBoxArgsSplitted = textboxArgsString.Split(Commands.CommandDetails.ArgumentSeparator);
+				string lastetextboxArg = textBoxArgsSplitted[textBoxArgsSplitted.Length - 1];
+				if (textboxArgsString.EndsWith(@"\") && lastetextboxArg.Contains(@":\"))
+				{
+					if (Directory.Exists(lastetextboxArg))
+					{
+						//appendLogTextbox("Dir");
+						Commands.CommandDetails commDetails = Commands.CommandList[tmpkey];
+						if (commDetails.commandArguments != null && commDetails.commandArguments.Count > textBoxArgsSplitted.Length - 1)
+							if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == Commands.CommandDetails.PathAutocompleteEnum.Both
+								|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == Commands.CommandDetails.PathAutocompleteEnum.Directories
+								|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == Commands.CommandDetails.PathAutocompleteEnum.Files)
+							{
+								string textboxText = textBox1.Text;
+								string argswithoutlast = textboxArgsString.Substring(0, textboxArgsString.Length - lastetextboxArg.Length);
+								if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == Commands.CommandDetails.PathAutocompleteEnum.Directories
+									|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == Commands.CommandDetails.PathAutocompleteEnum.Both)
+								foreach (string dir in Directory.GetDirectories(lastetextboxArg))
+									if (!textBox1.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + dir))
+										textBox1.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + dir);
+
+								if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == Commands.CommandDetails.PathAutocompleteEnum.Files
+									|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == Commands.CommandDetails.PathAutocompleteEnum.Both)
+									foreach (string file in Directory.GetFiles(lastetextboxArg))
+										if (!textBox1.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + file))
+											textBox1.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + file);
+							}
+						
+						
+						//commDetails.commandArguments[0]
+					}
+					//string[] textBoxArgsSplitted = textboxArgsString.Split(Commands.CommandDetails.ArgumentSeparator);
+					//foreach (string textboxArg in textBoxArgsSplitted)
+					//  if (textboxArg.Contains(@":\") && textboxArg.EndsWith(@"\"))
+					//  {
+					//    if (Directory.Exists(textboxArg)) appendLogTextbox("Dir");
+					//    foreach (Commands.CommandDetails.CommandArgumentClass commArg in commDetails.commandArguments)
+					//    {
+
+					//    }
+					//  }
+				}
+				else SetAutoCompleteForAction(tmpkey);
 			}
 			else
 			{
