@@ -74,7 +74,7 @@ namespace QuickAccess
 			public static Dictionary<string, CommandDetails> CommandList = new Dictionary<string, CommandDetails>();
 			public static AutoCompleteStringCollection AutoCompleteAllactionList;
 
-			private static void AddToCommandList(string commandNameIn, List<string> commandPredefinedArgumentsIn, string UserLabelIn, List<CommandDetails.CommandArgumentClass> commandArgumentsIn, CommandDetails.PerformCommandTypeEnum PerformCommandTypeIn)
+			private static void AddToCommandList(string commandNameIn, string UserLabelIn, List<CommandDetails.CommandArgumentClass> commandArgumentsIn, CommandDetails.PerformCommandTypeEnum PerformCommandTypeIn)
 			{
 				bool requiredFoundAfterOptional = false;
 				if (commandArgumentsIn != null)
@@ -89,7 +89,7 @@ namespace QuickAccess
 				}
 				if (!requiredFoundAfterOptional)
 				{
-					CommandList.Add(commandNameIn.ToLower(), new CommandDetails(commandNameIn, commandPredefinedArgumentsIn, UserLabelIn, commandArgumentsIn, PerformCommandTypeIn));
+					CommandList.Add(commandNameIn.ToLower(), new CommandDetails(commandNameIn, UserLabelIn, commandArgumentsIn, PerformCommandTypeIn));
 					RepopulateAutoCompleteAllactionList();
 				}
 				else MessageBox.Show("Cannot have required parameter after optional: " + commandNameIn, "Error in argument list", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -98,10 +98,6 @@ namespace QuickAccess
 			public static void PopulateCommandList()
 			{
 				AddToCommandList("todo",
-					new List<string>()
-					{
-						"120;15;Buy milk;Buy milk after work"
-					},
 					"todo MinutesFromNow;Autosnooze;Item name;Description",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
@@ -113,16 +109,6 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.AddTodoitemFirepuma);
 
 				AddToCommandList("run",
-					new List<string>()
-					{
-						//TODO: Must still refactor the predefinedArguments to be part of each CommandArgumentClass
-						"canary",
-						"chrome",
-			      "delphi2010",
-			      "delphi2007",
-			      "phpstorm",
-			      "sqlitespy"
-					},
 					"run chrome/canary/delphi2010/delphi2007/phpstorm",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
@@ -141,11 +127,6 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.CheckFileExistRun_ElseTryRun);
 
 				AddToCommandList("mail",
-					new List<string>()
-					{
-						"fhill@gls.co.za;",
-						"francoishill11@gmail.com;"
-					},
 					"mail to;subject;body",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
@@ -156,12 +137,6 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.CreateNewOutlookMessage);
 
 				AddToCommandList("explore",
-					new List<string>()
-					{
-						"franother",
-						"prog",
-						"docs"
-					},
 					"explore franother/prog/docs/folderpath",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
@@ -176,21 +151,21 @@ namespace QuickAccess
 					},
 					CommandDetails.PerformCommandTypeEnum.CheckDirectoryExistRun_ElseTryRun);
 
-				AddToCommandList("web", null, "web google.com",
+				AddToCommandList("web", "web google.com",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
 						new CommandDetails.CommandArgumentClass("TokenOrUrl", true, CommandDetails.TypeArg.Text, null)
 					},
 					CommandDetails.PerformCommandTypeEnum.WebOpenUrl);
 
-				AddToCommandList("google", null, "google search on google",
+				AddToCommandList("google", "google search on google",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
 						new CommandDetails.CommandArgumentClass("StringToSearchInGoogle", true, CommandDetails.TypeArg.Text, null)
 					},
 					CommandDetails.PerformCommandTypeEnum.WebSearchGoogle);
 
-				AddToCommandList("kill", null, "kill processNameToKill",
+				AddToCommandList("kill", "kill processNameToKill",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
 						new CommandDetails.CommandArgumentClass("TokenOrProcessname", true, CommandDetails.TypeArg.Text, null)
@@ -198,33 +173,23 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.KillProcess);
 
 				AddToCommandList("startupbat",
-					new List<string>()
-					{
-						"open",
-						"getall",
-						"getline xxx",
-						"comment #",
-						"uncomment #"
-					},
 					"startupbat open/getall/getline xxx/comment #/uncomment #",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
-						new CommandDetails.CommandArgumentClass("Command", true, CommandDetails.TypeArg.Text, null),
+						new CommandDetails.CommandArgumentClass("Command", true, CommandDetails.TypeArg.Text,
+							new Dictionary<string,string>()
+							{
+								{ "open", null },
+								{ "getall", null },
+								{ "getline xxx", null },
+								{ "comment #", null },
+								{ "uncomment #", null }
+							}),
 						new CommandDetails.CommandArgumentClass("ArgumentForCommand", false, CommandDetails.TypeArg.Text, null)
 					},
 					CommandDetails.PerformCommandTypeEnum.StartupBat);
 
 				AddToCommandList("call",
-					new List<string>()
-					{
-						"yolwork",
-						"imqs",
-						"kerry",
-						"deon",
-						"johann",
-						"wesley",
-						"honda"
-					},
 					"call yolwork/imqs/kerry/deon/johann/wesley/honda",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
@@ -244,10 +209,6 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.Call);
 
 				AddToCommandList("cmd",
-					new List<string>()
-					{
-						"firepuma"
-					},
 					"cmd firepuma/folderpath",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
@@ -261,10 +222,6 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.Cmd);
 
 				AddToCommandList("vscmd",
-					new List<string>()
-					{
-						"albionx86"
-					},
 					"vscmd albionx86/folderpath",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
@@ -277,7 +234,7 @@ namespace QuickAccess
 					},
 					CommandDetails.PerformCommandTypeEnum.VsCmd);
 
-				AddToCommandList("btw", null, "btw text",
+				AddToCommandList("btw", "btw text",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
 						new CommandDetails.CommandArgumentClass("TextToUploadToBtw", true, CommandDetails.TypeArg.Text, null)
@@ -285,16 +242,6 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.Btw);
 
 				AddToCommandList("svncommit",
-					new List<string>()
-					{
-						"quickaccess;",
-						"wadiso5;",
-						"glscore_programming;",
-						"glscore_srmsdata;",
-						"delphichromiumembedded;",
-						"glsreports_cssjs;",
-						"glsreports_xmlsql;"
-					},
 					"svncommit User32stuff;Log message",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
@@ -314,16 +261,6 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.Svncommit);
 
 				AddToCommandList("svnupdate",
-					new List<string>()
-					{
-						"quickaccess",
-						"wadiso5",
-						"glscore_programming",
-						"glscore_srmsdata",
-						"delphichromiumembedded",
-						"glsreports_cssjs",
-						"glsreports_xmlsql"
-					},
 					"svnupdate User32stuff",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
@@ -342,16 +279,6 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.Svnupdate);
 
 				AddToCommandList("svnstatusboth",
-					new List<string>()
-					{
-						"quickaccess",
-						"wadiso5",
-						"glscore_programming",
-						"glscore_srmsdata",
-						"delphichromiumembedded",
-						"glsreports_cssjs",
-						"glsreports_xmlsql"
-					},
 					"svnstatusboth User32stuff",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
@@ -368,6 +295,19 @@ namespace QuickAccess
 							CommandDetails.PathAutocompleteEnum.Both)
 					},
 					CommandDetails.PerformCommandTypeEnum.Svnstatus);
+
+				AddToCommandList("publishvs",
+					"publishvs QuickAccess",
+					new List<CommandDetails.CommandArgumentClass>()
+					{
+						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text,
+							new Dictionary<string,string>()
+							{
+								{ "quickaccess", null }
+							},
+							CommandDetails.PathAutocompleteEnum.Both)
+					},
+					CommandDetails.PerformCommandTypeEnum.PublishVs);
 			}
 
 			public static CommandDetails GetCommandDetailsFromTextboxText(string TextboxTextIn)
@@ -415,50 +355,57 @@ namespace QuickAccess
 					Svncommit,
 					Svnupdate,
 					Svnstatus,
+					PublishVs,
 					Undefined };
 				public const char ArgumentSeparator = ';';
 
 				public string commandName;
-				public AutoCompleteStringCollection commandPredefinedArguments, originalPredefinedArguments;
+				public AutoCompleteStringCollection commandPredefinedArguments;//, originalPredefinedArguments;
 				public string UserLabel;
 				public List<CommandArgumentClass> commandArguments;
 				public PerformCommandTypeEnum PerformCommandType;
-				public CommandDetails(string commandNameIn, List<string> commandPredefinedArgumentsIn, string UserLabelIn, List<CommandArgumentClass> commandArgumentsIn, PerformCommandTypeEnum PerformCommandTypeIn)
+				public CommandDetails(string commandNameIn, string UserLabelIn, List<CommandArgumentClass> commandArgumentsIn, PerformCommandTypeEnum PerformCommandTypeIn)
 				{
 					commandName = commandNameIn;
 					commandPredefinedArguments = new AutoCompleteStringCollection();
-					originalPredefinedArguments = new AutoCompleteStringCollection();
-					if (commandPredefinedArgumentsIn != null)
-						foreach (string arg in commandPredefinedArgumentsIn)
-						//for (int i = 0; i < commandPredefinedArgumentsIn.Count; i++)
-						{
-							if (arg.Length > 0)
-							{
-								//string arg = commandPredefinedArgumentsIn[i];
-								commandPredefinedArguments.Add(commandNameIn + " " + arg);
-								originalPredefinedArguments.Add(commandNameIn + " " + arg);
-								/*string[] argsSplitted = arg.Split(ArgumentSeparator);
-								string argwithpaths = "";
-								bool atleastOneMatchFound = false;
-								for (int i = 0; i < argsSplitted.Length; i++)
-								{
-									if (commandArgumentsIn != null && commandArgumentsIn.Count > i
-										&& (commandArgumentsIn[i].PathAutocomplete == PathAutocompleteEnum.Directories
-											|| commandArgumentsIn[i].PathAutocomplete == PathAutocompleteEnum.Files
-											|| commandArgumentsIn[i].PathAutocomplete == PathAutocompleteEnum.Both))
-									{
-										argwithpaths += (argwithpaths.Length > 0 ? ";" : "") + @"c:\";
-										atleastOneMatchFound = true;
-									}
-									else argwithpaths += (argwithpaths.Length > 0 ? ";" : "") + argsSplitted[i];
-								}
-								if (atleastOneMatchFound)
-								{
-									commandPredefinedArguments.Add(commandName + " " + argwithpaths);
-									originalPredefinedArguments.Add(commandNameIn + " " + argwithpaths);
-								}*/
-							}
-						}
+					foreach (CommandArgumentClass commarg in commandArgumentsIn)
+						if (commarg.TokenWithReplaceStringPair != null)
+							foreach (string key in commarg.TokenWithReplaceStringPair.Keys)
+								commandPredefinedArguments.Add(commandNameIn + " " + key);
+
+					//commandPredefinedArguments = new AutoCompleteStringCollection();
+					//originalPredefinedArguments = new AutoCompleteStringCollection();
+					//if (commandPredefinedArgumentsIn != null)
+					//  foreach (string arg in commandPredefinedArgumentsIn)
+					//  //for (int i = 0; i < commandPredefinedArgumentsIn.Count; i++)
+					//  {
+					//    if (arg.Length > 0)
+					//    {
+					//      //string arg = commandPredefinedArgumentsIn[i];
+					//      commandPredefinedArguments.Add(commandNameIn + " " + arg);
+					//      originalPredefinedArguments.Add(commandNameIn + " " + arg);
+					//      /*string[] argsSplitted = arg.Split(ArgumentSeparator);
+					//      string argwithpaths = "";
+					//      bool atleastOneMatchFound = false;
+					//      for (int i = 0; i < argsSplitted.Length; i++)
+					//      {
+					//        if (commandArgumentsIn != null && commandArgumentsIn.Count > i
+					//          && (commandArgumentsIn[i].PathAutocomplete == PathAutocompleteEnum.Directories
+					//            || commandArgumentsIn[i].PathAutocomplete == PathAutocompleteEnum.Files
+					//            || commandArgumentsIn[i].PathAutocomplete == PathAutocompleteEnum.Both))
+					//        {
+					//          argwithpaths += (argwithpaths.Length > 0 ? ";" : "") + @"c:\";
+					//          atleastOneMatchFound = true;
+					//        }
+					//        else argwithpaths += (argwithpaths.Length > 0 ? ";" : "") + argsSplitted[i];
+					//      }
+					//      if (atleastOneMatchFound)
+					//      {
+					//        commandPredefinedArguments.Add(commandName + " " + argwithpaths);
+					//        originalPredefinedArguments.Add(commandNameIn + " " + argwithpaths);
+					//      }*/
+					//    }
+					//  }
 					UserLabel = UserLabelIn;
 					commandArguments = commandArgumentsIn;
 					PerformCommandType = PerformCommandTypeIn;
@@ -477,7 +424,7 @@ namespace QuickAccess
 							{
 								string exepath = argStr;
 								if (commandArguments[0].TokenWithReplaceStringPair != null && commandArguments[0].TokenWithReplaceStringPair.ContainsKey(exepath))
-									exepath = commandArguments[0].TokenWithReplaceStringPair[exepath];
+									exepath = commandArguments[0].TokenWithReplaceStringPair[exepath] ?? exepath;
 								if (
 									(File.Exists(exepath) && PerformCommandType == PerformCommandTypeEnum.CheckFileExistRun_ElseTryRun) ||
 									(Directory.Exists(exepath) && PerformCommandType == PerformCommandTypeEnum.CheckDirectoryExistRun_ElseTryRun))
@@ -552,14 +499,14 @@ namespace QuickAccess
 
 						case PerformCommandTypeEnum.Call:
 							if (commandArguments[0].TokenWithReplaceStringPair != null && commandArguments[0].TokenWithReplaceStringPair.ContainsKey(argStr))
-								Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, commandArguments[0].TokenWithReplaceStringPair[argStr]);
+								Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, commandArguments[0].TokenWithReplaceStringPair[argStr] ?? argStr);
 							else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Call command not recognized: " + argStr);
 							break;
 
 						case PerformCommandTypeEnum.Cmd: case PerformCommandTypeEnum.VsCmd:
 							string cmdpath = argStr;
 							if (commandArguments[0].TokenWithReplaceStringPair != null && commandArguments[0].TokenWithReplaceStringPair.ContainsKey(cmdpath))
-								cmdpath = commandArguments[0].TokenWithReplaceStringPair[cmdpath];
+								cmdpath = commandArguments[0].TokenWithReplaceStringPair[cmdpath] ?? cmdpath;
 
 							WindowsInterop.StartCommandPromptOrVScommandPrompt(messagesTextbox, cmdpath, PerformCommandType == PerformCommandTypeEnum.VsCmd);
 							break;
@@ -585,18 +532,22 @@ namespace QuickAccess
 							string svnprojname = svnargs.Contains(ArgumentSeparator) ? svnargs.Split(ArgumentSeparator)[0] : svnargs;
 							string svnlogmessage = svnargs.Contains(ArgumentSeparator) ? svnargs.Split(ArgumentSeparator)[1] : "";
 							if (commandArguments[0].TokenWithReplaceStringPair != null && commandArguments[0].TokenWithReplaceStringPair.ContainsKey(svnprojname))
-								svnargs = commandArguments[0].TokenWithReplaceStringPair[svnprojname] + (svnargs.Contains(ArgumentSeparator) ? ArgumentSeparator + svnlogmessage : "");
+								svnargs = (commandArguments[0].TokenWithReplaceStringPair[svnprojname] ?? svnprojname) + (svnargs.Contains(ArgumentSeparator) ? ArgumentSeparator + svnlogmessage : "");
 							SvnInterop.PerformSvn(messagesTextbox, svnargs, svnCommand);
 							//}
 							//else appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: No semicolon. Command syntax is 'svncommit proj/othercommand projname;logmessage'");
 							//}
 							break;
 
+						case PerformCommandTypeEnum.PublishVs:
+							VisualStudioInterop.PerformPublish(messagesTextbox, argStr);
+							break;
+
 						case PerformCommandTypeEnum.Undefined:
 							MessageBox.Show("PerformCommandType is not defined");
 							break;
 						default:
-							MessageBox.Show("PerformCommandType is not defined");
+							MessageBox.Show("PerformCommandType is not incorporated yet: " + PerformCommandType.ToString());
 							break;
 					}
 				}
@@ -1549,6 +1500,155 @@ namespace QuickAccess
 			catch (Exception exc)
 			{
 				Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Exception on running svn: " + exc.Message);
+			}
+		}
+	}
+
+	public class VisualStudioInterop
+	{
+		private static bool FindMsbuildPath4(out string msbuildpathOrerror)
+		{
+			msbuildpathOrerror = "";
+			string rootfolder = @"C:\Windows\Microsoft.NET\Framework64";
+			if (!Directory.Exists(rootfolder)) msbuildpathOrerror = "Dir not found for msbuild: " + rootfolder;
+			else
+			{
+				//TODO: Should eventually make this code to look for newest version (not only 4)
+				//string newestdir = "";
+				foreach (string dir in Directory.GetDirectories(rootfolder))
+					if (dir.Split('\\')[dir.Split('\\').Length - 1].ToLower().StartsWith("v4.") && dir.Split('\\')[dir.Split('\\').Length - 1].Contains('.'))
+					{
+						msbuildpathOrerror = dir;
+						return true;
+					}
+				msbuildpathOrerror = "Could not find folder v4... in directory " + rootfolder;
+			}
+			return false;
+		}
+
+		public static void PerformPublish(TextBox messagesTextbox, string projName)
+		{
+			string projDir =
+					Directory.Exists(projName) ? projName :
+					Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\" + projName;
+			while (projDir.EndsWith("\\")) projDir = projDir.Substring(0, projDir.Length - 1);
+			string projFolderName = projDir.Split('\\')[projDir.Split('\\').Length - 1];
+			string csprojFileName = projDir + "\\" + projFolderName + ".csproj";
+
+			bool ProjFileFound = false;
+			if (File.Exists(csprojFileName)) ProjFileFound = true;
+			else
+			{
+				csprojFileName = projDir + "\\" + projFolderName + "\\" + projFolderName + ".csproj";
+				if (File.Exists(csprojFileName)) ProjFileFound = true;
+			}
+
+			if (!ProjFileFound) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Could not find project file (csproj) in dir " + projDir);
+			else
+			{
+				const string apprevstart = "<ApplicationRevision>";
+				const string apprevend = "</ApplicationRevision>";
+				const string appverstart = "<ApplicationVersion>";
+				const string appverend = "</ApplicationVersion>";
+
+				int apprevision = -1;
+				int apprevlinenum = -1;
+				string appversion = "";
+				int appverlinenum = -1;
+				List<string> newFileLines = new List<string>();
+				StreamReader sr = new StreamReader(csprojFileName);
+				try { while (!sr.EndOfStream) newFileLines.Add(sr.ReadLine()); }
+				finally { sr.Close(); }
+
+				for (int i = 0; i < newFileLines.Count; i++)
+				{
+					string line = newFileLines[i].ToLower().Trim();
+						
+					if (line.StartsWith(apprevstart.ToLower()) && line.EndsWith(apprevend.ToLower()))
+					{
+						int tmpint;
+						if (int.TryParse(line.Substring(apprevstart.Length, line.Length - apprevstart.Length - apprevend.Length), out tmpint))
+						{
+							apprevlinenum = i;
+							apprevision = tmpint;
+						}
+						else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Could not obtain revision int from string: " + line);
+					}
+					else if (line.StartsWith(appverstart.ToLower()) && line.EndsWith(appverend.ToLower()))
+					{
+						appverlinenum = i;
+						appversion = line.Substring(appverstart.Length, line.Length - appverstart.Length - appverend.Length);
+					}
+				}
+				if (apprevision == -1) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to obtain app revision");
+				else if (appversion.Trim().Length == 0) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to obtain app version string");
+				else
+				{
+					bool autoIncreaseRevision = appversion.Contains("%2a");
+					int newrevisionnum = apprevision + 1;
+					newFileLines[apprevlinenum] = newFileLines[apprevlinenum].Substring(0, newFileLines[apprevlinenum].IndexOf(apprevstart) + apprevstart.Length)
+						+ newrevisionnum
+						+ newFileLines[apprevlinenum].Substring(newFileLines[apprevlinenum].IndexOf(apprevend));
+					//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, newFileLines[apprevlinenum]);
+
+					string newversionstring = appversion.Substring(0, appversion.LastIndexOf('.') + 1) + newrevisionnum;
+					if (!autoIncreaseRevision)
+						newFileLines[appverlinenum] = newFileLines[appverlinenum].Substring(0, newFileLines[appverlinenum].IndexOf(appverstart) + appverstart.Length)
+							+ appversion.Substring(0, appversion.LastIndexOf('.') + 1) + (apprevision + 1)
+							+ newFileLines[appverlinenum].Substring(newFileLines[appverlinenum].IndexOf(appverend));
+					//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, newFileLines[appverlinenum]);
+
+					StreamWriter sw = new StreamWriter(csprojFileName);
+					try {
+						foreach (string line in newFileLines)
+							sw.WriteLine(line);
+					}
+					finally { sw.Close(); }
+
+					Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox,
+						"msbuild /t:publish /p:configuration=release /p:buildenvironment=DEV /p:applicationversion=" + newversionstring + " \"" + csprojFileName + "\"");
+
+					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+					{
+						string msbuildpath;
+						if (FindMsbuildPath4(out msbuildpath))
+						{
+							//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, msbuildpath);
+							while (msbuildpath.EndsWith("\\")) msbuildpath = msbuildpath.Substring(0, msbuildpath.Length - 1);
+							msbuildpath += "\\msbuild.exe";
+
+							ProcessStartInfo startinfo = new ProcessStartInfo(msbuildpath, "/t:publish /p:configuration=release /p:buildenvironment=DEV /p:applicationversion=" + newversionstring + " \"" + csprojFileName + "\"");
+							startinfo.UseShellExecute = false;
+							startinfo.CreateNoWindow = false;
+							startinfo.RedirectStandardOutput = true;
+						  startinfo.RedirectStandardError = true;
+							System.Diagnostics.Process msbuildproc = new Process();
+							msbuildproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+							{
+								if (outLine.Data != null && outLine.Data.Trim().Length > 0)
+									Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Msbuild output: " + outLine.Data);
+								//else appendLogTextbox("Svn output empty");
+							};
+							msbuildproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+							{
+								if (outLine.Data != null && outLine.Data.Trim().Length > 0)
+									Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Msbuild error: " + outLine.Data);
+								//else appendLogTextbox("Svn error empty");
+							};
+							msbuildproc.StartInfo = startinfo;
+
+							if (msbuildproc.Start())
+								Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Started building, please wait...");
+							else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: Could not start SVN process.");
+
+							msbuildproc.BeginOutputReadLine();
+							msbuildproc.BeginErrorReadLine();
+
+							msbuildproc.WaitForExit();
+						}
+						else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to find msbuild path: " + msbuildpath);
+					});
+				}
 			}
 		}
 	}

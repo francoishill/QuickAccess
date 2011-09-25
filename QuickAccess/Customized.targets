@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+<PropertyGroup>
+		<BuildEnvironment>DEV</BuildEnvironment>
+		<!--<ApplicationVersion>1.0.0.%2a</ApplicationVersion>-->
+	</PropertyGroup>
+
+<Choose>
+		<When Condition=" '$(BuildEnvironment)' == 'DEV' ">
+		  <PropertyGroup>
+		    <PublishDir>C:\Francois\websites\firepuma\ownapplications\quickaccess\</PublishDir>
+		  </PropertyGroup>
+		</When>
+		<When Condition=" '$(BuildEnvironment)' == 'QA' ">
+		  <PropertyGroup>
+		    <PublishDir>C:\Francois\websites\firepuma\ownapplications\quickaccess\$(BuildEnvironment)\</PublishDir>
+		  </PropertyGroup>
+		</When>	</Choose>
+
+<PropertyGroup>
+		<!-- Note this must be done AFTER the above Choose (so PublishDir is set)-->
+		<PublishFilePath>$(PublishDir)publish.html</PublishFilePath>
+	</PropertyGroup>
+
+<ItemGroup>
+		<Tokens Include="PublisherName">
+		  <ReplacementValue>$(PublisherName)</ReplacementValue>
+		  <Visible>false</Visible>
+		</Tokens>
+		<Tokens Include="ProductName">
+		  <ReplacementValue>$(ProductName)</ReplacementValue>
+		  <Visible>false</Visible>
+		</Tokens>
+		<Tokens Include="ApplicationVersion">
+		  <ReplacementValue>$(ApplicationVersion)</ReplacementValue>
+		  <Visible>false</Visible>
+		</Tokens>
+		<Tokens Include="Prerequsites">
+		  <ReplacementValue>@(BootstrapperPackage->'&lt;li&gt;%(ProductName)&lt;/li&gt;','%0D%0A')</ReplacementValue>
+		  <Visible>false</Visible>
+		</Tokens>
+		<Tokens Include="Username">
+		  <ReplacementValue>$(Username)</ReplacementValue>
+		  <Visible>false</Visible>
+		</Tokens>
+	</ItemGroup> 
+
+<Target Name="AfterPublish">
+		<Time Format="dd/MM/yyyy HH:mm">
+		  <Output TaskParameter="FormattedTime" PropertyName="PublishTime" />
+		</Time>
+		<!-- Finalise the publish.htm template file and copy it to the publish location -->
+		<TemplateFile Template="Publish\publish.template.html" Tokens="@(Tokens)" OutputFilename="$(PublishFilePath)" />
+		<FileUpdate Files="$(PublishFilePath)" Regex="\${PublishTime}" ReplacementText="$(PublishTime)" />
+	</Target>
+</Project>
