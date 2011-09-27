@@ -12,6 +12,9 @@ using System.Security.Cryptography;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using SectionDetails = QuickAccess.NSISclass.SectionGroupClass.SectionClass;
+using ShortcutDetails = QuickAccess.NSISclass.SectionGroupClass.SectionClass.ShortcutDetails;
+using FileToAddTextblock = QuickAccess.NSISclass.SectionGroupClass.SectionClass.FileToAddTextblock;
 
 namespace QuickAccess
 {
@@ -1664,6 +1667,7 @@ namespace QuickAccess
 					Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox,
 						"msbuild /t:publish /p:configuration=release /p:buildenvironment=DEV /p:applicationversion=" + newversionstring + " \"" + csprojFileName + "\"");
 
+
 					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 					{
 						string msbuildpath;
@@ -1673,6 +1677,23 @@ namespace QuickAccess
 							while (msbuildpath.EndsWith("\\")) msbuildpath = msbuildpath.Substring(0, msbuildpath.Length - 1);
 							msbuildpath += "\\msbuild.exe";
 
+							using (StreamWriter sw1 = new StreamWriter(@"C:\Users\francois.GLS\AppData\Local\FJH\NSISinstaller\NSISexports\tmp123.nsi"))
+							{
+								//TODO: This is awesome, after installing with NSIS you can type appname in RUN and it will open
+								List<string> list = NsisInterop.CreateOwnappNsis(
+								"AwesomeStuff",
+								"Awesome Stuff",
+								"1.0.2.3",//Should obtain (and increase) product version from csproj file
+								"www.google.co.za",
+								"AwesomeStuff.exe",
+								null,
+								true);
+								foreach (string line in list)
+									sw1.WriteLine(line);
+							}
+							return;
+
+							//TODO: Should change this process arguments to build and then process NSIS afterwards
 							ProcessStartInfo startinfo = new ProcessStartInfo(msbuildpath, "/t:publish /p:configuration=release /p:buildenvironment=DEV /p:applicationversion=" + newversionstring + " \"" + csprojFileName + "\"");
 							startinfo.UseShellExecute = false;
 							startinfo.CreateNoWindow = false;
@@ -1706,6 +1727,83 @@ namespace QuickAccess
 					});
 				}
 			}
+		}
+	}
+
+	public class NsisInterop
+	{
+		//public enum BuildTypeEnum { Debug, Release };
+		public static List<string> CreateOwnappNsis(
+			string VsProjectName,
+			string ProductPublishedNameIn,
+			string ProductVersionIn,
+			//string ProductPublisherIn,
+			string ProductWebsiteIn,
+			string ProductExeNameIn,
+			NSISclass.LicensePageDetails LicenseDetails,
+			//List<NSISclass.SectionGroupClass.SectionClass> sections,
+			bool InstallForAllUsers)
+		{
+			NSISclass nsis = new NSISclass(
+				ProductPublishedNameIn,
+				ProductVersionIn,
+				"Francois Hill",//ProductPublisherIn,
+				ProductWebsiteIn,
+				ProductExeNameIn,
+				new NSISclass.Compressor(NSISclass.Compressor.CompressionModeEnum.bzip2, false, false),
+				"Setup_" + ProductExeNameIn,
+				NSISclass.LanguagesEnum.English,
+				true,
+				true,
+				LicenseDetails,
+				true,
+				true,
+				true,
+				ProductExeNameIn,
+				null//No InstTypes at this stage
+				//InstallForAllUsersIn: InstallForAllUsers
+				);
+
+			/*NSISclass.SectionGroupClass.SectionClass sect = new SectionDetails(
+				"Main",
+				"All primary files required to run the program (excluding prerequisites)",
+				"",//Installer types empty at this stage
+			  SectionDetails.SetOverwriteEnum.ifnewer
+				);*/
+
+			//List<str
+				/*
+				string SectionNameIn,//
+						string SectionDescriptionIn,
+						string InstTypes_CommaSeperatedIn,
+						SetOverwriteEnum SetOverwriteIn = SetOverwriteEnum.ifnewer,
+						string SetOutPathIn = "$INSTDIR",
+						Boolean UnselectedByDefaultIn = false,//
+						Boolean HiddenToUserIn = false, Boolean SectionForUninstallerIn = false,//
+						Boolean DisplaySectionWithBoldFontIn = false,//
+						int ReserveDiskspaceForSectionIn = 0
+				*/
+
+			/*List<string> SectionDescriptions = new List<string>();
+			SectionDescriptions.Add("!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN");
+			foreach (NSISclass.SectionGroupClass.SectionClass sec in sections)
+				SectionDescriptions.Add("!insertmacro MUI_DESCRIPTION_TEXT ${" + sec.IDString + "} \"" + sec.SectionDescription + "\"");
+			SectionDescriptions.Add("!insertmacro MUI_FUNCTION_DESCRIPTION_END");*/
+
+			string PublishedDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+				@"\Visual Studio 2010\Projects\" + VsProjectName + @"\" + VsProjectName + @"\bin\Release";
+			List<string> SectionGroupLines = new List<string>();
+			SectionGroupLines.Add(@"Section ""Full program"" SEC001");
+			SectionGroupLines.Add(@"  SetShellVarContext all");
+			SectionGroupLines.Add(@"  SetOverwrite ifnewer");
+			SectionGroupLines.Add(@"	SetOutPath ""$INSTDIR""");
+			SectionGroupLines.Add(@"  SetOverwrite ifnewer");
+			SectionGroupLines.Add(@"  File /a """ + PublishedDir + @"\*.*""");
+			SectionGroupLines.Add(@"SectionEnd");
+
+			return nsis.GetAllLinesForNSISfile(
+				SectionGroupLines,
+				null);//SectionDescriptions);
 		}
 	}
 
