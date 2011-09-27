@@ -955,6 +955,21 @@ namespace QuickAccess
 					//    }
 					//  }
 				}
+				else if (tmpkey == "kill" && textboxArgsString.Length >= 2)
+				{
+					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+						{
+							ThreadingInterop.ClearTextboxAutocompleteCustomSource(textBox1);
+							//textBox1.AutoCompleteCustomSource.Clear();
+							//textBox_Messages.Invoke(new ClearTextboxAutocompleteDelegate(ClearTextboxAutocomplete), new object[] { });
+							Process[] procs = Process.GetProcesses();
+							foreach (Process proc in procs)
+								if (proc.ProcessName.ToLower().StartsWith(textboxArgsString.ToLower()))
+									//textBox_Messages.Invoke(new AddTextboxAutocompleteDelegate(AddTextboxAutocomplete), new object[] { tmpkey + " " + proc.ProcessName });
+									//textBox1.AutoCompleteCustomSource.Add(tmpkey + " " + proc.ProcessName);
+									ThreadingInterop.AddTextboxAutocompleteCustomSource(textBox1, tmpkey + " " + proc.ProcessName);
+						});
+				}
 				else SetAutoCompleteForAction(tmpkey);
 			}
 			else
@@ -963,6 +978,19 @@ namespace QuickAccess
 				if (textBox1.Text.Length == 0) SetAutocompleteActionList();
 			}
 		}
+
+		/*public void ClearTextboxAutocomplete()
+		{
+			textBox1.AutoCompleteCustomSource.Clear();
+		}
+
+		public void AddTextboxAutocomplete(string strToAdd)
+		{
+			textBox1.AutoCompleteCustomSource.Add(strToAdd);
+		}
+
+		public delegate void AddTextboxAutocompleteDelegate(string text);
+		public delegate void ClearTextboxAutocompleteDelegate();*/
 
 		private void Form1_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -1401,6 +1429,34 @@ namespace QuickAccess
 			th.Start();
 			//th.Join();
 			while (th.IsAlive) { Application.DoEvents(); }
+		}
+
+		delegate void AutocompleteCallback(TextBox txtBox, String text);
+		delegate void ClearAutocompleteCallback(TextBox txtBox);
+		public static void ClearTextboxAutocompleteCustomSource(TextBox txtBox)
+		{
+			if (txtBox.InvokeRequired)
+			{
+				ClearAutocompleteCallback d = new ClearAutocompleteCallback(ClearTextboxAutocompleteCustomSource);
+				txtBox.Invoke(d, new object[] { txtBox });
+			}
+			else
+			{
+				txtBox.AutoCompleteCustomSource.Clear();
+			}
+		}
+
+		public static void AddTextboxAutocompleteCustomSource(TextBox txtBox, string textToAdd)
+		{
+			if (txtBox.InvokeRequired)
+			{
+				AutocompleteCallback d = new AutocompleteCallback(AddTextboxAutocompleteCustomSource);
+				txtBox.Invoke(d, new object[] { txtBox, textToAdd });
+			}
+			else
+			{
+				txtBox.AutoCompleteCustomSource.Add(textToAdd);
+			}
 		}
 	}
 
