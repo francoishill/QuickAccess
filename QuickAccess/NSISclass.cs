@@ -13,6 +13,24 @@ namespace QuickAccess
 {
 	public class NSISclass
 	{
+		public enum DotnetFrameworkTargetedEnum : int
+		{
+			None,
+			DotNet1_0,
+			DotNet1_1,
+			DotNet2_0,
+			DotNet3_0,
+			DotNet3_5,
+			DotNet4client,
+			DotNet4full
+		}
+		//[Flags]
+		//public enum RequiredDotnetVersionsEnum : int
+		//{
+		//  None = 0, DotNet1_0 = 1, DotNet1_1 = 2, DotNet2_0 = 4, DotNet3_0 = 8, DotNet3_5 = 16, DotNet4client = 32, DotNet4full = 64,
+		//  All = DotNet1_0 | DotNet1_1 | DotNet2_0 | DotNet3_0 | DotNet3_5 | DotNet4client | DotNet4full
+		//}
+
 		private static string Spacer = "  ";
 		public string Empty = "";
 		public string ProductName;
@@ -41,6 +59,8 @@ namespace QuickAccess
 
 		public Boolean InstallForAllUsers;
 
+		public DotnetFrameworkTargetedEnum DotnetFrameworkTargeted;
+
 		public NSISclass() { }
 
 		public NSISclass(
@@ -61,10 +81,10 @@ namespace QuickAccess
 				Boolean UserMayChangeStartMenuNameIn,
 				string FilePathToRunOnFinishIn,
 				List<string> InstTypesIn,
+				DotnetFrameworkTargetedEnum DotnetFrameworkTargetedIn,
 				string InstallerIconPathIn = @"${NSISDIR}\Contrib\Graphics\Icons\modern-install-blue-full.ico",
 				string UninstallerIconPathIn = @"${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall-blue-full.ico",
-				Boolean InstallForAllUsersIn = true
-				)
+				Boolean InstallForAllUsersIn = true)
 		{
 			ProductName = ProductNameIn;
 			ProductVersion = ProductVersionIn;
@@ -92,6 +112,8 @@ namespace QuickAccess
 
 			FilePathToRunOnFinish = FilePathToRunOnFinishIn;
 			InstTypes = InstTypesIn;
+
+			DotnetFrameworkTargeted = DotnetFrameworkTargetedIn;
 
 			InstallForAllUsers = InstallForAllUsersIn;
 		}
@@ -231,6 +253,9 @@ namespace QuickAccess
 			tmpList.Add(@"; MUI 1.67 compatible ------");
 			tmpList.Add(@"!include ""MUI.nsh""");
 			tmpList.Add("");
+			tmpList.Add(@"; DotNetChecker checks and downloads dotnet version");
+			tmpList.Add(@"!include ""DotNetChecker.nsh""");
+			tmpList.Add("");
 
 			tmpList.Add(@"; MUI Settings");
 			tmpList.Add(@"!define MUI_ABORTWARNING");
@@ -331,11 +356,13 @@ namespace QuickAccess
 			tmpList.Add(@"Section -AdditionalIcons");
 			if (InstTypes != null && InstTypes.Count > 0) tmpList.Add(SectionInAllInstTypes);
 			//tmpList.Add(Spacer + @"SetShellVarContext " + (InstallForAllUsers ? "all" : "current"));
-			tmpList.Add(Spacer + @"SetShellVarContext " + "current");
+			tmpList.Add(Spacer + @"SetShellVarContext " + "current");//Needs to be current user otherwise does not show in startmenu
 			tmpList.Add(Spacer + @"!insertmacro MUI_STARTMENU_WRITE_BEGIN Application");
 			if (ProductExeName.Length > 0) tmpList.Add(Spacer + string.Format(@"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\{0}.lnk"" ""$INSTDIR\{0}.exe""", ProductExeName.ToUpper().EndsWith(".EXE") ? ProductExeName.Substring(0, ProductExeName.Length - 4) : ProductExeName));
-			tmpList.Add(Spacer + @"WriteIniStr ""$INSTDIR\${PRODUCT_NAME}.url"" ""InternetShortcut"" ""URL"" ""${PRODUCT_WEB_SITE}""");
-			if (ProductWebsite != null && ProductWebsite.Length > 0) tmpList.Add(Spacer + @"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\Website.lnk"" ""$INSTDIR\${PRODUCT_NAME}.url""");
+			tmpList.Add(Spacer + @"WriteIniStr ""$INSTDIR\Website of ${PRODUCT_NAME}.url"" ""InternetShortcut"" ""URL"" ""${PRODUCT_WEB_SITE}""");
+			if (ProductWebsite != null && ProductWebsite.Length > 0) tmpList.Add(Spacer + @"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\Website of ${PRODUCT_NAME}.lnk"" ""$INSTDIR\Website of ${PRODUCT_NAME}.url"" """" ""$WINDIR\system32\SHELL32.dll"" 14");
+			//tmpList.Add(Spacer + @"WriteIniStr ""$SMPROGRAMS\$ICONS_GROUP\${PRODUCT_NAME}.url"" ""InternetShortcut"" ""URL"" ""${PRODUCT_WEB_SITE}""");
+			//tmpList.Add(Spacer + @"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\${PRODUCT_NAME} website.lnk"" ""$INSTDIR\${PRODUCT_NAME}.url""");
 			tmpList.Add(Spacer + @"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"" ""$INSTDIR\uninst.exe""");
 			tmpList.Add(Spacer + @"!insertmacro MUI_STARTMENU_WRITE_END");
 			tmpList.Add(@"SectionEnd"); tmpList.Add("");
@@ -352,6 +379,26 @@ namespace QuickAccess
 			tmpList.Add(Spacer + @"WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} ""${PRODUCT_UNINST_KEY}"" ""URLInfoAbout"" ""${PRODUCT_WEB_SITE}""");
 			tmpList.Add(Spacer + @"WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} ""${PRODUCT_UNINST_KEY}"" ""Publisher"" ""${PRODUCT_PUBLISHER}""");
 			tmpList.Add(@"SectionEnd"); tmpList.Add("");
+
+			if (DotnetFrameworkTargeted != DotnetFrameworkTargetedEnum.None)
+			{
+				tmpList.Add(@"Section -DotNetFramework");
+				if (DotnetFrameworkTargeted == DotnetFrameworkTargetedEnum.DotNet4full)
+					tmpList.Add(Spacer + @"!insertmacro CheckNetFramework 40Full ; if your application targets .NET 4.0 Full Framework");
+				if (DotnetFrameworkTargeted == DotnetFrameworkTargetedEnum.DotNet4client)
+					tmpList.Add(Spacer + @"!insertmacro CheckNetFramework 40Client ; if your application targets .NET 4.0 Client Framework");
+				if (DotnetFrameworkTargeted == DotnetFrameworkTargetedEnum.DotNet3_5)
+					tmpList.Add(Spacer + @"!insertmacro CheckNetFramework 35 ; if your application targets .NET 3.5 Framework");
+				if (DotnetFrameworkTargeted == DotnetFrameworkTargetedEnum.DotNet3_0)
+					tmpList.Add(Spacer + @"!insertmacro CheckNetFramework 30 ; if your application targets .NET 3.0 Framework");
+				if (DotnetFrameworkTargeted == DotnetFrameworkTargetedEnum.DotNet2_0)
+					tmpList.Add(Spacer + @"!insertmacro CheckNetFramework 20 ; if your application targets .NET 2.0 Framework");
+				if (DotnetFrameworkTargeted == DotnetFrameworkTargetedEnum.DotNet1_1)
+					tmpList.Add(Spacer + @"!insertmacro CheckNetFramework 11 ; if your application targets .NET 1.1 Framework");
+				if (DotnetFrameworkTargeted == DotnetFrameworkTargetedEnum.DotNet1_0)
+					tmpList.Add(Spacer + @"!insertmacro CheckNetFramework 10 ; if your application targets .NET 1.0 Framework");
+				tmpList.Add(@"SectionEnd"); tmpList.Add("");
+			}
 
 			if (AllSectionAndGroupDescriptions != null && AllSectionAndGroupDescriptions.Count > 0)
 			{
@@ -986,7 +1033,8 @@ namespace QuickAccess
 									true,
 									true,
 									AppNameIncludingEXEextension,
-									new List<string>() { });
+									new List<string>() { },
+									DotnetFrameworkTargetedEnum.DotNet4client);
 							tmpMainNode.Nodes.Add(subSectionNode);
 
 							return tmpMainNode;

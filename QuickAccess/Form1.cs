@@ -306,7 +306,8 @@ namespace QuickAccess
 						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text,
 							new Dictionary<string,string>()
 							{
-								{ "quickaccess", null }
+								{ "quickaccess", null },
+								{ "monitorsystem", null }
 							},
 							CommandDetails.PathAutocompleteEnum.Both)
 					},
@@ -1658,72 +1659,93 @@ namespace QuickAccess
 					//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, newFileLines[appverlinenum]);
 
 					StreamWriter sw = new StreamWriter(csprojFileName);
-					try {
+					try
+					{
 						foreach (string line in newFileLines)
 							sw.WriteLine(line);
 					}
 					finally { sw.Close(); }
 
-					Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox,
-						"msbuild /t:publish /p:configuration=release /p:buildenvironment=DEV /p:applicationversion=" + newversionstring + " \"" + csprojFileName + "\"");
-
-
 					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 					{
-						string msbuildpath;
-						if (FindMsbuildPath4(out msbuildpath))
+						using (StreamWriter sw2 = new StreamWriter(@"C:\Users\francois\AppData\Local\FJH\NSISinstaller\NSISexports\DotNetChecker.nsh"))
 						{
-							//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, msbuildpath);
-							while (msbuildpath.EndsWith("\\")) msbuildpath = msbuildpath.Substring(0, msbuildpath.Length - 1);
-							msbuildpath += "\\msbuild.exe";
-
-							using (StreamWriter sw1 = new StreamWriter(@"C:\Users\francois.GLS\AppData\Local\FJH\NSISinstaller\NSISexports\tmp123.nsi"))
-							{
-								//TODO: This is awesome, after installing with NSIS you can type appname in RUN and it will open
-								List<string> list = NsisInterop.CreateOwnappNsis(
-								"AwesomeStuff",
-								"Awesome Stuff",
-								"1.0.2.3",//Should obtain (and increase) product version from csproj file
-								"www.google.co.za",
-								"AwesomeStuff.exe",
-								null,
-								true);
-								foreach (string line in list)
-									sw1.WriteLine(line);
-							}
-							return;
-
-							//TODO: Should change this process arguments to build and then process NSIS afterwards
-							ProcessStartInfo startinfo = new ProcessStartInfo(msbuildpath, "/t:publish /p:configuration=release /p:buildenvironment=DEV /p:applicationversion=" + newversionstring + " \"" + csprojFileName + "\"");
-							startinfo.UseShellExecute = false;
-							startinfo.CreateNoWindow = false;
-							startinfo.RedirectStandardOutput = true;
-						  startinfo.RedirectStandardError = true;
-							System.Diagnostics.Process msbuildproc = new Process();
-							msbuildproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-							{
-								if (outLine.Data != null && outLine.Data.Trim().Length > 0)
-									Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Msbuild output: " + outLine.Data);
-								//else appendLogTextbox("Svn output empty");
-							};
-							msbuildproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-							{
-								if (outLine.Data != null && outLine.Data.Trim().Length > 0)
-									Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Msbuild error: " + outLine.Data);
-								//else appendLogTextbox("Svn error empty");
-							};
-							msbuildproc.StartInfo = startinfo;
-
-							if (msbuildproc.Start())
-								Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Started building, please wait...");
-							else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: Could not start SVN process.");
-
-							msbuildproc.BeginOutputReadLine();
-							msbuildproc.BeginErrorReadLine();
-
-							msbuildproc.WaitForExit();
+							sw2.Write(NsisInterop.DotNetChecker_NSH_file);
 						}
-						else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to find msbuild path: " + msbuildpath);
+						string nsisFileName = @"C:\Users\francois\AppData\Local\FJH\NSISinstaller\NSISexports\" + projName + "_" + newversionstring + ".nsi";
+						using (StreamWriter sw1 = new StreamWriter(nsisFileName))
+						{
+							Func<string, string> InsertSpacesBeforeCamelCase = new Func<string, string>(
+								(s) =>
+								{
+									if (s == null) return s;
+									for (int i = s.Length - 1; i >= 1; i--)
+									{
+										if (s[i].ToString().ToUpper() == s[i].ToString())
+											s = s.Insert(i, " ");
+									}
+									return s;
+								});
+
+							//TODO: This is awesome, after installing with NSIS you can type appname in RUN and it will open
+							List<string> list = NsisInterop.CreateOwnappNsis(
+							projName,
+							InsertSpacesBeforeCamelCase(projName),
+							newversionstring,//Should obtain (and increase) product version from csproj file
+							"http://fjh.dyndns.org/ownapplications/" + projName.ToLower(),
+							projName + ".exe",
+							null,
+							true,
+							NSISclass.DotnetFrameworkTargetedEnum.DotNet4client);
+							foreach (string line in list)
+								sw1.WriteLine(line);
+							sw.Close();
+							Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Successfully created NSIS file: " + nsisFileName);
+							Process.Start("explorer", "/select, \"" + nsisFileName + "\"");
+						}
+						return;
+
+						//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox,
+						//  "msbuild /t:publish /p:configuration=release /p:buildenvironment=DEV /p:applicationversion=" + newversionstring + " \"" + csprojFileName + "\"");
+
+						////string msbuildpath;
+						////if (FindMsbuildPath4(out msbuildpath))
+						////{
+						////Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, msbuildpath);
+						//while (msbuildpath.EndsWith("\\")) msbuildpath = msbuildpath.Substring(0, msbuildpath.Length - 1);
+						//msbuildpath += "\\msbuild.exe";
+
+						////TODO: Should change this process arguments to build and then process NSIS afterwards
+						//ProcessStartInfo startinfo = new ProcessStartInfo(msbuildpath, "/t:publish /p:configuration=release /p:buildenvironment=DEV /p:applicationversion=" + newversionstring + " \"" + csprojFileName + "\"");
+						//startinfo.UseShellExecute = false;
+						//startinfo.CreateNoWindow = false;
+						//startinfo.RedirectStandardOutput = true;
+						//startinfo.RedirectStandardError = true;
+						//System.Diagnostics.Process msbuildproc = new Process();
+						//msbuildproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+						//{
+						//  if (outLine.Data != null && outLine.Data.Trim().Length > 0)
+						//    Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Msbuild output: " + outLine.Data);
+						//  //else appendLogTextbox("Svn output empty");
+						//};
+						//msbuildproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+						//{
+						//  if (outLine.Data != null && outLine.Data.Trim().Length > 0)
+						//    Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Msbuild error: " + outLine.Data);
+						//  //else appendLogTextbox("Svn error empty");
+						//};
+						//msbuildproc.StartInfo = startinfo;
+
+						//if (msbuildproc.Start())
+						//  Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Started building, please wait...");
+						//else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: Could not start SVN process.");
+
+						//msbuildproc.BeginOutputReadLine();
+						//msbuildproc.BeginErrorReadLine();
+
+						//msbuildproc.WaitForExit();
+						//}
+						//else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to find msbuild path: " + msbuildpath);
 					});
 				}
 			}
@@ -1742,7 +1764,8 @@ namespace QuickAccess
 			string ProductExeNameIn,
 			NSISclass.LicensePageDetails LicenseDetails,
 			//List<NSISclass.SectionGroupClass.SectionClass> sections,
-			bool InstallForAllUsers)
+			bool InstallForAllUsers,
+			NSISclass.DotnetFrameworkTargetedEnum DotnetFrameworkTargetedIn)
 		{
 			NSISclass nsis = new NSISclass(
 				ProductPublishedNameIn,
@@ -1760,7 +1783,8 @@ namespace QuickAccess
 				true,
 				true,
 				ProductExeNameIn,
-				null//No InstTypes at this stage
+				null,//No InstTypes at this stage
+				DotnetFrameworkTargetedIn
 				//InstallForAllUsersIn: InstallForAllUsers
 				);
 
@@ -1798,12 +1822,126 @@ namespace QuickAccess
 			SectionGroupLines.Add(@"  SetOverwrite ifnewer");
 			SectionGroupLines.Add(@"	SetOutPath ""$INSTDIR""");
 			SectionGroupLines.Add(@"  SetOverwrite ifnewer");
-			SectionGroupLines.Add(@"  File /a """ + PublishedDir + @"\*.*""");
+			SectionGroupLines.Add(@"  File /a /x *.application /x *.vshost.* /x *.manifest """ + PublishedDir + @"\*.*""");
 			SectionGroupLines.Add(@"SectionEnd");
 
 			return nsis.GetAllLinesForNSISfile(
 				SectionGroupLines,
 				null);//SectionDescriptions);
+		}
+
+		public static string DotNetChecker_NSH_file
+		{
+			get
+			{
+				string FileContents =
+					@"
+				!macro CheckNetFramework FrameworkVersion
+				Var /GLOBAL dotNetUrl
+				Var /GLOBAL dotNetReadableVersion
+
+				!define DOTNET40Full_URL 	""http://www.microsoft.com/downloads/info.aspx?na=41&srcfamilyid=0a391abd-25c1-4fc0-919f-b21f31ab88b7&srcdisplaylang=en&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2f9%2f5%2fA%2f95A9616B-7A37-4AF6-BC36-D6EA96C8DAAE%2fdotNetFx40_Full_x86_x64.exe""
+				!define DOTNET40Client_URL	""http://www.microsoft.com/downloads/info.aspx?na=41&srcfamilyid=e5ad0459-cbcc-4b4f-97b6-fb17111cf544&srcdisplaylang=en&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2f5%2f6%2f2%2f562A10F9-C9F4-4313-A044-9C94E0A8FAC8%2fdotNetFx40_Client_x86_x64.exe""
+				!define DOTNET35_URL		""http://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe""
+				!define DOTNET30_URL		""http://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe""
+				!define DOTNET20_URL		""http://www.microsoft.com/downloads/info.aspx?na=41&srcfamilyid=0856eacb-4362-4b0d-8edd-aab15c5e04f5&srcdisplaylang=en&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2f5%2f6%2f7%2f567758a3-759e-473e-bf8f-52154438565a%2fdotnetfx.exe""
+				!define DOTNET11_URL		""http://www.microsoft.com/downloads/info.aspx?na=41&srcfamilyid=262d25e3-f589-4842-8157-034d1e7cf3a3&srcdisplaylang=en&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2fa%2fa%2fc%2faac39226-8825-44ce-90e3-bf8203e74006%2fdotnetfx.exe""
+				!define DOTNET10_URL		""http://www.microsoft.com/downloads/info.aspx?na=41&srcfamilyid=262d25e3-f589-4842-8157-034d1e7cf3a3&srcdisplaylang=en&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2fa%2fa%2fc%2faac39226-8825-44ce-90e3-bf8203e74006%2fdotnetfx.exe""
+
+				${If} ${FrameworkVersion} == ""40Full""
+					StrCpy $dotNetUrl ${DOTNET40Full_URL}
+					StrCpy $dotNetReadableVersion ""4.0 Full""
+				${ElseIf} ${FrameworkVersion} == ""40Client""
+					StrCpy $dotNetUrl ${DOTNET40Client_URL}
+					StrCpy $dotNetReadableVersion ""4.0 Client""
+				${ElseIf} ${FrameworkVersion} == ""35""
+					StrCpy $dotNetUrl ${DOTNET35_URL}
+					StrCpy $dotNetReadableVersion ""3.5""
+				${ElseIf} ${FrameworkVersion} == ""30""
+					StrCpy $dotNetUrl ${DOTNET30_URL}
+					StrCpy $dotNetReadableVersion ""3.0""
+				${ElseIf} ${FrameworkVersion} == ""20""
+					StrCpy $dotNetUrl ${DOTNET20_URL}
+					StrCpy $dotNetReadableVersion ""2.0""
+				${ElseIf} ${FrameworkVersion} == ""11""
+					StrCpy $dotNetUrl ${DOTNET11_URL}
+					StrCpy $dotNetReadableVersion ""1.1""
+				${ElseIf} ${FrameworkVersion} == ""10""
+					StrCpy $dotNetUrl ${DOTNET10_URL}
+					StrCpy $dotNetReadableVersion ""1.0""
+				${EndIf}
+	
+				DetailPrint ""Checking .NET Framework version...""
+
+				Push $0
+				Push $1
+				Push $2
+				Push $3
+				Push $4
+				Push $5
+				Push $6
+				Push $7
+
+				DotNetChecker::IsDotNet${FrameworkVersion}Installed
+				Pop $0
+	
+				${If} $0 == ""false""
+					DetailPrint "".NET Framework $dotNetReadableVersion not found, download is required for program to run.""
+					Goto NoDotNET
+				${Else}
+					DetailPrint "".NET Framework $dotNetReadableVersion found, no need to install.""
+					Goto NewDotNET
+				${EndIf}
+
+			NoDotNET:
+				MessageBox MB_YESNOCANCEL|MB_ICONEXCLAMATION \
+				"".NET Framework not installed. Required version: $dotNetReadableVersion.$\nDownload .NET Framework $dotNetReadableVersion from www.microsoft.com?"" \
+				/SD IDYES IDYES DownloadDotNET IDNO NewDotNET
+				goto GiveUpDotNET ;IDCANCEL
+
+			DownloadDotNET:
+				DetailPrint ""Beginning download of .NET Framework $dotNetReadableVersion.""
+				NSISDL::download $dotNetUrl ""$TEMP\dotnetfx.exe""
+				DetailPrint ""Completed download.""
+
+				Pop $0
+				${If} $0 == ""cancel""
+					MessageBox MB_YESNO|MB_ICONEXCLAMATION \
+					""Download cancelled.  Continue Installation?"" \
+					IDYES NewDotNET IDNO GiveUpDotNET
+				${ElseIf} $0 != ""success""
+					MessageBox MB_YESNO|MB_ICONEXCLAMATION \
+					""Download failed:$\n$0$\n$\nContinue Installation?"" \
+					IDYES NewDotNET IDNO GiveUpDotNET
+				${EndIf}
+
+				DetailPrint ""Pausing installation while downloaded .NET Framework installer runs.""
+				ExecWait '$TEMP\dotnetfx.exe /q /c:""install /q""'
+
+				DetailPrint ""Completed .NET Framework install/update. Removing .NET Framework installer.""
+				Delete ""$TEMP\dotnetfx.exe""
+				DetailPrint "".NET Framework installer removed.""
+				goto NewDotNet
+
+			GiveUpDotNET:
+				Abort ""Installation cancelled by user.""
+
+			NewDotNET:
+				DetailPrint ""Proceeding with remainder of installation.""
+				Pop $0
+				Pop $1
+				Pop $2
+				Pop $3
+				Pop $4
+				Pop $5
+				Pop $6
+				Pop $7
+
+			!macroend
+			";
+				FileContents = FileContents.Replace("\t\t\t\t\t", "    ").Replace("\t\t\t\t", "  ").Replace("\t\t\t", "");
+				return FileContents;
+			}
 		}
 	}
 
