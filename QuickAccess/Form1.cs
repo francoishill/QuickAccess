@@ -20,7 +20,7 @@ namespace QuickAccess
 {
 	public partial class Form1 : Form
 	{
-		private static string ThisAppName = "QuickAccess";
+		//private static string ThisAppName = "QuickAccess";
 		//private const string ServerAddress = "http://localhost";
 		//private const string ServerAddress = "https://fjh.co.za";
 		private const string ServerAddress = "http://firepuma.com";
@@ -1776,6 +1776,8 @@ namespace QuickAccess
 									}
 									return s;
 								});
+
+							bool MustBuildBeforePublish:
 
 							//TODO: This is awesome, after installing with NSIS you can type appname in RUN and it will open
 							List<string> list = NsisInterop.CreateOwnappNsis(
