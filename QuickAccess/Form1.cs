@@ -743,7 +743,7 @@ namespace QuickAccess
 					contextMenuStrip_TrayIcon.Focus();
 					if (commandsToolStripMenuItem.HasDropDownItems)
 					{
-						//TODO: The following line actually dows nothing
+						//DONE TODO: The following line actually dows nothing
 						commandsToolStripMenuItem.ShowDropDown();//.DropDownItems[0].Select();
 						commandsToolStripMenuItem.DropDownItems[0].Select();
 					}
@@ -1733,7 +1733,7 @@ namespace QuickAccess
 					while (msbuildpath.EndsWith("\\")) msbuildpath = msbuildpath.Substring(0, msbuildpath.Length - 1);
 					msbuildpath += "\\msbuild.exe";
 
-					//TODO: Should change this process arguments to build and then process NSIS afterwards
+					//DONE TODO: Should change this process arguments to build and then process NSIS afterwards
 					ProcessStartInfo startinfo = new ProcessStartInfo(msbuildpath, "/t:rebuild /p:configuration=release \"" + csprojFileName + "\"");
 					startinfo.UseShellExecute = false;
 					startinfo.CreateNoWindow = false;
