@@ -28,6 +28,9 @@ namespace QuickAccess
 		private static string Username = "f";
 		private static string Password = "f";
 
+		public static string LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+		public static string MydocsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
 		private const string AvailableActionList = "Type tasks: todo, run, mail, explore, web, google, kill, startupbat, call, cmd, btw, svncommit, etc";
 
 		public const int WM_NCLBUTTONDOWN = 0xA1;
@@ -71,6 +74,34 @@ namespace QuickAccess
 
 		[DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
 		static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);
+
+		public Form1()
+		{
+			InitializeComponent();
+
+			Commands.PopulateCommandList();
+
+			/*if (!System.Diagnostics.Debugger.IsAttached && Environment.GetCommandLineArgs()[0].ToUpper().Contains("Apps\\2.0".ToUpper()))
+			{
+				Microsoft.Win32.RegistryKey regkeyRUN = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+				regkeyRUN.SetValue(ThisAppName, "\"" + System.Windows.Forms.Application.ExecutablePath + "\"", Microsoft.Win32.RegistryValueKind.String);
+			}*/
+
+			origOpacity = this.Opacity;
+			this.Opacity = 0;
+		}
+
+		private void Form1_Shown(object sender, EventArgs e)
+		{
+			this.ShowInTaskbar = true;
+			if (!RegisterHotKey(this.Handle, Hotkey1, MOD_CONTROL, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Q");
+			if (!RegisterHotKey(this.Handle, Hotkey2, MOD_CONTROL + MOD_SHIFT, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Shift + Q");
+			label1.Text = AvailableActionList;
+			SetAutocompleteActionList();
+			//InitializeHooks(false, true);
+			this.Hide();
+			this.Opacity = origOpacity;
+		}
 
 		public class Commands
 		{
@@ -118,12 +149,12 @@ namespace QuickAccess
 						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text,
 							new Dictionary<string,string>()
 							{
-								{ "chrome", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\Application\chrome.exe" },
-								{ "canary", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome SxS\Application\chrome.exe" },
-								{ "delphi2007", @"C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\bds.exe" },
-								{ "delphi2010", @"C:\Program Files (x86)\Embarcadero\RAD Studio\7.0\bin\bds.exe" },
-								{ "phpstorm", @"C:\Program Files (x86)\JetBrains\PhpStorm 2.1.4\bin\PhpStorm.exe" },
-								{ "sqlitespy", @"C:\Francois\Programs\SQLiteSpy_1.9.1\SQLiteSpy.exe" }
+								{ "Chrome", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\Application\chrome.exe" },
+								{ "Canary", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome SxS\Application\chrome.exe" },
+								{ "Delphi2007", @"C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\bds.exe" },
+								{ "Delphi2010", @"C:\Program Files (x86)\Embarcadero\RAD Studio\7.0\bin\bds.exe" },
+								{ "PhpStorm", @"C:\Program Files (x86)\JetBrains\PhpStorm 2.1.4\bin\PhpStorm.exe" },
+								{ "SqliteSpy", @"C:\Francois\Programs\SQLiteSpy_1.9.1\SQLiteSpy.exe" }
 							},
 							CommandDetails.PathAutocompleteEnum.Both)
 					},
@@ -212,7 +243,7 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.Call);
 
 				AddToCommandList("cmd",
-					"cmd firepuma/folderpath",
+					"cmd Firepuma/folderpath",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
 						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text,
@@ -225,13 +256,13 @@ namespace QuickAccess
 					CommandDetails.PerformCommandTypeEnum.Cmd);
 
 				AddToCommandList("vscmd",
-					"vscmd albionx86/folderpath",
+					"vscmd AllbionX86/folderpath",
 					new List<CommandDetails.CommandArgumentClass>()
 					{
 						new CommandDetails.CommandArgumentClass("TokenOrPath", true, CommandDetails.TypeArg.Text,
 							new Dictionary<string,string>()
 							{
-								{ "albionx86", @"c:\devx86\Albion" }
+								{ "Albionx86", @"c:\devx86\Albion" }
 							},
 							CommandDetails.PathAutocompleteEnum.Directories)
 					},
@@ -251,12 +282,15 @@ namespace QuickAccess
 						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text,
 							new Dictionary<string,string>()
 							{
-								{ "wadiso5", @"C:\Programming\Wadiso5\W5Source" },
-								{ "glscore_programming", @"C:\Programming\GLSCore" },
-								{ "glscore_srmsdata", @"C:\Data\Delphi\GLSCore" },
-								{ "delphichromiumembedded", @"C:\Users\francois.GLS\Documents\RAD Studio\Projects\TestChrome_working_svn" },
-								{ "glsreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
-								{ "glsreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" }
+								{ "Wadiso5", @"C:\Programming\Wadiso5\W5Source" },
+								{ "GLScore_programming", @"C:\Programming\GLSCore" },
+								{ "GLScore_srmsdata", @"C:\Data\Delphi\GLSCore" },
+								{ "DelphiChromiumEmbedded", MydocsPath + @"\RAD Studio\Projects\TestChrome_working_svn" },
+								{ "GLSreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
+								{ "GLSreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" },
+								{ "QuickAccess", null },
+								{ "MonitorSystem", null },
+								{ "NSISinstaller", null }
 							},
 							CommandDetails.PathAutocompleteEnum.Both),
 						new CommandDetails.CommandArgumentClass("LogMessage", true, CommandDetails.TypeArg.Text, null)
@@ -271,11 +305,14 @@ namespace QuickAccess
 							new Dictionary<string,string>()
 							{
 								{ "wadiso5", @"C:\Programming\Wadiso5\W5Source" },
-								{ "glscore_programming", @"C:\Programming\GLSCore" },
-								{ "glscore_srmsdata", @"C:\Data\Delphi\GLSCore" },
-								{ "delphichromiumembedded", @"C:\Users\francois.GLS\Documents\RAD Studio\Projects\TestChrome_working_svn" },
-								{ "glsreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
-								{ "glsreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" }
+								{ "GLScore_programming", @"C:\Programming\GLSCore" },
+								{ "GLScore_srmsdata", @"C:\Data\Delphi\GLSCore" },
+								{ "DelphiChromiumEmbedded", MydocsPath + @"\RAD Studio\Projects\TestChrome_working_svn" },
+								{ "GLSreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
+								{ "GLSreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" },
+								{ "QuickAccess", null },
+								{ "MonitorSystem", null },
+								{ "NSISinstaller", null }
 							},
 							CommandDetails.PathAutocompleteEnum.Both)
 					},
@@ -288,12 +325,15 @@ namespace QuickAccess
 						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text,
 							new Dictionary<string,string>()
 							{
-								{ "wadiso5", @"C:\Programming\Wadiso5\W5Source" },
-								{ "glscore_programming", @"C:\Programming\GLSCore" },
-								{ "glscore_srmsdata", @"C:\Data\Delphi\GLSCore" },
-								{ "delphichromiumembedded", @"C:\Users\francois.GLS\Documents\RAD Studio\Projects\TestChrome_working_svn" },
-								{ "glsreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
-								{ "glsreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" }
+								{ "Wadiso5", @"C:\Programming\Wadiso5\W5Source" },
+								{ "GLScore_programming", @"C:\Programming\GLSCore" },
+								{ "GLScore_srmsdata", @"C:\Data\Delphi\GLSCore" },
+								{ "DelphiChromiumEmbedded", MydocsPath + @"\RAD Studio\Projects\TestChrome_working_svn" },
+								{ "GLSreports_cssjs", @"C:\ProgramData\GLS\Wadiso\Reports" },
+								{ "GLSreports_xmlsql", @"C:\ProgramData\GLS\ReportSQLqueries" },
+								{ "QuickAccess", null },
+								{ "MonitorSystem", null },
+								{ "NSISinstaller", null }
 							},
 							CommandDetails.PathAutocompleteEnum.Both)
 					},
@@ -306,8 +346,8 @@ namespace QuickAccess
 						new CommandDetails.CommandArgumentClass("VsProjectName", true, CommandDetails.TypeArg.Text,
 							new Dictionary<string,string>()
 							{
-								{ "quickaccess", null },
-								{ "monitorsystem", null }
+								{ "QuickAccess", null },
+								{ "MonitorSystem", null }
 							},
 							CommandDetails.PathAutocompleteEnum.Both)
 					},
@@ -666,34 +706,6 @@ namespace QuickAccess
 					}
 				}
 			}
-		}
-
-		public Form1()
-		{
-			InitializeComponent();
-
-			Commands.PopulateCommandList();
-
-			if (!System.Diagnostics.Debugger.IsAttached && Environment.GetCommandLineArgs()[0].ToUpper().Contains("Apps\\2.0".ToUpper()))
-			{
-				Microsoft.Win32.RegistryKey regkeyRUN = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-				regkeyRUN.SetValue(ThisAppName, "\"" + System.Windows.Forms.Application.ExecutablePath + "\"", Microsoft.Win32.RegistryValueKind.String);
-			}
-
-			origOpacity = this.Opacity;
-			this.Opacity = 0;
-		}
-
-		private void Form1_Shown(object sender, EventArgs e)
-		{
-			this.ShowInTaskbar = true;
-			if (!RegisterHotKey(this.Handle, Hotkey1, MOD_CONTROL, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Q");
-			if (!RegisterHotKey(this.Handle, Hotkey2, MOD_CONTROL + MOD_SHIFT, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Shift + Q");
-			label1.Text = AvailableActionList;
-			SetAutocompleteActionList();
-			//InitializeHooks(false, true);
-			this.Hide();
-			this.Opacity = origOpacity;
 		}
 
 		protected override void WndProc(ref Message m)
@@ -1417,7 +1429,10 @@ namespace QuickAccess
 			while (topParent != null && topParent != messagesTextbox.Parent) topParent = messagesTextbox.Parent;
 			if (topParent is Form1)// && (topParent as Form1).Visible)
 				(topParent as Form1).notifyIcon1.ShowBalloonTip(3000, "Message", str, ToolTipIcon.Info);
-			messagesTextbox.Text = str + (messagesTextbox.Text.Length > 0 ? Environment.NewLine : "") + messagesTextbox.Text;
+			ThreadingInterop.UpdateGuiFromThread(messagesTextbox, () =>
+			{
+				messagesTextbox.Text = str + (messagesTextbox.Text.Length > 0 ? Environment.NewLine : "") + messagesTextbox.Text;
+			});			
 			Application.DoEvents();
 		}
 	}
@@ -1433,6 +1448,13 @@ namespace QuickAccess
 			th.Start();
 			//th.Join();
 			while (th.IsAlive) { Application.DoEvents(); }
+		}
+
+		public static void UpdateGuiFromThread(Control controlToUpdate, Action action)
+		{
+			if (controlToUpdate.InvokeRequired)
+				controlToUpdate.Invoke(action, new object[] { });
+			else action.Invoke();
 		}
 
 		delegate void AutocompleteCallback(TextBox txtBox, String text);
@@ -1668,11 +1690,11 @@ namespace QuickAccess
 
 					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 					{
-						using (StreamWriter sw2 = new StreamWriter(@"C:\Users\francois\AppData\Local\FJH\NSISinstaller\NSISexports\DotNetChecker.nsh"))
+						using (StreamWriter sw2 = new StreamWriter(Form1.LocalAppDataPath + @"\FJH\NSISinstaller\NSISexports\DotNetChecker.nsh"))
 						{
 							sw2.Write(NsisInterop.DotNetChecker_NSH_file);
 						}
-						string nsisFileName = @"C:\Users\francois\AppData\Local\FJH\NSISinstaller\NSISexports\" + projName + "_" + newversionstring + ".nsi";
+						string nsisFileName = Form1.LocalAppDataPath + @"\FJH\NSISinstaller\NSISexports\" + projName + "_" + newversionstring + ".nsi";
 						using (StreamWriter sw1 = new StreamWriter(nsisFileName))
 						{
 							Func<string, string> InsertSpacesBeforeCamelCase = new Func<string, string>(
@@ -1767,6 +1789,10 @@ namespace QuickAccess
 			bool InstallForAllUsers,
 			NSISclass.DotnetFrameworkTargetedEnum DotnetFrameworkTargetedIn)
 		{
+			string SetupName = ProductPublishedNameIn;
+			while (SetupName.Contains(' ')) SetupName = SetupName.Replace(" ", "");
+			SetupName = "Setup_" + SetupName + "_" + ProductVersionIn.Replace('.', '_') + ".exe";
+
 			NSISclass nsis = new NSISclass(
 				ProductPublishedNameIn,
 				ProductVersionIn,
@@ -1774,7 +1800,7 @@ namespace QuickAccess
 				ProductWebsiteIn,
 				ProductExeNameIn,
 				new NSISclass.Compressor(NSISclass.Compressor.CompressionModeEnum.bzip2, false, false),
-				"Setup_" + ProductExeNameIn,
+				SetupName,
 				NSISclass.LanguagesEnum.English,
 				true,
 				true,
@@ -1823,11 +1849,13 @@ namespace QuickAccess
 			SectionGroupLines.Add(@"	SetOutPath ""$INSTDIR""");
 			SectionGroupLines.Add(@"  SetOverwrite ifnewer");
 			SectionGroupLines.Add(@"  File /a /x *.application /x *.vshost.* /x *.manifest """ + PublishedDir + @"\*.*""");
+			SectionGroupLines.Add(@"  WriteRegStr HKCU ""SOFTWARE\Microsoft\Windows\CurrentVersion\Run"" '${PRODUCT_NAME}' '$INSTDIR\${PRODUCT_EXE_NAME}'");
 			SectionGroupLines.Add(@"SectionEnd");
 
 			return nsis.GetAllLinesForNSISfile(
 				SectionGroupLines,
-				null);//SectionDescriptions);
+				null,
+				true);//SectionDescriptions);
 		}
 
 		public static string DotNetChecker_NSH_file

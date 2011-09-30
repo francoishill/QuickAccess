@@ -224,7 +224,7 @@ namespace QuickAccess
 			}
 		}
 
-		public List<string> GetAllLinesForNSISfile(List<string> AllSectionGroupLines, List<string> AllSectionAndGroupDescriptions)
+		public List<string> GetAllLinesForNSISfile(List<string> AllSectionGroupLines, List<string> AllSectionAndGroupDescriptions, bool UninstallWillDeleteProgramAutoRunInRegistry_CurrentUser)
 		{
 			List<string> tmpList = new List<string>();
 
@@ -245,6 +245,7 @@ namespace QuickAccess
 			}
 
 			tmpList.Add(@"!define PRODUCT_STARTMENU_REGVAL ""NSIS:StartMenuDir""");
+			tmpList.Add(@"!define PRODUCT_SETUP_FILENAME """ + (SetupFileName.ToLower().EndsWith(".exe") ? SetupFileName : SetupFileName + ".exe")  + @"""");
 			tmpList.Add("");
 
 			tmpList.Add(@";SetCompressor ""/SOLID"" lzma ;Seems to be using more space..");
@@ -308,7 +309,7 @@ namespace QuickAccess
 
 
 			tmpList.Add(@"; Finish page");
-			if (FilePathToRunOnFinish.Length > 0) tmpList.Add(@"!define MUI_FINISHPAGE_RUN """ + FilePathToRunOnFinish + @"""");
+			if (FilePathToRunOnFinish.Length > 0) tmpList.Add(@"!define MUI_FINISHPAGE_RUN ""${PRODUCT_EXE_NAME}""");
 			tmpList.Add(@"!insertmacro MUI_PAGE_FINISH"); tmpList.Add("");
 
 			if (UseUninstaller)
@@ -330,7 +331,7 @@ namespace QuickAccess
 			tmpList.Add("");
 
 			tmpList.Add(@"Name ""${PRODUCT_NAME} ${PRODUCT_VERSION}""");
-			tmpList.Add(@"OutFile """ + SetupFileName + (SetupFileName.ToUpper().EndsWith(".EXE") ? "" : ".exe") + @"""");
+			tmpList.Add(@"OutFile ""${PRODUCT_SETUP_FILENAME}""");
 
 			//foreach (LanguagesEnum testLanguageFound in Enum.GetValues(typeof(LanguagesEnum)))
 			//    if (Languages.HasFlag(testLanguageFound) && testLanguageFound.ToString().ToUpper() != UsedLangueString.ToUpper())
@@ -358,22 +359,22 @@ namespace QuickAccess
 			//tmpList.Add(Spacer + @"SetShellVarContext " + (InstallForAllUsers ? "all" : "current"));
 			tmpList.Add(Spacer + @"SetShellVarContext " + "current");//Needs to be current user otherwise does not show in startmenu
 			tmpList.Add(Spacer + @"!insertmacro MUI_STARTMENU_WRITE_BEGIN Application");
-			if (ProductExeName.Length > 0) tmpList.Add(Spacer + string.Format(@"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\{0}.lnk"" ""$INSTDIR\{0}.exe""", ProductExeName.ToUpper().EndsWith(".EXE") ? ProductExeName.Substring(0, ProductExeName.Length - 4) : ProductExeName));
+			if (ProductExeName.Length > 0) tmpList.Add(Spacer + @"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\${PRODUCT_NAME}.lnk"" ""$INSTDIR\${PRODUCT_EXE_NAME}""");
 			tmpList.Add(Spacer + @"WriteIniStr ""$INSTDIR\Website of ${PRODUCT_NAME}.url"" ""InternetShortcut"" ""URL"" ""${PRODUCT_WEB_SITE}""");
 			if (ProductWebsite != null && ProductWebsite.Length > 0) tmpList.Add(Spacer + @"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\Website of ${PRODUCT_NAME}.lnk"" ""$INSTDIR\Website of ${PRODUCT_NAME}.url"" """" ""$WINDIR\system32\SHELL32.dll"" 14");
 			//tmpList.Add(Spacer + @"WriteIniStr ""$SMPROGRAMS\$ICONS_GROUP\${PRODUCT_NAME}.url"" ""InternetShortcut"" ""URL"" ""${PRODUCT_WEB_SITE}""");
 			//tmpList.Add(Spacer + @"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\${PRODUCT_NAME} website.lnk"" ""$INSTDIR\${PRODUCT_NAME}.url""");
-			tmpList.Add(Spacer + @"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"" ""$INSTDIR\uninst.exe""");
+			tmpList.Add(Spacer + @"CreateShortCut ""$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"" ""$INSTDIR\Uninstall.exe""");
 			tmpList.Add(Spacer + @"!insertmacro MUI_STARTMENU_WRITE_END");
 			tmpList.Add(@"SectionEnd"); tmpList.Add("");
 
 			tmpList.Add(@"Section -Post");
 			if (InstTypes != null && InstTypes.Count > 0) tmpList.Add(SectionInAllInstTypes);
 			tmpList.Add(Spacer + @"SetShellVarContext " + (InstallForAllUsers ? "all" : "current"));
-			tmpList.Add(Spacer + @"WriteUninstaller ""$INSTDIR\uninst.exe""");
+			tmpList.Add(Spacer + @"WriteUninstaller ""$INSTDIR\Uninstall.exe""");
 			tmpList.Add(Spacer + @"WriteRegStr HKLM ""${PRODUCT_DIR_REGKEY}"" """" ""$INSTDIR\${PRODUCT_EXE_NAME}""");
 			tmpList.Add(Spacer + @"WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} ""${PRODUCT_UNINST_KEY}"" ""DisplayName"" ""$(^Name)""");
-			tmpList.Add(Spacer + @"WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} ""${PRODUCT_UNINST_KEY}"" ""UninstallString"" ""$INSTDIR\uninst.exe""");
+			tmpList.Add(Spacer + @"WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} ""${PRODUCT_UNINST_KEY}"" ""UninstallString"" ""$INSTDIR\Uninstall.exe""");
 			tmpList.Add(Spacer + @"WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} ""${PRODUCT_UNINST_KEY}"" ""DisplayIcon"" ""$INSTDIR\${PRODUCT_EXE_NAME}""");
 			tmpList.Add(Spacer + @"WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} ""${PRODUCT_UNINST_KEY}"" ""DisplayVersion"" ""${PRODUCT_VERSION}""");
 			tmpList.Add(Spacer + @"WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} ""${PRODUCT_UNINST_KEY}"" ""URLInfoAbout"" ""${PRODUCT_WEB_SITE}""");
@@ -440,6 +441,7 @@ namespace QuickAccess
 
 			tmpList.Add(Spacer + @"DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} ""${PRODUCT_UNINST_KEY}""");
 			tmpList.Add(Spacer + @"DeleteRegKey HKLM ""${PRODUCT_DIR_REGKEY}""");
+			if (UninstallWillDeleteProgramAutoRunInRegistry_CurrentUser) tmpList.Add(Spacer + @"DeleteRegValue HKCU ""SOFTWARE\Microsoft\Windows\CurrentVersion\Run"" '${PRODUCT_NAME}'");
 			tmpList.Add(Spacer + @"SetAutoClose true");
 			tmpList.Add(@"SectionEnd");
 
@@ -799,7 +801,7 @@ namespace QuickAccess
 					foreach (string line in GetDescriptionOfNode(subnode))
 						tmpSectionDescriptionLines.Add(line);
 
-				return ((NSISclass)NodeIn.Tag).GetAllLinesForNSISfile(tmpSectionGroupLines, tmpSectionDescriptionLines);
+				return ((NSISclass)NodeIn.Tag).GetAllLinesForNSISfile(tmpSectionGroupLines, tmpSectionDescriptionLines, false);
 
 				//foreach (string line in ((NSISclass)NodeIn.Tag).GetAllLinesForNSISfile(tmpSectionGroupLines, tmpSectionDescriptionLines))
 				//    textBox_CURRENTNODETEXTBLOCK.Text += (textBox_CURRENTNODETEXTBLOCK.Text.Length > 0 ? Environment.NewLine : "") + line;
