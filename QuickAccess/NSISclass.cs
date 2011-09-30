@@ -58,6 +58,7 @@ namespace QuickAccess
 		public List<string> InstTypes;
 
 		public Boolean InstallForAllUsers;
+		public string StartmenuFolderName;
 
 		public DotnetFrameworkTargetedEnum DotnetFrameworkTargeted;
 
@@ -81,6 +82,7 @@ namespace QuickAccess
 				Boolean UserMayChangeStartMenuNameIn,
 				string FilePathToRunOnFinishIn,
 				List<string> InstTypesIn,
+				string StartmenuFolderNameIn,
 				DotnetFrameworkTargetedEnum DotnetFrameworkTargetedIn,
 				string InstallerIconPathIn = @"${NSISDIR}\Contrib\Graphics\Icons\modern-install-blue-full.ico",
 				string UninstallerIconPathIn = @"${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall-blue-full.ico",
@@ -112,6 +114,7 @@ namespace QuickAccess
 
 			FilePathToRunOnFinish = FilePathToRunOnFinishIn;
 			InstTypes = InstTypesIn;
+			StartmenuFolderName = StartmenuFolderNameIn;
 
 			DotnetFrameworkTargeted = DotnetFrameworkTargetedIn;
 
@@ -297,7 +300,7 @@ namespace QuickAccess
 				tmpList.Add(@"; Start menu page");
 				tmpList.Add(@"var ICONS_GROUP");
 				tmpList.Add(@"!define MUI_STARTMENUPAGE_NODISABLE");
-				tmpList.Add(@"!define MUI_STARTMENUPAGE_DEFAULTFOLDER ""${PRODUCT_NAME}""");
+				tmpList.Add(@"!define MUI_STARTMENUPAGE_DEFAULTFOLDER """ + (StartmenuFolderName != null && StartmenuFolderName.Length > 0 ? StartmenuFolderName + "\\" : "") + @"${PRODUCT_NAME}""");
 				tmpList.Add(@"!define MUI_STARTMENUPAGE_REGISTRY_ROOT ""${PRODUCT_UNINST_ROOT_KEY}""");
 				tmpList.Add(@"!define MUI_STARTMENUPAGE_REGISTRY_KEY ""${PRODUCT_UNINST_KEY}""");
 				tmpList.Add(@"!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME ""${PRODUCT_STARTMENU_REGVAL}""");
@@ -1036,6 +1039,7 @@ namespace QuickAccess
 									true,
 									AppNameIncludingEXEextension,
 									new List<string>() { },
+									null,
 									DotnetFrameworkTargetedEnum.DotNet4client);
 							tmpMainNode.Nodes.Add(subSectionNode);
 

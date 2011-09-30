@@ -75,6 +75,25 @@ namespace QuickAccess
 		[DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
 		static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);
 
+		private const int WM_SCROLL = 276; // Horizontal scroll
+		private const int WM_VSCROLL = 277; // Vertical scroll
+		private const int SB_LINEUP = 0; // Scrolls one line up
+		private const int SB_LINELEFT = 0;// Scrolls one cell left
+		private const int SB_LINEDOWN = 1; // Scrolls one line down
+		private const int SB_LINERIGHT = 1;// Scrolls one cell right
+		private const int SB_PAGEUP = 2; // Scrolls one page up
+		private const int SB_PAGELEFT = 2;// Scrolls one page left
+		private const int SB_PAGEDOWN = 3; // Scrolls one page down
+		private const int SB_PAGERIGTH = 3; // Scrolls one page right
+		private const int SB_PAGETOP = 6; // Scrolls to the upper left
+		private const int SB_LEFT = 6; // Scrolls to the left
+		private const int SB_PAGEBOTTOM = 7; // Scrolls to the upper right
+		private const int SB_RIGHT = 7; // Scrolls to the right
+		private const int SB_ENDSCROLL = 8; // Ends scroll
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto)]
+		private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+
 		public Form1()
 		{
 			InitializeComponent();
@@ -737,9 +756,19 @@ namespace QuickAccess
 			return ((ModifierKeys & Keys.Alt) == Keys.Alt);
 		}
 
+		private bool IsControlDown()
+		{
+			return ((ModifierKeys & Keys.Control) == Keys.Control);
+		}
+
 		private bool IsAltShiftDown()
 		{
 			return (ModifierKeys & (Keys.Alt | Keys.Shift)) == (Keys.Alt | Keys.Shift);
+		}
+
+		private bool IsControlShiftAltDown()
+		{
+			return (ModifierKeys & (Keys.Control | Keys.Shift | Keys.Alt)) == (Keys.Control | Keys.Shift | Keys.Alt);
 		}
 
 		private void Form1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -751,6 +780,34 @@ namespace QuickAccess
 			{
 				if (textBox1.Text.Length > 0) textBox1.Text = "";
 				else this.Hide();
+			}
+			else if (IsControlShiftAltDown())
+			{
+				int ResizeInterval = 40;
+				if (e.KeyCode == Keys.Down)
+				{
+					if (this.Bottom + ResizeInterval < Screen.FromHandle(this.Handle).WorkingArea.Bottom)
+						this.Height += ResizeInterval;
+					else this.Height += Screen.FromHandle(this.Handle).WorkingArea.Bottom - this.Bottom;
+				}
+				if (e.KeyCode == Keys.Up)
+				{
+					if (this.Height - ResizeInterval > this.MinimumSize.Height)
+						this.Height -= ResizeInterval;
+					else this.Height = this.MinimumSize.Height;
+				}
+				if (e.KeyCode == Keys.Left)
+				{
+					if (this.Width - ResizeInterval > this.MinimumSize.Width)
+						this.Width -= ResizeInterval;
+					else this.Width = this.MinimumSize.Width;
+				}
+				if (e.KeyCode == Keys.Right)
+				{
+					if (this.Right + ResizeInterval < Screen.FromHandle(this.Handle).WorkingArea.Right)
+						this.Width += ResizeInterval;
+					else this.Width += Screen.FromHandle(this.Handle).WorkingArea.Right - this.Right;
+				}
 			}
 			else if (e.KeyCode == Keys.Down && (IsAltDown() || IsAltShiftDown()))
 				MoveWindowDownByInterval(CtrlMoveInterval);
@@ -827,11 +884,22 @@ namespace QuickAccess
 			}
 		}
 
+		private int ScrollLinesCtrlUpDown = 1;
 		private void textBox1_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Enter)
 			{
 				PerformCommandNow(textBox1.Text);
+			}
+			else if (IsControlDown() && e.KeyCode == Keys.Down)
+			{
+				for (int i = 0; i < ScrollLinesCtrlUpDown; i++)
+					SendMessage(textBox_Messages.Handle, WM_VSCROLL, (IntPtr)SB_LINEDOWN, IntPtr.Zero);
+			}
+			else if (IsControlDown() && e.KeyCode == Keys.Up)
+			{
+				for (int i = 0; i < ScrollLinesCtrlUpDown; i++)
+				SendMessage(textBox_Messages.Handle, WM_VSCROLL, (IntPtr)SB_LINEUP, IntPtr.Zero);
 			}
 		}
 
@@ -1810,6 +1878,7 @@ namespace QuickAccess
 				true,
 				ProductExeNameIn,
 				null,//No InstTypes at this stage
+				"Francois Hill",
 				DotnetFrameworkTargetedIn
 				//InstallForAllUsersIn: InstallForAllUsers
 				);
