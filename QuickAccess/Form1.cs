@@ -1705,6 +1705,138 @@ namespace QuickAccess
 			return false;
 		}
 
+		private enum BuildType { Rebuild, Build };
+		private enum ProjectConfiguration { Debug, Release };
+		private static string BuildVsProjectReturnNewversionString(TextBox messagesTextbox, string projectFilename, BuildType buildType, ProjectConfiguration configuration)
+		{
+			string msbuildpath;
+			if (!FindMsbuildPath4(out msbuildpath))
+			{
+				Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to find msbuild path: " + msbuildpath);
+				return null;
+			}
+			//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox,
+			//"msbuild /t:publish /p:configuration=release /p:buildenvironment=DEV /p:applicationversion=" + newversionstring + " \"" + csprojFileName + "\"");
+			while (msbuildpath.EndsWith("\\")) msbuildpath = msbuildpath.Substring(0, msbuildpath.Length - 1);
+			msbuildpath += "\\msbuild.exe";
+
+			ProcessStartInfo startinfo = new ProcessStartInfo(msbuildpath,
+				"/t:" + buildType.ToString().ToLower() +
+				" /p:configuration=" + configuration.ToString().ToLower() +
+				" /p:AllowUnsafeBlocks=true" +
+				" \"" + projectFilename + "\"");
+
+			startinfo.UseShellExecute = false;
+			startinfo.CreateNoWindow = false;
+			startinfo.RedirectStandardOutput = true;
+			startinfo.RedirectStandardError = true;
+			System.Diagnostics.Process msbuildproc = new Process();
+			msbuildproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+			{
+				//if (outLine.Data != null && outLine.Data.Trim().Length > 0)
+				//  Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Msbuild output: " + outLine.Data);
+				//else appendLogTextbox("Svn output empty");
+			};
+			bool errorOccurred = false;
+			msbuildproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+			{
+				if (outLine.Data != null && outLine.Data.Trim().Length > 0)
+				{
+					errorOccurred = true;
+					Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Msbuild error: " + outLine.Data);
+				}
+				//else appendLogTextbox("Svn error empty");
+			};
+			msbuildproc.StartInfo = startinfo;
+
+			if (msbuildproc.Start())
+				Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Started building, please wait...");
+			else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: Could not start SVN process.");
+
+			msbuildproc.BeginOutputReadLine();
+			msbuildproc.BeginErrorReadLine();
+
+			msbuildproc.WaitForExit();
+
+			if (!errorOccurred)
+			{
+				const string apprevstart = "<ApplicationRevision>";
+				const string apprevend = "</ApplicationRevision>";
+				const string appverstart = "<ApplicationVersion>";
+				const string appverend = "</ApplicationVersion>";
+
+				int apprevision = -1;
+				int apprevlinenum = -1;
+				string appversion = "";
+				int appverlinenum = -1;
+				List<string> newFileLines = new List<string>();
+				StreamReader sr = new StreamReader(projectFilename);
+				try { while (!sr.EndOfStream) newFileLines.Add(sr.ReadLine()); }
+				finally { sr.Close(); }
+
+				for (int i = 0; i < newFileLines.Count; i++)
+				{
+					string line = newFileLines[i].ToLower().Trim();
+
+					if (line.StartsWith(apprevstart.ToLower()) && line.EndsWith(apprevend.ToLower()))
+					{
+						int tmpint;
+						if (int.TryParse(line.Substring(apprevstart.Length, line.Length - apprevstart.Length - apprevend.Length), out tmpint))
+						{
+							apprevlinenum = i;
+							apprevision = tmpint;
+						}
+						else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Could not obtain revision int from string: " + line);
+					}
+					else if (line.StartsWith(appverstart.ToLower()) && line.EndsWith(appverend.ToLower()))
+					{
+						appverlinenum = i;
+						appversion = line.Substring(appverstart.Length, line.Length - appverstart.Length - appverend.Length);
+					}
+				}
+				if (apprevision == -1) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to obtain app revision");
+				else if (appversion.Trim().Length == 0) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to obtain app version string");
+				else
+				{
+					bool autoIncreaseRevision = appversion.Contains("%2a");
+					int newrevisionnum = apprevision + 1;
+					newFileLines[apprevlinenum] = newFileLines[apprevlinenum].Substring(0, newFileLines[apprevlinenum].IndexOf(apprevstart) + apprevstart.Length)
+						+ newrevisionnum
+						+ newFileLines[apprevlinenum].Substring(newFileLines[apprevlinenum].IndexOf(apprevend));
+					//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, newFileLines[apprevlinenum]);
+
+					string newversionstring = appversion.Substring(0, appversion.LastIndexOf('.') + 1) + newrevisionnum;
+					if (!autoIncreaseRevision)
+						newFileLines[appverlinenum] = newFileLines[appverlinenum].Substring(0, newFileLines[appverlinenum].IndexOf(appverstart) + appverstart.Length)
+							+ appversion.Substring(0, appversion.LastIndexOf('.') + 1) + (apprevision + 1)
+							+ newFileLines[appverlinenum].Substring(newFileLines[appverlinenum].IndexOf(appverend));
+					//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, newFileLines[appverlinenum]);
+
+					StreamWriter sw = new StreamWriter(projectFilename);
+					try
+					{
+						foreach (string line in newFileLines)
+							sw.WriteLine(line);
+					}
+					finally { sw.Close(); }
+
+					return newversionstring;
+				}
+			}
+			return null;
+		}
+
+		public static string InsertSpacesBeforeCamelCase(string s)
+		{
+			if (s == null) return s;
+			for (int i = s.Length - 1; i >= 1; i--)
+			{
+				if (s[i].ToString().ToUpper() == s[i].ToString())
+					s = s.Insert(i, " ");
+			}
+			return s;
+		}
+
 		public static void PerformPublish(TextBox messagesTextbox, string projName)
 		{
 			string projDir =
@@ -1725,160 +1857,58 @@ namespace QuickAccess
 			if (!ProjFileFound) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Could not find project file (csproj) in dir " + projDir);
 			else
 			{
-				string msbuildpath;
-				if (FindMsbuildPath4(out msbuildpath))
+				string newversionstring = BuildVsProjectReturnNewversionString(messagesTextbox, csprojFileName, BuildType.Rebuild, ProjectConfiguration.Release);
+				if (newversionstring == null) return;
+
+				ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 				{
-					//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox,
-					//"msbuild /t:publish /p:configuration=release /p:buildenvironment=DEV /p:applicationversion=" + newversionstring + " \"" + csprojFileName + "\"");
-					while (msbuildpath.EndsWith("\\")) msbuildpath = msbuildpath.Substring(0, msbuildpath.Length - 1);
-					msbuildpath += "\\msbuild.exe";
-
-					//DONE TODO: Should change this process arguments to build and then process NSIS afterwards
-					ProcessStartInfo startinfo = new ProcessStartInfo(msbuildpath, "/t:rebuild /p:configuration=release \"" + csprojFileName + "\"");
-					startinfo.UseShellExecute = false;
-					startinfo.CreateNoWindow = false;
-					startinfo.RedirectStandardOutput = true;
-					startinfo.RedirectStandardError = true;
-					System.Diagnostics.Process msbuildproc = new Process();
-					msbuildproc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+					using (StreamWriter sw2 = new StreamWriter(Form1.LocalAppDataPath + @"\FJH\NSISinstaller\NSISexports\DotNetChecker.nsh"))
 					{
-						//if (outLine.Data != null && outLine.Data.Trim().Length > 0)
-						//  Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Msbuild output: " + outLine.Data);
-						//else appendLogTextbox("Svn output empty");
-					};
-					bool errorOccurred = false;
-					msbuildproc.ErrorDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
-					{
-						if (outLine.Data != null && outLine.Data.Trim().Length > 0)
-						{
-							errorOccurred = true;
-							Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Msbuild error: " + outLine.Data);
-						}
-						//else appendLogTextbox("Svn error empty");
-					};
-					msbuildproc.StartInfo = startinfo;
-
-					if (msbuildproc.Start())
-						Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Started building, please wait...");
-					else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Error: Could not start SVN process.");
-
-					msbuildproc.BeginOutputReadLine();
-					msbuildproc.BeginErrorReadLine();
-
-					msbuildproc.WaitForExit();
-
-					if (!errorOccurred)
-					{
-						const string apprevstart = "<ApplicationRevision>";
-						const string apprevend = "</ApplicationRevision>";
-						const string appverstart = "<ApplicationVersion>";
-						const string appverend = "</ApplicationVersion>";
-
-						int apprevision = -1;
-						int apprevlinenum = -1;
-						string appversion = "";
-						int appverlinenum = -1;
-						List<string> newFileLines = new List<string>();
-						StreamReader sr = new StreamReader(csprojFileName);
-						try { while (!sr.EndOfStream) newFileLines.Add(sr.ReadLine()); }
-						finally { sr.Close(); }
-
-						for (int i = 0; i < newFileLines.Count; i++)
-						{
-							string line = newFileLines[i].ToLower().Trim();
-
-							if (line.StartsWith(apprevstart.ToLower()) && line.EndsWith(apprevend.ToLower()))
-							{
-								int tmpint;
-								if (int.TryParse(line.Substring(apprevstart.Length, line.Length - apprevstart.Length - apprevend.Length), out tmpint))
-								{
-									apprevlinenum = i;
-									apprevision = tmpint;
-								}
-								else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Could not obtain revision int from string: " + line);
-							}
-							else if (line.StartsWith(appverstart.ToLower()) && line.EndsWith(appverend.ToLower()))
-							{
-								appverlinenum = i;
-								appversion = line.Substring(appverstart.Length, line.Length - appverstart.Length - appverend.Length);
-							}
-						}
-						if (apprevision == -1) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to obtain app revision");
-						else if (appversion.Trim().Length == 0) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to obtain app version string");
-						else
-						{
-							bool autoIncreaseRevision = appversion.Contains("%2a");
-							int newrevisionnum = apprevision + 1;
-							newFileLines[apprevlinenum] = newFileLines[apprevlinenum].Substring(0, newFileLines[apprevlinenum].IndexOf(apprevstart) + apprevstart.Length)
-								+ newrevisionnum
-								+ newFileLines[apprevlinenum].Substring(newFileLines[apprevlinenum].IndexOf(apprevend));
-							//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, newFileLines[apprevlinenum]);
-
-							string newversionstring = appversion.Substring(0, appversion.LastIndexOf('.') + 1) + newrevisionnum;
-							if (!autoIncreaseRevision)
-								newFileLines[appverlinenum] = newFileLines[appverlinenum].Substring(0, newFileLines[appverlinenum].IndexOf(appverstart) + appverstart.Length)
-									+ appversion.Substring(0, appversion.LastIndexOf('.') + 1) + (apprevision + 1)
-									+ newFileLines[appverlinenum].Substring(newFileLines[appverlinenum].IndexOf(appverend));
-							//Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, newFileLines[appverlinenum]);
-
-							StreamWriter sw = new StreamWriter(csprojFileName);
-							try
-							{
-								foreach (string line in newFileLines)
-									sw.WriteLine(line);
-							}
-							finally { sw.Close(); }
-
-							ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
-							{
-								using (StreamWriter sw2 = new StreamWriter(Form1.LocalAppDataPath + @"\FJH\NSISinstaller\NSISexports\DotNetChecker.nsh"))
-								{
-									sw2.Write(NsisInterop.DotNetChecker_NSH_file);
-								}
-								string nsisFileName = Form1.LocalAppDataPath + @"\FJH\NSISinstaller\NSISexports\" + projName + "_" + newversionstring + ".nsi";
-								using (StreamWriter sw1 = new StreamWriter(nsisFileName))
-								{
-									Func<string, string> InsertSpacesBeforeCamelCase = new Func<string, string>(
-										(s) =>
-										{
-											if (s == null) return s;
-											for (int i = s.Length - 1; i >= 1; i--)
-											{
-												if (s[i].ToString().ToUpper() == s[i].ToString())
-													s = s.Insert(i, " ");
-											}
-											return s;
-										});
-
-									//bool MustBuildBeforePublish:
-
-									//TODO: This is awesome, after installing with NSIS you can type appname in RUN and it will open
-									List<string> list = NsisInterop.CreateOwnappNsis(
-									projName,
-									InsertSpacesBeforeCamelCase(projName),
-									newversionstring,//Should obtain (and increase) product version from csproj file
-									"http://fjh.dyndns.org/ownapplications/" + projName.ToLower(),
-									projName + ".exe",
-									null,
-									true,
-									NSISclass.DotnetFrameworkTargetedEnum.DotNet4client);
-									foreach (string line in list)
-										sw1.WriteLine(line);
-									sw.Close();
-									Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Successfully created NSIS file: " + nsisFileName);
-									Process.Start("explorer", "/select, \"" + nsisFileName + "\"");
-								}
-							});
-						}
+						sw2.Write(NsisInterop.DotNetChecker_NSH_file);
 					}
-				}
-				else Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Unable to find msbuild path: " + msbuildpath);
+					string nsisFileName = Form1.LocalAppDataPath + @"\FJH\NSISinstaller\NSISexports\" + projName + "_" + newversionstring + ".nsi";
+					using (StreamWriter sw1 = new StreamWriter(nsisFileName))
+					{
+						//TODO: This is awesome, after installing with NSIS you can type appname in RUN and it will open
+						List<string> list = NsisInterop.CreateOwnappNsis(
+						projName,
+						InsertSpacesBeforeCamelCase(projName),
+						newversionstring,//Should obtain (and increase) product version from csproj file
+						"http://fjh.dyndns.org/ownapplications/" + projName.ToLower(),
+						projName + ".exe",
+						null,
+						true,
+						NSISclass.DotnetFrameworkTargetedEnum.DotNet4client,
+						true);
+						foreach (string line in list)
+							sw1.WriteLine(line);
+						Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Successfully created NSIS file: " + nsisFileName);
+					}
+
+					string MakeNsisFilePath = @"C:\Program Files (x86)\NSIS\makensis.exe";
+					if (!File.Exists(MakeNsisFilePath)) Logging.appendLogTextbox_OfPassedTextbox(messagesTextbox, "Could not find MakeNsis.exe: " + MakeNsisFilePath);
+					else
+					{
+						Process nsisCompileProc = Process.Start(MakeNsisFilePath, "\"" + nsisFileName + "\"");
+						nsisCompileProc.WaitForExit();
+						Process.Start("explorer", "/select, \"" +
+							Path.GetDirectoryName(nsisFileName) + "\\" +
+							NsisInterop.GetSetupNameForProduct(InsertSpacesBeforeCamelCase(projName), newversionstring) + "\"");
+					}
+				});
 			}
 		}
 	}
 
 	public class NsisInterop
 	{
+		public static string GetSetupNameForProduct(string PublishedName, string ProductVersion)
+		{
+			string SetupName = PublishedName;
+			while (SetupName.Contains(' ')) SetupName = SetupName.Replace(" ", "");
+			return "Setup_" + SetupName + "_" + ProductVersion.Replace('.', '_') + ".exe";
+		}
+
 		//public enum BuildTypeEnum { Debug, Release };
 		public static List<string> CreateOwnappNsis(
 			string VsProjectName,
@@ -1890,12 +1920,9 @@ namespace QuickAccess
 			NSISclass.LicensePageDetails LicenseDetails,
 			//List<NSISclass.SectionGroupClass.SectionClass> sections,
 			bool InstallForAllUsers,
-			NSISclass.DotnetFrameworkTargetedEnum DotnetFrameworkTargetedIn)
+			NSISclass.DotnetFrameworkTargetedEnum DotnetFrameworkTargetedIn,
+			bool WriteIntoRegistryForWindowsAutostartup)
 		{
-			string SetupName = ProductPublishedNameIn;
-			while (SetupName.Contains(' ')) SetupName = SetupName.Replace(" ", "");
-			SetupName = "Setup_" + SetupName + "_" + ProductVersionIn.Replace('.', '_') + ".exe";
-
 			NSISclass nsis = new NSISclass(
 				ProductPublishedNameIn,
 				ProductVersionIn,
@@ -1903,7 +1930,7 @@ namespace QuickAccess
 				ProductWebsiteIn,
 				ProductExeNameIn,
 				new NSISclass.Compressor(NSISclass.Compressor.CompressionModeEnum.bzip2, false, false),
-				SetupName,
+				GetSetupNameForProduct(ProductPublishedNameIn, ProductVersionIn),
 				NSISclass.LanguagesEnum.English,
 				true,
 				true,
@@ -1918,32 +1945,6 @@ namespace QuickAccess
 				//InstallForAllUsersIn: InstallForAllUsers
 				);
 
-			/*NSISclass.SectionGroupClass.SectionClass sect = new SectionDetails(
-				"Main",
-				"All primary files required to run the program (excluding prerequisites)",
-				"",//Installer types empty at this stage
-			  SectionDetails.SetOverwriteEnum.ifnewer
-				);*/
-
-			//List<str
-				/*
-				string SectionNameIn,//
-						string SectionDescriptionIn,
-						string InstTypes_CommaSeperatedIn,
-						SetOverwriteEnum SetOverwriteIn = SetOverwriteEnum.ifnewer,
-						string SetOutPathIn = "$INSTDIR",
-						Boolean UnselectedByDefaultIn = false,//
-						Boolean HiddenToUserIn = false, Boolean SectionForUninstallerIn = false,//
-						Boolean DisplaySectionWithBoldFontIn = false,//
-						int ReserveDiskspaceForSectionIn = 0
-				*/
-
-			/*List<string> SectionDescriptions = new List<string>();
-			SectionDescriptions.Add("!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN");
-			foreach (NSISclass.SectionGroupClass.SectionClass sec in sections)
-				SectionDescriptions.Add("!insertmacro MUI_DESCRIPTION_TEXT ${" + sec.IDString + "} \"" + sec.SectionDescription + "\"");
-			SectionDescriptions.Add("!insertmacro MUI_FUNCTION_DESCRIPTION_END");*/
-
 			string PublishedDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
 				@"\Visual Studio 2010\Projects\" + VsProjectName + @"\" + VsProjectName + @"\bin\Release";
 			List<string> SectionGroupLines = new List<string>();
@@ -1953,13 +1954,13 @@ namespace QuickAccess
 			SectionGroupLines.Add(@"	SetOutPath ""$INSTDIR""");
 			SectionGroupLines.Add(@"  SetOverwrite ifnewer");
 			SectionGroupLines.Add(@"  File /a /x *.application /x *.vshost.* /x *.manifest """ + PublishedDir + @"\*.*""");
-			SectionGroupLines.Add(@"  WriteRegStr HKCU ""SOFTWARE\Microsoft\Windows\CurrentVersion\Run"" '${PRODUCT_NAME}' '$INSTDIR\${PRODUCT_EXE_NAME}'");
+			if (WriteIntoRegistryForWindowsAutostartup) SectionGroupLines.Add(@"  WriteRegStr HKCU ""SOFTWARE\Microsoft\Windows\CurrentVersion\Run"" '${PRODUCT_NAME}' '$INSTDIR\${PRODUCT_EXE_NAME}'");
 			SectionGroupLines.Add(@"SectionEnd");
 
 			return nsis.GetAllLinesForNSISfile(
 				SectionGroupLines,
 				null,
-				true);//SectionDescriptions);
+				WriteIntoRegistryForWindowsAutostartup);//SectionDescriptions);
 		}
 
 		public static string DotNetChecker_NSH_file
