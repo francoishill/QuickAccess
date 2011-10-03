@@ -15,6 +15,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using SectionDetails = QuickAccess.NSISclass.SectionGroupClass.SectionClass;
 using ShortcutDetails = QuickAccess.NSISclass.SectionGroupClass.SectionClass.ShortcutDetails;
 using FileToAddTextblock = QuickAccess.NSISclass.SectionGroupClass.SectionClass.FileToAddTextblock;
+using System.Reflection;
 
 namespace QuickAccess
 {
@@ -740,18 +741,20 @@ namespace QuickAccess
 					ToggleWindowActivation();
 				if (m.WParam == new IntPtr(Hotkey2))
 				{
-					/*contextMenu_TrayIcon.Show(null, new Point(0, 0));//Screen.PrimaryScreen.WorkingArea.Right, Screen.PrimaryScreen.WorkingArea.Bottom));//MousePosition);
-					this.Activate();
-					//contextMenu_TrayIcon.Focus();
-					if (contextMenu_TrayIcon.MenuItems.Count > 0)
-					{
-						//DONE TODO: The following line actually dows nothing
-						//contextMenu_TrayIcon.ShowDropDown();//.DropDownItems[0].Select();
-						contextMenu_TrayIcon.MenuItems[0].PerformSelect();//.DropDownItems[0].Select();
-					}
-					else
-						menuItem_Commands.PerformSelect();
-						//commandsToolStripMenuItem.sel.Select();*/
+					MethodInfo mi = typeof(NotifyIcon).GetMethod("ShowContextMenu", BindingFlags.Instance | BindingFlags.NonPublic);
+					mi.Invoke(notifyIcon1, null);
+					////contextMenu_TrayIcon.Show(null, new Point(0, 0));//Screen.PrimaryScreen.WorkingArea.Right, Screen.PrimaryScreen.WorkingArea.Bottom));//MousePosition);
+					//this.Activate();
+					////contextMenu_TrayIcon.Focus();
+					//if (contextMenu_TrayIcon.MenuItems.Count > 0)
+					//{
+					//  //DONE TODO: The following line actually dows nothing
+					//  //contextMenu_TrayIcon.ShowDropDown();//.DropDownItems[0].Select();
+					//  contextMenu_TrayIcon.MenuItems[0].PerformSelect();//.DropDownItems[0].Select();
+					//}
+					//else
+					//  menuItem_Commands.PerformSelect();
+					//  //commandsToolStripMenuItem.sel.Select();
 				}
 			}
 			base.WndProc(ref m);
@@ -1266,6 +1269,18 @@ namespace QuickAccess
 		private void contextMenu_TrayIcon_Popup(object sender, EventArgs e)
 		{
 			PopulateCommandsMenuItem();
+
+			//this.Activate();
+			//contextMenu_TrayIcon.Focus();
+			/*if (menuItem_Commands.MenuItems.Count > 0)
+			{
+				//DONE TODO: The following line actually dows nothing
+				//contextMenu_TrayIcon.ShowDropDown();//.DropDownItems[0].Select();
+
+				menuItem_Commands.MenuItems[0].PerformSelect();//.DropDownItems[0].Select();
+			}
+			else*/
+				//menuItem_Commands.PerformClick();//.PerformSelect();
 		}
 	}
 

@@ -119,6 +119,7 @@
 			// 
 			// menuItem_Commands
 			// 
+			this.menuItem_Commands.DefaultItem = true;
 			this.menuItem_Commands.Index = 1;
 			this.menuItem_Commands.Text = "&Commands";
 			// 
