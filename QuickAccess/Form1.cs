@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Net;
-using System.IO;
-using System.Security.Cryptography;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
-using Outlook = Microsoft.Office.Interop.Outlook;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace QuickAccess
 {
@@ -191,16 +184,9 @@ namespace QuickAccess
 		{
 			if (Win32Api.GetForegroundWindow() != this.Handle)
 			{
-				ShowAndActivateThisForm();
+				WindowsInterop.ShowAndActivateForm(this);
 			}
 			else this.Hide();
-		}
-
-		public void ShowAndActivateThisForm()
-		{
-			this.Visible = true;
-			this.Activate();
-			this.WindowState = FormWindowState.Normal;
 		}
 
 		void SetAutocompleteActionList()
@@ -282,7 +268,7 @@ namespace QuickAccess
 				appendLogTextbox("");
 				appendLogTextbox("Performing command: " + text);
 				(textBox1.Tag as List<string>).Add(text);
-				command.PerformCommand(this, text);
+				command.PerformCommand(this.textBox1, this.textBox_Messages);
 				if (ClearCommandTextboxOnSuccess) textBox1.Text = "";
 				if (HideAfterSuccess) this.Hide();
 			}
@@ -466,7 +452,7 @@ namespace QuickAccess
 		private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
-				ShowAndActivateThisForm();
+				WindowsInterop.ShowAndActivateForm(this);
 		}
 
 		private void PopulateCommandsMenuItem()
@@ -587,7 +573,7 @@ namespace QuickAccess
 
 		private void notifyIcon1_BalloonTipClicked(object sender, EventArgs e)
 		{
-			ShowAndActivateThisForm();
+			WindowsInterop.ShowAndActivateForm(this);
 		}
 
 		private void menuItem_Exit_Click(object sender, EventArgs e)
