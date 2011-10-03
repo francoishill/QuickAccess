@@ -111,6 +111,8 @@ namespace QuickAccess
 
 			origOpacity = this.Opacity;
 			this.Opacity = 0;
+
+			notifyIcon1.ContextMenu = contextMenu_TrayIcon;
 		}
 
 		private void Form1_Shown(object sender, EventArgs e)
@@ -738,17 +740,18 @@ namespace QuickAccess
 					ToggleWindowActivation();
 				if (m.WParam == new IntPtr(Hotkey2))
 				{
-					contextMenuStrip_TrayIcon.Show(new Point(0, 0));//Screen.PrimaryScreen.WorkingArea.Right, Screen.PrimaryScreen.WorkingArea.Bottom));//MousePosition);
+					/*contextMenu_TrayIcon.Show(null, new Point(0, 0));//Screen.PrimaryScreen.WorkingArea.Right, Screen.PrimaryScreen.WorkingArea.Bottom));//MousePosition);
 					this.Activate();
-					contextMenuStrip_TrayIcon.Focus();
-					if (commandsToolStripMenuItem.HasDropDownItems)
+					//contextMenu_TrayIcon.Focus();
+					if (contextMenu_TrayIcon.MenuItems.Count > 0)
 					{
 						//DONE TODO: The following line actually dows nothing
-						commandsToolStripMenuItem.ShowDropDown();//.DropDownItems[0].Select();
-						commandsToolStripMenuItem.DropDownItems[0].Select();
+						//contextMenu_TrayIcon.ShowDropDown();//.DropDownItems[0].Select();
+						contextMenu_TrayIcon.MenuItems[0].PerformSelect();//.DropDownItems[0].Select();
 					}
 					else
-						commandsToolStripMenuItem.Select();
+						menuItem_Commands.PerformSelect();
+						//commandsToolStripMenuItem.sel.Select();*/
 				}
 			}
 			base.WndProc(ref m);
@@ -1130,11 +1133,6 @@ namespace QuickAccess
 			if (e.Button == System.Windows.Forms.MouseButtons.Right) this.Hide();
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			this.Close();
-		}
-
 		private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
@@ -1143,31 +1141,36 @@ namespace QuickAccess
 
 		private void contextMenuStrip_TrayIcon_Opening(object sender, CancelEventArgs e)
 		{
+			PopulateCommandsMenuItem();
+		}
+
+		private void PopulateCommandsMenuItem()
+		{
 			ToolStripDropDownDirection defaultDropDirection = ToolStripDropDownDirection.Right;//Left;
 
-			commandsToolStripMenuItem.DropDownItems.Clear();
-			commandsToolStripMenuItem.DropDownDirection = defaultDropDirection;
+			menuItem_Commands.MenuItems.Clear();//.DropDownItems.Clear();
+			//contextMenu_TrayIcon.DropDownDirection = defaultDropDirection;
 			if (Commands.CommandList != null)
 				foreach (string key in Commands.CommandList.Keys)
 				{
 					Commands.CommandDetails commandDetails = Commands.CommandList[key];
 
-					ToolStripMenuItem commanditem = new ToolStripMenuItem(key) { Tag = commandDetails };
-					commanditem.DropDownDirection = defaultDropDirection;
+					MenuItem commanditem = new MenuItem(key) { Tag = commandDetails };
+					//commanditem.DropDownDirection = defaultDropDirection;
 
 					if (commandDetails.CommandHasArguments() || commandDetails.CommandHasAutocompleteArguments())
 					{
-						ToolStripMenuItem customArguments = new ToolStripMenuItem("_Custom arguments");
-						customArguments.AutoSize = true;
-						customArguments.DropDownDirection = defaultDropDirection;
-						commanditem.DropDownItems.Add(customArguments);
+						MenuItem customArguments = new MenuItem("_Custom arguments");
+						//customArguments.AutoSize = true;
+						//customArguments.DropDownDirection = defaultDropDirection;
+						commanditem.MenuItems.Add(customArguments);//.DropDownItems.Add(customArguments);
 
 						if (commandDetails.CommandHasAutocompleteArguments())
 							foreach (string predefinedArguments in Commands.CommandList[key].commandPredefinedArguments)
 							{
-								ToolStripMenuItem subcommanditem = new ToolStripMenuItem(predefinedArguments.Substring(key.Length + 1)) { Tag = predefinedArguments };
-								subcommanditem.AutoSize = true;
-								subcommanditem.DropDownDirection = defaultDropDirection;
+								MenuItem subcommanditem = new MenuItem(predefinedArguments.Substring(key.Length + 1)) { Tag = predefinedArguments };
+								//subcommanditem.AutoSize = true;
+								//subcommanditem.DropDownDirection = defaultDropDirection;
 								subcommanditem.Click += delegate
 								{
 									PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
@@ -1176,15 +1179,15 @@ namespace QuickAccess
 								{
 									PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
 								};*/
-								commanditem.DropDownItems.Add(subcommanditem);
+								commanditem.MenuItems.Add(subcommanditem);//.DropDownItems.Add(subcommanditem);
 							}
 
-						for (int i = 0; i < commanditem.DropDownItems.Count; i++)
+						for (int i = 0; i < commanditem.MenuItems.Count; i++)//.DropDownItems.Count; i++)
 						{
-							ToolStripMenuItem tmpsubcommandItem = commanditem.DropDownItems[i] as ToolStripMenuItem;
+							MenuItem tmpsubcommandItem = commanditem.MenuItems[i];//.DropDownItems[i] as ToolStripMenuItem;
 							if (commandDetails.CommandHasArguments())
 							{
-								foreach (Commands.CommandDetails.CommandArgumentClass arg in Commands.CommandList[key].commandArguments)
+								/*foreach (Commands.CommandDetails.CommandArgumentClass arg in Commands.CommandList[key].commandArguments)
 								{
 									ToolStripTextBox subcommandTextboxitem = new ToolStripTextBox();
 									subcommandTextboxitem.BackColor = arg.Required ? Color.LightGreen : Color.LightGray;
@@ -1227,7 +1230,7 @@ namespace QuickAccess
 													(subcommandTextboxitem.OwnerItem as ToolStripMenuItem).HideDropDown();
 										}
 									};
-									tmpsubcommandItem.DropDownItems.Add(subcommandTextboxitem);
+									tmpsubcommandItem.MenuItems.Add(subcommandTextboxitem);//.DropDownItems.Add(subcommandTextboxitem);
 								}
 
 								if (i > 0)
@@ -1235,9 +1238,9 @@ namespace QuickAccess
 									string[] splittedArgs = tmpsubcommandItem.Tag.ToString().Substring(key.Length + 1).Split(';');
 									for (int k = 0; k < splittedArgs.Length; k++)
 										tmpsubcommandItem.DropDownItems[k].Text = splittedArgs[k];
-								}
+								}*/
 							}
-						}						
+						}
 					}
 					else
 					{
@@ -1246,13 +1249,23 @@ namespace QuickAccess
 							MessageBox.Show("No subcommands");
 						};
 					}
-					commandsToolStripMenuItem.DropDownItems.Add(commanditem);
+					menuItem_Commands.MenuItems.Add(commanditem);//.DropDownItems.Add(commanditem);
 				}
 		}
 
 		private void notifyIcon1_BalloonTipClicked(object sender, EventArgs e)
 		{
 			ShowAndActivateThisForm();
+		}
+
+		private void menuItem_Exit_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
+
+		private void contextMenu_TrayIcon_Popup(object sender, EventArgs e)
+		{
+			PopulateCommandsMenuItem();
 		}
 	}
 

@@ -31,46 +31,22 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-			this.contextMenuStrip_TrayIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.commandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.textBox_Messages = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
-			this.contextMenuStrip_TrayIcon.SuspendLayout();
+			this.contextMenu_TrayIcon = new System.Windows.Forms.ContextMenu();
+			this.menuItem_Exit = new System.Windows.Forms.MenuItem();
+			this.menuItem_Commands = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
 			// notifyIcon1
 			// 
-			this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip_TrayIcon;
 			this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
 			this.notifyIcon1.Text = "Press Ctrl + Q";
 			this.notifyIcon1.Visible = true;
 			this.notifyIcon1.BalloonTipClicked += new System.EventHandler(this.notifyIcon1_BalloonTipClicked);
 			this.notifyIcon1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseClick);
-			// 
-			// contextMenuStrip_TrayIcon
-			// 
-			this.contextMenuStrip_TrayIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem,
-            this.commandsToolStripMenuItem});
-			this.contextMenuStrip_TrayIcon.Name = "contextMenuStrip_TrayIcon";
-			this.contextMenuStrip_TrayIcon.Size = new System.Drawing.Size(137, 48);
-			this.contextMenuStrip_TrayIcon.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_TrayIcon_Opening);
-			// 
-			// exitToolStripMenuItem
-			// 
-			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-			this.exitToolStripMenuItem.Text = "E&xit";
-			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-			// 
-			// commandsToolStripMenuItem
-			// 
-			this.commandsToolStripMenuItem.Name = "commandsToolStripMenuItem";
-			this.commandsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-			this.commandsToolStripMenuItem.Text = "&Commands";
 			// 
 			// textBox1
 			// 
@@ -128,6 +104,24 @@
 			this.label2.TabIndex = 3;
 			this.label2.Text = "Right-click minimizes to tray";
 			// 
+			// contextMenu_TrayIcon
+			// 
+			this.contextMenu_TrayIcon.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem_Exit,
+            this.menuItem_Commands});
+			this.contextMenu_TrayIcon.Popup += new System.EventHandler(this.contextMenu_TrayIcon_Popup);
+			// 
+			// menuItem_Exit
+			// 
+			this.menuItem_Exit.Index = 0;
+			this.menuItem_Exit.Text = "E&xit";
+			this.menuItem_Exit.Click += new System.EventHandler(this.menuItem_Exit_Click);
+			// 
+			// menuItem_Commands
+			// 
+			this.menuItem_Commands.Index = 1;
+			this.menuItem_Commands.Text = "&Commands";
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -160,7 +154,6 @@
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseClick);
 			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
 			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
-			this.contextMenuStrip_TrayIcon.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -173,9 +166,9 @@
         private System.Windows.Forms.Label label1;
 				public System.Windows.Forms.TextBox textBox_Messages;
 				private System.Windows.Forms.Label label2;
-				private System.Windows.Forms.ContextMenuStrip contextMenuStrip_TrayIcon;
-				private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-				private System.Windows.Forms.ToolStripMenuItem commandsToolStripMenuItem;
+				private System.Windows.Forms.ContextMenu contextMenu_TrayIcon;
+				private System.Windows.Forms.MenuItem menuItem_Exit;
+				private System.Windows.Forms.MenuItem menuItem_Commands;
     }
 }
 
