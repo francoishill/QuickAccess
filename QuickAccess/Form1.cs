@@ -336,6 +336,7 @@ namespace QuickAccess
 
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
+			//TODO: Should check out the debugging tools for Windows, Run the "Global Flags" and in the "Kernel Flags" tab enable items "Enable heap tail checking", "Enable heap free checking", "Enable page heap"
 			string tmpkey = "987654321abcde";
 			if (textBox1.Text.ToLower().IndexOf(' ') != -1)
 				tmpkey = textBox1.Text.ToLower().Substring(0, textBox1.Text.ToLower().IndexOf(' '));
