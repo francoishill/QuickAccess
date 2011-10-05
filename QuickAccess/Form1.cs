@@ -37,8 +37,8 @@ namespace QuickAccess
 		private void Form1_Shown(object sender, EventArgs e)
 		{
 			this.ShowInTaskbar = true;
-			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_CONTROL, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Q");
-			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey2, Win32Api.MOD_CONTROL + Win32Api.MOD_SHIFT, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey Ctrl + Shift + Q");
+			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_CONTROL, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Q");
+			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey2, Win32Api.MOD_CONTROL + Win32Api.MOD_SHIFT, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Shift + Q");
 			label1.Text = InlineCommands.AvailableActionList;
 			SetAutocompleteActionList();
 			//InitializeHooks(false, true);
@@ -470,7 +470,7 @@ namespace QuickAccess
 
 					commanditem.Click += delegate
 					{
-						MessageBox.Show("HallO");
+						UserMessages.ShowMessage("HallO");
 					};
 
 					//commanditem.DropDownDirection = defaultDropDirection;
@@ -565,7 +565,7 @@ namespace QuickAccess
 					{
 						commanditem.Click += delegate
 						{
-							MessageBox.Show("No subcommands");
+							UserMessages.ShowInfoMessage("No subcommands");
 						};
 					}
 					menuItem_Commands.MenuItems.Add(commanditem);//.DropDownItems.Add(commanditem);
