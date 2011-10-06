@@ -134,8 +134,19 @@
     <Compile Include="..\..\SharedClasses\MicrosoftOfficeInterop.cs">
       <Link>MicrosoftOfficeInterop.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\MouseHooks.cs">
+      <Link>MouseHooks.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\NsisInterop.cs">
       <Link>NsisInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\OverlayForm.cs">
+      <Link>OverlayForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\OverlayForm.designer.cs">
+      <Link>OverlayForm.designer.cs</Link>
+      <DependentUpon>OverlayForm.cs</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\PhpInterop.cs">
       <Link>PhpInterop.cs</Link>
@@ -164,6 +175,12 @@
     <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
       <Link>WindowsInterop.cs</Link>
     </Compile>
+    <Compile Include="CommandForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CommandForm.Designer.cs">
+      <DependentUpon>CommandForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -172,6 +189,13 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="..\..\SharedClasses\OverlayForm.resx">
+      <Link>OverlayForm.resx</Link>
+      <DependentUpon>OverlayForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CommandForm.resx">
+      <DependentUpon>CommandForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

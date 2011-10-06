@@ -15,6 +15,9 @@ namespace QuickAccess
 		private double origOpacity;
 		private bool ScrollTextHistoryOnUpDownKeys = false;
 
+		MouseHooks.MouseHook mouseHook;
+		OverlayForm overlayForm = new OverlayForm();
+
 		public Form1()
 		{
 			InitializeComponent();
@@ -32,6 +35,130 @@ namespace QuickAccess
 			this.Opacity = 0;
 
 			notifyIcon1.ContextMenu = contextMenu_TrayIcon;
+
+			mouseHook = new MouseHooks.MouseHook();
+			//mouseHook.MouseGestureEvent += (o, gest) => { if (gest.MouseGesture == Win32Api.MouseGestures.RL) UserMessages.ShowErrorMessage("Message"); };
+			mouseHook.MouseMoveEvent += delegate
+			{
+				if (MousePosition.X < 5)
+				{
+					if (overlayForm.IsDisposed) overlayForm = new OverlayForm();
+					if (!overlayForm.Visible)
+					{
+						//foreach (string s in s.s)
+						foreach (string key in InlineCommands.CommandList.Keys)
+						{
+							CommandForm tmpCommandForm = new CommandForm(key);
+							overlayForm.ListOfChildForms.Add(tmpCommandForm);
+
+							InlineCommands.CommandDetails commandDetails = InlineCommands.CommandList[key];
+
+							if (commandDetails.CommandHasArguments() || commandDetails.CommandHasPredefinedArguments())
+							{
+								if (commandDetails.CommandHasArguments())
+								{
+
+									foreach (InlineCommands.CommandDetails.CommandArgumentClass arg in commandDetails.commandArguments)
+									{
+										tmpCommandForm.AddControl(arg.ArgumentName, new TextBox() { ForeColor = arg.Required ? Color.Red : Color.Green });
+									}
+								}
+
+								//if (commandDetails.CommandHasPredefinedArguments())
+								//  foreach (string predefinedArguments in InlineCommands.CommandList[key].commandPredefinedArguments)
+								//  {
+								//    tmpCommandForm.AddControl(new TextBox() { Text = predefinedArguments });
+								//    //MenuItem subcommanditem = new MenuItem(predefinedArguments.Substring(key.Length + 1)) { Tag = predefinedArguments };
+								//    //subcommanditem.AutoSize = true;
+								//    //subcommanditem.DropDownDirection = defaultDropDirection;
+								//    //subcommanditem.Click += delegate
+								//    //{
+								//    //  PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
+								//    //};
+								//    //subcommanditem.DropDownOpened += delegate
+								//    //{
+								//    //  PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
+								//    //};
+								//    //commanditem.MenuItems.Add(subcommanditem);//.DropDownItems.Add(subcommanditem);
+								//  }
+
+								//for (int i = 0; i < commanditem.MenuItems.Count; i++)//.DropDownItems.Count; i++)
+								//{
+								//  MenuItem tmpsubcommandItem = commanditem.MenuItems[i];//.DropDownItems[i] as ToolStripMenuItem;
+								//  if (commandDetails.CommandHasArguments())
+								//  {
+								//    foreach (Commands.CommandDetails.CommandArgumentClass arg in Commands.CommandList[key].commandArguments)
+								//    {
+								//      //ToolStripTextBox subcommandTextboxitem = new ToolStripTextBox();
+								//      MenuItem subcommandTextboxitem = new MenuItem();
+								//      subcommandTextboxitem.Tag = tmpsubcommandItem;
+								//      //subcommandTextboxitem.BackColor = arg.Required ? Color.LightGreen : Color.LightGray;
+								//      subcommandTextboxitem.Click += (sender1, e1) =>
+								//      {
+								//        //if (e1.KeyCode == Keys.Enter)
+								//        //{
+								//        if (subcommandTextboxitem.Tag is MenuItem)
+								//          {
+								//            //ToolStripMenuItem tmpCommandMenuItem = (subcommandTextboxitem.OwnerItem as ToolStripMenuItem).OwnerItem as ToolStripMenuItem;
+								//            MenuItem tmpCommandMenuItem = subcommandTextboxitem.Tag as MenuItem;
+								//            //ToolStripMenuItem tmpArgumentsOwner = subcommandTextboxitem.OwnerItem as ToolStripMenuItem;
+
+								//            bool EmptyRequiredArguments = false;
+								//            Commands.CommandDetails commdet = (Commands.CommandDetails)commanditem.Tag;
+								//            for (int j = 0; j < commdet.commandArguments.Count; j++)
+								//              if (commdet.commandArguments[j].Required && tmpArgumentsOwner.DropDownItems[j].Text.Length == 0)
+								//              {
+								//                EmptyRequiredArguments = true;
+								//                MessageBox.Show("Please complete all required textboxes (green), textbox " + (j + 1).ToString() + " is empty");
+								//              }
+
+								//            if (!EmptyRequiredArguments)
+								//            {
+								//              string concatString = "";
+								//              foreach (ToolStripItem ti1 in tmpArgumentsOwner.DropDownItems)
+								//              {
+								//                if (ti1 is ToolStripTextBox)
+								//                  concatString += (concatString.Length > 0 ? ";" : "") + ((ToolStripTextBox)ti1).Text;
+								//              }
+								//              PerformCommandNow(((Commands.CommandDetails)commanditem.Tag).commandName + " " + concatString, false, true);
+								//            }
+								//            //MessageBox.Show((subcommandTextboxitem.OwnerItem as ToolStripMenuItem).Text);
+								//          }
+								//        //}
+								//        //else if (e1.KeyCode == Keys.Left)
+								//        //{
+								//        //  if (subcommandTextboxitem.Text.Length == 0 || subcommandTextboxitem.SelectionStart == 0)
+								//        //    if (subcommandTextboxitem.OwnerItem is ToolStripMenuItem)
+								//        //      (subcommandTextboxitem.OwnerItem as ToolStripMenuItem).HideDropDown();
+								//        //}
+								//      };
+								//      tmpsubcommandItem.MenuItems.Add(subcommandTextboxitem);//.DropDownItems.Add(subcommandTextboxitem);
+								//    }
+
+								//    if (i > 0)
+								//    {
+								//      string[] splittedArgs = tmpsubcommandItem.Tag.ToString().Substring(key.Length + 1).Split(';');
+								//      for (int k = 0; k < splittedArgs.Length; k++)
+								//        tmpsubcommandItem.DropDownItems[k].Text = splittedArgs[k];
+								//    }
+								//  }
+								//}
+							}
+							else
+							{
+								//commanditem.Click += delegate
+								//{
+								//  UserMessages.ShowInfoMessage("No subcommands");
+								//};
+							}
+							//menuItem_Commands.MenuItems.Add(commanditem);//.DropDownItems.Add(commanditem);
+						
+						}
+						overlayForm.Show();
+					}
+				}
+			};
+			mouseHook.Start();
 		}
 
 		private void Form1_Shown(object sender, EventArgs e)
@@ -475,14 +602,14 @@ namespace QuickAccess
 
 					//commanditem.DropDownDirection = defaultDropDirection;
 
-					if (commandDetails.CommandHasArguments() || commandDetails.CommandHasAutocompleteArguments())
+					if (commandDetails.CommandHasArguments() || commandDetails.CommandHasPredefinedArguments())
 					{
 						//MenuItem customArguments = new MenuItem("_Custom arguments");
 						////customArguments.AutoSize = true;
 						////customArguments.DropDownDirection = defaultDropDirection;
 						//commanditem.MenuItems.Add(customArguments);//.DropDownItems.Add(customArguments);
 
-						if (commandDetails.CommandHasAutocompleteArguments())
+						if (commandDetails.CommandHasPredefinedArguments())
 							foreach (string predefinedArguments in InlineCommands.CommandList[key].commandPredefinedArguments)
 							{
 								MenuItem subcommanditem = new MenuItem(predefinedArguments.Substring(key.Length + 1)) { Tag = predefinedArguments };
@@ -600,6 +727,16 @@ namespace QuickAccess
 			}
 			else*/
 				//menuItem_Commands.PerformClick();//.PerformSelect();
+		}
+
+		private void menuItem2_Click(object sender, EventArgs e)
+		{
+			CommandForm cf = new CommandForm("tmp123");
+			cf.AddControl("tmp1", new TextBox());
+			cf.AddControl("tmp2", new TextBox());
+			cf.AddControl("tmp3", new TextBox());
+			cf.AddControl("tmp4", new TextBox());
+			cf.Show();
 		}
 	}
 }
