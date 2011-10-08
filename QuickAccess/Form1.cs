@@ -18,6 +18,9 @@ namespace QuickAccess
 		MouseHooks.MouseHook mouseHook;
 		OverlayForm overlayForm = new OverlayForm();
 
+		Color LabelColorRequiredArgument = Color.Green;
+		Color LabelColorOptionalArgument = SystemColors.WindowText;
+
 		public Form1()
 		{
 			InitializeComponent();
@@ -65,7 +68,50 @@ namespace QuickAccess
 
 										foreach (InlineCommands.CommandDetails.CommandArgumentClass arg in commandDetails.commandArguments)
 										{
-											tmpCommandForm.AddControl(arg.ArgumentName, new TextBox() { ForeColor = arg.Required ? Color.Red : Color.Green });
+											TextBox textBox = new TextBox()
+											{
+												//ForeColor = arg.Required ? Color.Red : Color.Green,
+												Tag = commandDetails
+											};
+
+											if (commandDetails.CommandHasPredefinedArguments())
+											{
+												textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+												textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+												textBox.AutoCompleteCustomSource.Clear();
+												foreach (string s in commandDetails.commandPredefinedArguments)
+													textBox.AutoCompleteCustomSource.Add(s.Substring(s.IndexOf(' ') + 1));
+											}
+
+											textBox.KeyDown += (txtbox, evt) =>
+											{
+												if (evt.KeyCode == Keys.Enter)
+												{
+													bool EmptyRequiredArguments = false;
+													InlineCommands.CommandDetails thisCommandDetails = (txtbox as TextBox).Tag as InlineCommands.CommandDetails;
+													foreach (InlineCommands.CommandDetails.CommandArgumentClass argument in (thisCommandDetails).commandArguments)
+													{
+														if (argument.Required && argument.textBox.Text.Trim().Length == 0)
+														{
+															EmptyRequiredArguments = true;
+															UserMessages.ShowWarningMessage("Please complete all required textboxes (green), empty textbox for " + argument.ArgumentName);
+														}
+													}
+
+													if (!EmptyRequiredArguments)
+													{
+														string concatString = "";
+														foreach (InlineCommands.CommandDetails.CommandArgumentClass argument in thisCommandDetails.commandArguments)
+															concatString += (concatString.Length > 0 ? ";" : "") + argument.textBox.Text;
+														//UserMessages.ShowInfoMessage(commandDetails.commandName + " " + concatString);
+														PerformCommandNow(commandDetails.commandName + " " + concatString, false, true);
+													}
+												}
+											};
+
+											arg.textBox = textBox;
+											//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? Color.Green : SystemColors.WindowText);
+											tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
 										}
 									}
 
@@ -400,7 +446,7 @@ namespace QuickAccess
 				appendLogTextbox("");
 				appendLogTextbox("Performing command: " + text);
 				(textBox1.Tag as List<string>).Add(text);
-				command.PerformCommand(this.textBox1, this.textBox_Messages);
+				command.PerformCommand(text, this.textBox1, this.textBox_Messages);
 				if (ClearCommandTextboxOnSuccess) textBox1.Text = "";
 				if (HideAfterSuccess) this.Hide();
 			}
@@ -495,9 +541,9 @@ namespace QuickAccess
 								string argswithoutlast = textboxArgsString.Substring(0, textboxArgsString.Length - lastetextboxArg.Length);
 								if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Directories
 									|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Both)
-								foreach (string dir in Directory.GetDirectories(lastetextboxArg))
-									if (!textBox1.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + dir))
-										textBox1.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + dir);
+									foreach (string dir in Directory.GetDirectories(lastetextboxArg))
+										if (!textBox1.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + dir))
+											textBox1.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + dir);
 
 								if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Files
 									|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Both)
@@ -505,8 +551,8 @@ namespace QuickAccess
 										if (!textBox1.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + file))
 											textBox1.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + file);
 							}
-						
-						
+
+
 						//commDetails.commandArguments[0]
 					}
 					//string[] textBoxArgsSplitted = textboxArgsString.Split(Commands.CommandDetails.ArgumentSeparator);
@@ -731,16 +777,16 @@ namespace QuickAccess
 				menuItem_Commands.MenuItems[0].PerformSelect();//.DropDownItems[0].Select();
 			}
 			else*/
-				//menuItem_Commands.PerformClick();//.PerformSelect();
+			//menuItem_Commands.PerformClick();//.PerformSelect();
 		}
 
 		private void menuItem2_Click(object sender, EventArgs e)
 		{
 			CommandForm cf = new CommandForm("tmp123");
-			cf.AddControl("tmp1", new TextBox());
-			cf.AddControl("tmp2", new TextBox());
-			cf.AddControl("tmp3", new TextBox());
-			cf.AddControl("tmp4", new TextBox());
+			cf.AddControl("tmp1", new TextBox(), Color.Black);
+			cf.AddControl("tmp2", new TextBox(), Color.Red);
+			cf.AddControl("tmp3", new TextBox(), Color.Green);
+			cf.AddControl("tmp4", new TextBox(), Color.Blue);
 			cf.Show();
 		}
 	}
