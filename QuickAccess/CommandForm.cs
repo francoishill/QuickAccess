@@ -9,8 +9,8 @@ using System.Windows.Forms;
 
 public partial class CommandForm : Form
 {
-	private Size SizeBeforeAddingPredefinedList;
-	private Point LocationBeforeAddingAndCentering;
+	//private Size SizeBeforeAddingPredefinedList;
+	//private Point LocationBeforeAddingAndCentering;
 
 	public CommandForm(string WindowTitle)
 	{

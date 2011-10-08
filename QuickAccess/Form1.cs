@@ -18,8 +18,10 @@ namespace QuickAccess
 		MouseHooks.MouseHook mouseHook;
 		OverlayForm overlayForm = new OverlayForm();
 
-		Color LabelColorRequiredArgument = Color.Green;
-		Color LabelColorOptionalArgument = SystemColors.WindowText;
+		//Color LabelColorRequiredArgument = Color.Green;
+		//Color LabelColorOptionalArgument = SystemColors.WindowText;
+		System.Windows.Media.Color LabelColorRequiredArgument = System.Windows.Media.Colors.Green;
+		System.Windows.Media.Color LabelColorOptionalArgument = System.Windows.Media.Colors.Black;
 
 		public Form1()
 		{
@@ -51,13 +53,17 @@ namespace QuickAccess
 						//foreach (string s in s.s)
 						foreach (string key in InlineCommands.CommandList.Keys)
 						{
-							if (InlineCommands.CommandList[key].commandForm != null)
-								overlayForm.ListOfChildForms.Add(InlineCommands.CommandList[key].commandForm);
+							if (InlineCommands.CommandList[key].commandWindow != null)//.commandForm != null)
+								//overlayForm.ListOfChildForms.Add(InlineCommands.CommandList[key].commandForm);
+								overlayForm.ListOfChildWindows.Add(InlineCommands.CommandList[key].commandWindow);
 							else
 							{
-								CommandForm tmpCommandForm = new CommandForm(key);
-								InlineCommands.CommandList[key].commandForm = tmpCommandForm;
-								overlayForm.ListOfChildForms.Add(tmpCommandForm);
+								//CommandForm tmpCommandForm = new CommandForm(key);
+								MainWindow tmpCommandWindow = new MainWindow(key);
+								//InlineCommands.CommandList[key].commandForm = tmpCommandForm;
+								InlineCommands.CommandList[key].commandWindow = tmpCommandWindow;
+								//overlayForm.ListOfChildForms.Add(tmpCommandForm);
+								overlayForm.ListOfChildWindows.Add(tmpCommandWindow);
 
 								InlineCommands.CommandDetails commandDetails = InlineCommands.CommandList[key];
 
@@ -68,24 +74,28 @@ namespace QuickAccess
 
 										foreach (InlineCommands.CommandDetails.CommandArgumentClass arg in commandDetails.commandArguments)
 										{
-											TextBox textBox = new TextBox()
+											//TextBox textBox = new TextBox()
+											System.Windows.Controls.TextBox textBox = new System.Windows.Controls.TextBox()
 											{
 												//ForeColor = arg.Required ? Color.Red : Color.Green,
-												Tag = commandDetails
+												Tag = commandDetails,
+												MinWidth = 80,
+												Margin = new System.Windows.Thickness(5)
 											};
 
 											if (commandDetails.CommandHasPredefinedArguments())
 											{
-												textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-												textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
-												textBox.AutoCompleteCustomSource.Clear();
-												foreach (string s in commandDetails.commandPredefinedArguments)
-													textBox.AutoCompleteCustomSource.Add(s.Substring(s.IndexOf(' ') + 1));
+												//textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+												//textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+												//textBox.AutoCompleteCustomSource.Clear();
+												//foreach (string s in commandDetails.commandPredefinedArguments)
+												//  textBox.AutoCompleteCustomSource.Add(s.Substring(s.IndexOf(' ') + 1));
 											}
 
 											textBox.KeyDown += (txtbox, evt) =>
 											{
-												if (evt.KeyCode == Keys.Enter)
+												//if (evt.KeyCode == Keys.Enter)
+												if (evt.Key == System.Windows.Input.Key.Enter)
 												{
 													bool EmptyRequiredArguments = false;
 													InlineCommands.CommandDetails thisCommandDetails = (txtbox as TextBox).Tag as InlineCommands.CommandDetails;
@@ -111,7 +121,8 @@ namespace QuickAccess
 
 											arg.textBox = textBox;
 											//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? Color.Green : SystemColors.WindowText);
-											tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
+											//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
+											tmpCommandWindow.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
 										}
 									}
 
