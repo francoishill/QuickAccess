@@ -40,57 +40,141 @@ public partial class MainWindow : Window
 		gridTable.Children.Add(control);
 		Grid.SetColumn(control, 1);
 		Grid.SetRow(control, gridTable.RowDefinitions.Count - 1);
-		return;
-		//StackPanel horizontalStackPanel = new StackPanel();
-		//horizontalStackPanel.Orientation = Orientation.Horizontal;
-		//horizontalStackPanel.Children.Add(new Label() { Content = label, Margin = new Thickness(3, 5, 3, 0) });
-		//horizontalStackPanel.Children.Add(control);
-		//verticalStackPanel.Children.Add(horizontalStackPanel);
-
-		//if (tableLayoutPanel1.Controls.Count > 0) tableLayoutPanel1.RowCount++;
-		//tableLayoutPanel1.Controls.Add(new Label() { Text = label, Margin = new Padding(3, 5, 3, 0) });
-		//tableLayoutPanel1.Controls.Add(control);
 	}
 
-	//private Point PositionBeforeActivated;
+	public void AddTreeviewItem(object itemToAdd)
+	{
+		if (tmpTreeview == null)
+		{
+			tmpTreeview = new TreeView() { MinWidth = 100, MinHeight = 20, MaxHeight = 40 };
+			gridTable.Children.Add(tmpTreeview);
+			Grid.SetColumn(tmpTreeview, 2);
+			Grid.SetRow(tmpTreeview, gridTable.RowDefinitions.Count - 1);
+			Grid.SetRowSpan(tmpTreeview, 1000);
+		}
+		tmpTreeview.Items.Add(itemToAdd);
+	}
+	TreeView tmpTreeview = null;
+
+	public Point PositionBeforeActivated { get; set; }
 	private void Window_Activated(object sender, EventArgs e)
 	{
 		//this.FormFadein.BeginAnimation(this, this.FormFadeAnimation.);
 		//this.Opacity = 1;
-		//PositionBeforeActivated = new Point(this.Left, this.Top);
-		mainBorder.LayoutTransform = new ScaleTransform(1.5, 1.5);
+
+		//mainBorder.LayoutTransform = new ScaleTransform(1.5, 1.5);
+
 		//System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;//System.Windows.Forms.Screen..FromPoint();//.FromHandle(new WindowInteropHelper(Application.Current.MainWindow).Handle).WorkingArea;
 		//this.Left = workingArea.Left + (workingArea.Width - this.Width) / 2;
 		//this.Top = workingArea.Top + (workingArea.Height - this.Height) / 2;
 
-		AnimateWindowActivation();
+		if (AllowedToAnimationLocation) AnimateWindowActivation();
 	}
 
-	Storyboard storyBoard = new Storyboard();
+	public bool AllowedToAnimationLocation { get; set; }// = false;
+	Storyboard storyBoardActivated = new Storyboard();
 	private void AnimateWindowActivation()
 	{
-		//this.RegisterName(mainBorder.Name, mainBorder);
+		//this.RegisterName(mainWindow.Name, mainWindow);
 
-		//DoubleAnimation opacityDoubleAnimation = new DoubleAnimation();
+		if (storyBoardActivated.Children.Count == 0)
+		{
+			const double ScaleFactor = 2.5;
+			double durationSeconds = 500;
 
-		//opacityDoubleAnimation.From = 0;
-		//opacityDoubleAnimation.To = 0.1;
-		//opacityDoubleAnimation.Duration = new Duration(new TimeSpan(0, 0, 0, 0, 1500));
-		//opacityDoubleAnimation.AutoReverse = false;
-		//opacityDoubleAnimation.RepeatBehavior = new RepeatBehavior(1);
+			System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
 
-		
-		//storyBoard.Children.Add(opacityDoubleAnimation);
-		//Storyboard.SetTargetName(opacityDoubleAnimation, mainBorder.Name);
-		//Storyboard.SetTargetProperty(opacityDoubleAnimation, new PropertyPath(Border.OpacityProperty));
-		//storyBoard.Begin(this);
+			double newTopPosition = workingArea.Top + (workingArea.Height - this.Height * ScaleFactor) / 2;
+			DoubleAnimation windowTopAnimation = new DoubleAnimation(newTopPosition, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
+			windowTopAnimation.AutoReverse = false;
+			windowTopAnimation.RepeatBehavior = new RepeatBehavior(1);
+
+			double newLeftPosition = workingArea.Left + (workingArea.Width - this.Width * ScaleFactor) / 2;
+			DoubleAnimation windowLeftAnimation = new DoubleAnimation(newLeftPosition, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
+			windowLeftAnimation.AutoReverse = false;
+			windowLeftAnimation.RepeatBehavior = new RepeatBehavior(1);
+
+			DoubleAnimation windowScaleXanimation = new DoubleAnimation(ScaleFactor, new Duration(TimeSpan.FromMilliseconds(durationSeconds / 2)));
+			windowScaleXanimation.AutoReverse = false;
+			windowScaleXanimation.RepeatBehavior = new RepeatBehavior(1);
+
+			DoubleAnimation windowScaleYanimation = new DoubleAnimation(ScaleFactor, new Duration(TimeSpan.FromMilliseconds(durationSeconds / 2)));
+			windowScaleYanimation.AutoReverse = false;
+			windowScaleYanimation.RepeatBehavior = new RepeatBehavior(1);
+
+			storyBoardActivated.Children.Add(windowTopAnimation);
+			storyBoardActivated.Children.Add(windowLeftAnimation);
+			storyBoardActivated.Children.Add(windowScaleXanimation);
+			storyBoardActivated.Children.Add(windowScaleYanimation);
+			Storyboard.SetTargetName(windowTopAnimation, mainWindow.Name);
+			Storyboard.SetTargetName(windowLeftAnimation, mainWindow.Name);
+			Storyboard.SetTargetName(windowScaleXanimation, mainBorder.Name);
+			Storyboard.SetTargetName(windowScaleYanimation, mainBorder.Name);
+			Storyboard.SetTargetProperty(windowTopAnimation, new PropertyPath(Window.TopProperty));
+			Storyboard.SetTargetProperty(windowLeftAnimation, new PropertyPath(Window.LeftProperty));
+			Storyboard.SetTargetProperty(windowScaleXanimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleX)"));
+			Storyboard.SetTargetProperty(windowScaleYanimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"));
+		}
+		storyBoardActivated.Begin(this);
 	}
 
+	Storyboard storyBoardDeactivated = new Storyboard();
 	private void Window_Deactivated(object sender, EventArgs e)
 	{
-		mainBorder.LayoutTransform = new ScaleTransform(1, 1);
+		//mainBorder.LayoutTransform = new ScaleTransform(1, 1);
+
+		if (AllowedToAnimationLocation) ReverseAnimateWindowActivation();
+
 		//this.Left = PositionBeforeActivated.X;
 		//this.Top = PositionBeforeActivated.Y;
 		//this.Opacity = 0.75F; 
 	}
+
+	private void ReverseAnimateWindowActivation()
+	{
+		if (storyBoardDeactivated.Children.Count == 0)
+		{
+			double durationSeconds = 100;
+
+			DoubleAnimation windowTopAnimation = new DoubleAnimation(PositionBeforeActivated.Y, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
+			windowTopAnimation.AutoReverse = false;
+			windowTopAnimation.RepeatBehavior = new RepeatBehavior(1);
+
+			DoubleAnimation windowLeftAnimation = new DoubleAnimation(PositionBeforeActivated.X, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
+			windowLeftAnimation.AutoReverse = false;
+			windowLeftAnimation.RepeatBehavior = new RepeatBehavior(1);
+
+			DoubleAnimation windowScaleXanimation = new DoubleAnimation(1, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
+			windowScaleXanimation.AutoReverse = false;
+			windowScaleXanimation.RepeatBehavior = new RepeatBehavior(1);
+
+			DoubleAnimation windowScaleYanimation = new DoubleAnimation(1, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
+			windowScaleYanimation.AutoReverse = false;
+			windowScaleYanimation.RepeatBehavior = new RepeatBehavior(1);
+
+			storyBoardDeactivated.Children.Add(windowTopAnimation);
+			storyBoardDeactivated.Children.Add(windowLeftAnimation);
+			storyBoardDeactivated.Children.Add(windowScaleXanimation);
+			storyBoardDeactivated.Children.Add(windowScaleYanimation);
+			Storyboard.SetTargetName(windowTopAnimation, mainWindow.Name);
+			Storyboard.SetTargetName(windowLeftAnimation, mainWindow.Name);
+			Storyboard.SetTargetName(windowScaleXanimation, mainBorder.Name);
+			Storyboard.SetTargetName(windowScaleYanimation, mainBorder.Name);
+			Storyboard.SetTargetProperty(windowTopAnimation, new PropertyPath(Window.TopProperty));
+			Storyboard.SetTargetProperty(windowLeftAnimation, new PropertyPath(Window.LeftProperty));
+			Storyboard.SetTargetProperty(windowScaleXanimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleX)"));
+			Storyboard.SetTargetProperty(windowScaleYanimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"));
+		}
+		storyBoardDeactivated.Begin(this);
+	}
+
+	private void mainWindow_Loaded(object sender, RoutedEventArgs e)
+	{
+		mainBorder.LayoutTransform = new ScaleTransform(1, 1);
+	}
+
+	//class WindowRec : Window
+	//{
+	//  public static DependencyProperty WindowRect { get; set; }
+	//}
 }

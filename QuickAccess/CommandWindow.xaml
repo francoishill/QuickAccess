@@ -6,7 +6,8 @@
         Deactivated="Window_Deactivated"
         Name="mainWindow"
         Background="Transparent" SizeToContent="WidthAndHeight"
-        Opacity="0.85">
+        Opacity="0.85"
+        Loaded="mainWindow_Loaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,6 +27,10 @@
         <EventTrigger RoutedEvent="Window.GotKeyboardFocus">
             <BeginStoryboard>
                 <Storyboard>
+                    <!--<DoubleAnimation Storyboard.TargetName="mainWindow"
+                                     Storyboard.TargetProperty="(Window.Top)"
+                                     To="0" Duration="0:0:0:2"
+                                     AutoReverse="False" RepeatBehavior="1x"/>-->
                     <DoubleAnimation Storyboard.TargetName="mainWindow"
                                      Storyboard.TargetProperty="(Window.Opacity)"
                                      To="1" Duration="0:0:0:0.2"
@@ -44,6 +49,10 @@
         <EventTrigger RoutedEvent="Window.LostKeyboardFocus">
             <BeginStoryboard>
                 <Storyboard>
+                    <!--<DoubleAnimation Storyboard.TargetName="mainWindow"
+                                     Storyboard.TargetProperty="(Window.Top)"
+                                     Duration="0:0:0:2"
+                                     AutoReverse="False" RepeatBehavior="1x"/>-->
                     <DoubleAnimation Storyboard.TargetName="mainWindow"
                                      Storyboard.TargetProperty="(Window.Opacity)"
                                      Duration="0:0:0:0.1"
@@ -75,7 +84,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
             </Grid>
         </Grid>
     </Border>

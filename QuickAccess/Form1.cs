@@ -80,7 +80,9 @@ namespace QuickAccess
 												//ForeColor = arg.Required ? Color.Red : Color.Green,
 												Tag = commandDetails,
 												MinWidth = 80,
-												Margin = new System.Windows.Thickness(5)
+												Margin = new System.Windows.Thickness(5),
+												VerticalAlignment = System.Windows.VerticalAlignment.Top,
+												UseLayoutRounding = true
 											};
 
 											if (commandDetails.CommandHasPredefinedArguments())
@@ -122,7 +124,29 @@ namespace QuickAccess
 											arg.textBox = textBox;
 											//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? Color.Green : SystemColors.WindowText);
 											//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
+
 											tmpCommandWindow.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
+										}
+									}
+
+									if (commandDetails.CommandHasPredefinedArguments())
+									{
+										foreach (string item in commandDetails.commandPredefinedArguments)
+										{
+											System.Windows.Controls.TreeViewItem treeviewItem = new System.Windows.Controls.TreeViewItem()
+											{
+												Header = item.Substring(item.IndexOf(' ') + 1),
+												Tag = item
+											};
+											treeviewItem.MouseDoubleClick += (send, evtargs) =>
+											{
+												string predefinedArg = (send as System.Windows.Controls.TreeViewItem).Tag as string;
+												if (overlayForm != null && !overlayForm.IsDisposed)
+													overlayForm.Close();
+												PerformCommandNow(predefinedArg, false, false);
+												//UserMessages.ShowMessage(((send as System.Windows.Controls.TreeViewItem).Tag as InlineCommands.CommandDetails).commandName);
+											};
+											tmpCommandWindow.AddTreeviewItem(treeviewItem);
 										}
 									}
 
