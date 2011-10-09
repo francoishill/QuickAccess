@@ -50,7 +50,7 @@
 		this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(10, 11, 10, 11);
 		this.tableLayoutPanel1.RowCount = 1;
 		this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-		this.tableLayoutPanel1.Size = new System.Drawing.Size(184, 53);
+		this.tableLayoutPanel1.Size = new System.Drawing.Size(192, 61);
 		this.tableLayoutPanel1.TabIndex = 0;
 		this.tableLayoutPanel1.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.tableLayoutPanel1_ControlAdded);
 		// 
@@ -77,7 +77,7 @@
 		this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 		this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		this.AutoSize = true;
-		this.ClientSize = new System.Drawing.Size(184, 53);
+		this.ClientSize = new System.Drawing.Size(192, 61);
 		this.Controls.Add(this.tableLayoutPanel1);
 		this.DoubleBuffered = true;
 		this.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

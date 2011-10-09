@@ -793,12 +793,19 @@ namespace QuickAccess
 
 		private void menuItem2_Click(object sender, EventArgs e)
 		{
-			CommandForm cf = new CommandForm("tmp123");
-			cf.AddControl("tmp1", new TextBox(), Color.Black);
-			cf.AddControl("tmp2", new TextBox(), Color.Red);
-			cf.AddControl("tmp3", new TextBox(), Color.Green);
-			cf.AddControl("tmp4", new TextBox(), Color.Blue);
-			cf.Show();
+			//CommandForm cf = new CommandForm("tmp123");
+			//cf.AddControl("tmp1", new TextBox(), Color.Black);
+			//cf.AddControl("tmp2", new TextBox(), Color.Red);
+			//cf.AddControl("tmp3", new TextBox(), Color.Green);
+			//cf.AddControl("tmp4", new TextBox(), Color.Blue);
+			//cf.Show();
+
+			MainWindow mw = new MainWindow("tmp123");
+			mw.AddControl("tmp1", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Black);
+			mw.AddControl("tmp2", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Red);
+			mw.AddControl("tmp3", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Green);
+			mw.AddControl("tmp4", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Blue);
+			mw.Show();
 		}
 	}
 }

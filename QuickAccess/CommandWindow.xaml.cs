@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Interop;
+using System.Windows.Media.Animation;
 
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
@@ -20,6 +22,7 @@ public partial class MainWindow : Window
 	public MainWindow(string WindowTitle)
 	{
 		InitializeComponent();
+		System.Windows.Forms.Application.EnableVisualStyles();
 		this.Title = WindowTitle;
 		labelTitle.Content = WindowTitle;
 	}
@@ -49,18 +52,45 @@ public partial class MainWindow : Window
 		//tableLayoutPanel1.Controls.Add(control);
 	}
 
+	//private Point PositionBeforeActivated;
 	private void Window_Activated(object sender, EventArgs e)
 	{
-		this.Opacity = 1;
+		//this.FormFadein.BeginAnimation(this, this.FormFadeAnimation.);
+		//this.Opacity = 1;
+		//PositionBeforeActivated = new Point(this.Left, this.Top);
+		mainBorder.LayoutTransform = new ScaleTransform(1.5, 1.5);
+		//System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;//System.Windows.Forms.Screen..FromPoint();//.FromHandle(new WindowInteropHelper(Application.Current.MainWindow).Handle).WorkingArea;
+		//this.Left = workingArea.Left + (workingArea.Width - this.Width) / 2;
+		//this.Top = workingArea.Top + (workingArea.Height - this.Height) / 2;
+
+		AnimateWindowActivation();
+	}
+
+	Storyboard storyBoard = new Storyboard();
+	private void AnimateWindowActivation()
+	{
+		//this.RegisterName(mainBorder.Name, mainBorder);
+
+		//DoubleAnimation opacityDoubleAnimation = new DoubleAnimation();
+
+		//opacityDoubleAnimation.From = 0;
+		//opacityDoubleAnimation.To = 0.1;
+		//opacityDoubleAnimation.Duration = new Duration(new TimeSpan(0, 0, 0, 0, 1500));
+		//opacityDoubleAnimation.AutoReverse = false;
+		//opacityDoubleAnimation.RepeatBehavior = new RepeatBehavior(1);
+
+		
+		//storyBoard.Children.Add(opacityDoubleAnimation);
+		//Storyboard.SetTargetName(opacityDoubleAnimation, mainBorder.Name);
+		//Storyboard.SetTargetProperty(opacityDoubleAnimation, new PropertyPath(Border.OpacityProperty));
+		//storyBoard.Begin(this);
 	}
 
 	private void Window_Deactivated(object sender, EventArgs e)
 	{
-		this.Opacity = 0.75F;
-	}
-
-	private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-	{
-		DragMove();
+		mainBorder.LayoutTransform = new ScaleTransform(1, 1);
+		//this.Left = PositionBeforeActivated.X;
+		//this.Top = PositionBeforeActivated.Y;
+		//this.Opacity = 0.75F; 
 	}
 }
