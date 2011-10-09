@@ -133,9 +133,22 @@ namespace QuickAccess
 									{
 										foreach (string item in commandDetails.commandPredefinedArguments)
 										{
+											//System.Windows.Controls.TextBlock textBlock = new System.Windows.Controls.TextBlock() { Text = item.Substring(item.IndexOf(' ') + 1) };
+											//System.Windows.Controls.Image image = new System.Windows.Controls.Image();
+											//using (MemoryStream iconStream = new MemoryStream())
+											//{
+											//  this.Icon.Save(iconStream);
+											//  iconStream.Seek(0, SeekOrigin.Begin);
+
+											//  image.Source = System.Windows.Media.Imaging.BitmapFrame.Create(iconStream);
+											//}
+											//System.Windows.Controls.StackPanel stackPanel = new System.Windows.Controls.StackPanel() { Orientation = System.Windows.Controls.Orientation.Horizontal };
+											//stackPanel.Children.Add(image);
+											//stackPanel.Children.Add(textBlock);
+
 											System.Windows.Controls.TreeViewItem treeviewItem = new System.Windows.Controls.TreeViewItem()
 											{
-												Header = item.Substring(item.IndexOf(' ') + 1),
+												Header = item.Substring(item.IndexOf(' ') + 1),//stackPanel,
 												Tag = item
 											};
 											treeviewItem.MouseDoubleClick += (send, evtargs) =>
@@ -246,6 +259,16 @@ namespace QuickAccess
 			};
 			mouseHook.Start();
 		}
+
+		//public static System.Windows.Media.ImageSource ToImageSource(this Icon icon)
+		//{
+		//  System.Windows.Media.ImageSource imageSource = CreateBitmapSourceFromHIcon(
+		//      icon.Handle,
+		//      System.Windows.Int32Rect.Empty,
+		//      System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+
+		//  return imageSource;
+		//}
 
 		private void Form1_Shown(object sender, EventArgs e)
 		{
@@ -481,6 +504,7 @@ namespace QuickAccess
 				appendLogTextbox("");
 				appendLogTextbox("Performing command: " + text);
 				(textBox1.Tag as List<string>).Add(text);
+				Logging.staticNotifyIcon = notifyIcon1;
 				command.PerformCommand(text, this.textBox1, this.textBox_Messages);
 				if (ClearCommandTextboxOnSuccess) textBox1.Text = "";
 				if (HideAfterSuccess) this.Hide();
