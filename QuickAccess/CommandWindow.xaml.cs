@@ -17,12 +17,14 @@ using System.Windows.Media.Animation;
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-public partial class MainWindow : Window
+public partial class CommandWindow : Window
 {
-	public MainWindow(string WindowTitle)
+	public CommandWindow(string WindowTitle)
 	{
 		InitializeComponent();
 		System.Windows.Forms.Application.EnableVisualStyles();
+		System.Windows.Forms.Integration.ElementHost.EnableModelessKeyboardInterop(this);
+
 		this.Title = WindowTitle;
 		labelTitle.Content = WindowTitle.ToUpper();
 	}
@@ -65,15 +67,7 @@ public partial class MainWindow : Window
 	public Point PositionBeforeActivated { get; set; }
 	private void Window_Activated(object sender, EventArgs e)
 	{
-		//this.FormFadein.BeginAnimation(this, this.FormFadeAnimation.);
-		//this.Opacity = 1;
-
 		//mainBorder.LayoutTransform = new ScaleTransform(1.5, 1.5);
-
-		//System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;//System.Windows.Forms.Screen..FromPoint();//.FromHandle(new WindowInteropHelper(Application.Current.MainWindow).Handle).WorkingArea;
-		//this.Left = workingArea.Left + (workingArea.Width - this.Width) / 2;
-		//this.Top = workingArea.Top + (workingArea.Height - this.Height) / 2;
-
 		if (AllowedToAnimationLocation) AnimateWindowActivation();
 	}
 
@@ -81,39 +75,39 @@ public partial class MainWindow : Window
 	Storyboard storyBoardActivated = new Storyboard();
 	private void AnimateWindowActivation()
 	{
-		//this.RegisterName(mainWindow.Name, mainWindow);
-
 		if (storyBoardActivated.Children.Count == 0)
 		{
-			const double ScaleFactor = 2.5;
+			const double ScaleFactor = 3;//2.5;
 			double durationSeconds = 500;
 
 			System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
 
+			//PositionBeforeActivated = new Point(this.Left, this.Top);
 			double newTopPosition = workingArea.Top + (workingArea.Height - this.Height * ScaleFactor) / 2;
-			DoubleAnimation windowTopAnimation = new DoubleAnimation(newTopPosition, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
+			DoubleAnimation windowTopAnimation = new DoubleAnimation(this.Top, newTopPosition, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
 			windowTopAnimation.AutoReverse = false;
 			windowTopAnimation.RepeatBehavior = new RepeatBehavior(1);
 
 			double newLeftPosition = workingArea.Left + (workingArea.Width - this.Width * ScaleFactor) / 2;
-			DoubleAnimation windowLeftAnimation = new DoubleAnimation(newLeftPosition, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
+			DoubleAnimation windowLeftAnimation = new DoubleAnimation(this.Left, newLeftPosition, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
 			windowLeftAnimation.AutoReverse = false;
 			windowLeftAnimation.RepeatBehavior = new RepeatBehavior(1);
 
-			DoubleAnimation windowScaleXanimation = new DoubleAnimation(ScaleFactor, new Duration(TimeSpan.FromMilliseconds(durationSeconds / 2)));
+			DoubleAnimation windowScaleXanimation = new DoubleAnimation(ScaleFactor, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
 			windowScaleXanimation.AutoReverse = false;
 			windowScaleXanimation.RepeatBehavior = new RepeatBehavior(1);
 
-			DoubleAnimation windowScaleYanimation = new DoubleAnimation(ScaleFactor, new Duration(TimeSpan.FromMilliseconds(durationSeconds / 2)));
+			DoubleAnimation windowScaleYanimation = new DoubleAnimation(ScaleFactor, new Duration(TimeSpan.FromMilliseconds(durationSeconds)));
 			windowScaleYanimation.AutoReverse = false;
 			windowScaleYanimation.RepeatBehavior = new RepeatBehavior(1);
 
-			storyBoardActivated.Children.Add(windowTopAnimation);
-			storyBoardActivated.Children.Add(windowLeftAnimation);
 			storyBoardActivated.Children.Add(windowScaleXanimation);
 			storyBoardActivated.Children.Add(windowScaleYanimation);
-			Storyboard.SetTargetName(windowTopAnimation, mainWindow.Name);
-			Storyboard.SetTargetName(windowLeftAnimation, mainWindow.Name);
+			storyBoardActivated.Children.Add(windowTopAnimation);
+			storyBoardActivated.Children.Add(windowLeftAnimation);
+			
+			Storyboard.SetTargetName(windowTopAnimation, commandWindow.Name);
+			Storyboard.SetTargetName(windowLeftAnimation, commandWindow.Name);
 			Storyboard.SetTargetName(windowScaleXanimation, mainBorder.Name);
 			Storyboard.SetTargetName(windowScaleYanimation, mainBorder.Name);
 			Storyboard.SetTargetProperty(windowTopAnimation, new PropertyPath(Window.TopProperty));
@@ -121,6 +115,7 @@ public partial class MainWindow : Window
 			Storyboard.SetTargetProperty(windowScaleXanimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleX)"));
 			Storyboard.SetTargetProperty(windowScaleYanimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"));
 		}
+		//PositionBeforeActivated = new Point(this.Left, this.Top);
 		storyBoardActivated.Begin(this);
 	}
 
@@ -128,12 +123,7 @@ public partial class MainWindow : Window
 	private void Window_Deactivated(object sender, EventArgs e)
 	{
 		//mainBorder.LayoutTransform = new ScaleTransform(1, 1);
-
 		if (AllowedToAnimationLocation) ReverseAnimateWindowActivation();
-
-		//this.Left = PositionBeforeActivated.X;
-		//this.Top = PositionBeforeActivated.Y;
-		//this.Opacity = 0.75F; 
 	}
 
 	private void ReverseAnimateWindowActivation()
@@ -162,8 +152,8 @@ public partial class MainWindow : Window
 			storyBoardDeactivated.Children.Add(windowLeftAnimation);
 			storyBoardDeactivated.Children.Add(windowScaleXanimation);
 			storyBoardDeactivated.Children.Add(windowScaleYanimation);
-			Storyboard.SetTargetName(windowTopAnimation, mainWindow.Name);
-			Storyboard.SetTargetName(windowLeftAnimation, mainWindow.Name);
+			Storyboard.SetTargetName(windowTopAnimation, commandWindow.Name);
+			Storyboard.SetTargetName(windowLeftAnimation, commandWindow.Name);
 			Storyboard.SetTargetName(windowScaleXanimation, mainBorder.Name);
 			Storyboard.SetTargetName(windowScaleYanimation, mainBorder.Name);
 			Storyboard.SetTargetProperty(windowTopAnimation, new PropertyPath(Window.TopProperty));
@@ -171,16 +161,16 @@ public partial class MainWindow : Window
 			Storyboard.SetTargetProperty(windowScaleXanimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleX)"));
 			Storyboard.SetTargetProperty(windowScaleYanimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"));
 		}
+		//storyBoardDeactivated.Completed += delegate { this.Left = PositionBeforeActivated.X; };//this.Top = PositionBeforeActivated.Y; };
+		//storyBoardDeactivated.SlipBehavior = SlipBehavior.Grow;
+		//TODO: Try splitting into storyboard for window and Border separately. Cannot figure out why form doesn't (ALWAYS) return to its original position.
 		storyBoardDeactivated.Begin(this);
+		storyBoardDeactivated.Begin(mainBorder);
 	}
 
 	private void mainWindow_Loaded(object sender, RoutedEventArgs e)
 	{
 		mainBorder.LayoutTransform = new ScaleTransform(1, 1);
+		PositionBeforeActivated = new Point(this.Left, this.Top);
 	}
-
-	//class WindowRec : Window
-	//{
-	//  public static DependencyProperty WindowRect { get; set; }
-	//}
 }

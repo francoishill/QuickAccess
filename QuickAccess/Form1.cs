@@ -16,7 +16,8 @@ namespace QuickAccess
 		private bool ScrollTextHistoryOnUpDownKeys = false;
 
 		MouseHooks.MouseHook mouseHook;
-		OverlayForm overlayForm = new OverlayForm();
+		//OverlayForm overlayForm = new OverlayForm();
+		OverlayWindow overlayWindow = new OverlayWindow();
 
 		//Color LabelColorRequiredArgument = Color.Green;
 		//Color LabelColorOptionalArgument = SystemColors.WindowText;
@@ -30,12 +31,6 @@ namespace QuickAccess
 			textBox1.Tag = new List<string>();
 			InlineCommands.PopulateCommandList();
 
-			/*if (!System.Diagnostics.Debugger.IsAttached && Environment.GetCommandLineArgs()[0].ToUpper().Contains("Apps\\2.0".ToUpper()))
-			{
-				Microsoft.Win32.RegistryKey regkeyRUN = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-				regkeyRUN.SetValue(ThisAppName, "\"" + System.Windows.Forms.Application.ExecutablePath + "\"", Microsoft.Win32.RegistryValueKind.String);
-			}*/
-
 			origOpacity = this.Opacity;
 			this.Opacity = 0;
 
@@ -45,230 +40,157 @@ namespace QuickAccess
 			//mouseHook.MouseGestureEvent += (o, gest) => { if (gest.MouseGesture == Win32Api.MouseGestures.RL) UserMessages.ShowErrorMessage("Message"); };
 			mouseHook.MouseMoveEvent += delegate
 			{
-				if (MousePosition.X < 5)
-				{
-					if (overlayForm.IsDisposed) overlayForm = new OverlayForm();
-					if (!overlayForm.Visible)
-					{
-						//foreach (string s in s.s)
-						foreach (string key in InlineCommands.CommandList.Keys)
-						{
-							if (InlineCommands.CommandList[key].commandWindow != null)//.commandForm != null)
-								//overlayForm.ListOfChildForms.Add(InlineCommands.CommandList[key].commandForm);
-								overlayForm.ListOfChildWindows.Add(InlineCommands.CommandList[key].commandWindow);
-							else
-							{
-								//CommandForm tmpCommandForm = new CommandForm(key);
-								MainWindow tmpCommandWindow = new MainWindow(key);
-								//InlineCommands.CommandList[key].commandForm = tmpCommandForm;
-								InlineCommands.CommandList[key].commandWindow = tmpCommandWindow;
-								//overlayForm.ListOfChildForms.Add(tmpCommandForm);
-								overlayForm.ListOfChildWindows.Add(tmpCommandWindow);
-
-								InlineCommands.CommandDetails commandDetails = InlineCommands.CommandList[key];
-
-								if (commandDetails.CommandHasArguments() || commandDetails.CommandHasPredefinedArguments())
-								{
-									if (commandDetails.CommandHasArguments())
-									{
-
-										foreach (InlineCommands.CommandDetails.CommandArgumentClass arg in commandDetails.commandArguments)
-										{
-											//TextBox textBox = new TextBox()
-											System.Windows.Controls.TextBox textBox = new System.Windows.Controls.TextBox()
-											{
-												//ForeColor = arg.Required ? Color.Red : Color.Green,
-												Tag = commandDetails,
-												MinWidth = 80,
-												Margin = new System.Windows.Thickness(5),
-												VerticalAlignment = System.Windows.VerticalAlignment.Top,
-												UseLayoutRounding = true
-											};
-
-											if (commandDetails.CommandHasPredefinedArguments())
-											{
-												//textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-												//textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
-												//textBox.AutoCompleteCustomSource.Clear();
-												//foreach (string s in commandDetails.commandPredefinedArguments)
-												//  textBox.AutoCompleteCustomSource.Add(s.Substring(s.IndexOf(' ') + 1));
-											}
-
-											textBox.KeyDown += (txtbox, evt) =>
-											{
-												//if (evt.KeyCode == Keys.Enter)
-												if (evt.Key == System.Windows.Input.Key.Enter)
-												{
-													bool EmptyRequiredArguments = false;
-													InlineCommands.CommandDetails thisCommandDetails = (txtbox as TextBox).Tag as InlineCommands.CommandDetails;
-													foreach (InlineCommands.CommandDetails.CommandArgumentClass argument in (thisCommandDetails).commandArguments)
-													{
-														if (argument.Required && argument.textBox.Text.Trim().Length == 0)
-														{
-															EmptyRequiredArguments = true;
-															UserMessages.ShowWarningMessage("Please complete all required textboxes (green), empty textbox for " + argument.ArgumentName);
-														}
-													}
-
-													if (!EmptyRequiredArguments)
-													{
-														string concatString = "";
-														foreach (InlineCommands.CommandDetails.CommandArgumentClass argument in thisCommandDetails.commandArguments)
-															concatString += (concatString.Length > 0 ? ";" : "") + argument.textBox.Text;
-														//UserMessages.ShowInfoMessage(commandDetails.commandName + " " + concatString);
-														PerformCommandNow(commandDetails.commandName + " " + concatString, false, true);
-													}
-												}
-											};
-
-											arg.textBox = textBox;
-											//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? Color.Green : SystemColors.WindowText);
-											//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
-
-											tmpCommandWindow.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
-										}
-									}
-
-									if (commandDetails.CommandHasPredefinedArguments())
-									{
-										foreach (string item in commandDetails.commandPredefinedArguments)
-										{
-											//System.Windows.Controls.TextBlock textBlock = new System.Windows.Controls.TextBlock() { Text = item.Substring(item.IndexOf(' ') + 1) };
-											//System.Windows.Controls.Image image = new System.Windows.Controls.Image();
-											//using (MemoryStream iconStream = new MemoryStream())
-											//{
-											//  this.Icon.Save(iconStream);
-											//  iconStream.Seek(0, SeekOrigin.Begin);
-
-											//  image.Source = System.Windows.Media.Imaging.BitmapFrame.Create(iconStream);
-											//}
-											//System.Windows.Controls.StackPanel stackPanel = new System.Windows.Controls.StackPanel() { Orientation = System.Windows.Controls.Orientation.Horizontal };
-											//stackPanel.Children.Add(image);
-											//stackPanel.Children.Add(textBlock);
-
-											System.Windows.Controls.TreeViewItem treeviewItem = new System.Windows.Controls.TreeViewItem()
-											{
-												Header = item.Substring(item.IndexOf(' ') + 1),//stackPanel,
-												Tag = item
-											};
-											treeviewItem.MouseDoubleClick += (send, evtargs) =>
-											{
-												string predefinedArg = (send as System.Windows.Controls.TreeViewItem).Tag as string;
-												if (overlayForm != null && !overlayForm.IsDisposed)
-													overlayForm.Close();
-												PerformCommandNow(predefinedArg, false, false);
-												//UserMessages.ShowMessage(((send as System.Windows.Controls.TreeViewItem).Tag as InlineCommands.CommandDetails).commandName);
-											};
-											tmpCommandWindow.AddTreeviewItem(treeviewItem);
-										}
-									}
-
-									//if (commandDetails.CommandHasPredefinedArguments())
-									//  foreach (string predefinedArguments in InlineCommands.CommandList[key].commandPredefinedArguments)
-									//  {
-									//    tmpCommandForm.AddControl(new TextBox() { Text = predefinedArguments });
-									//    //MenuItem subcommanditem = new MenuItem(predefinedArguments.Substring(key.Length + 1)) { Tag = predefinedArguments };
-									//    //subcommanditem.AutoSize = true;
-									//    //subcommanditem.DropDownDirection = defaultDropDirection;
-									//    //subcommanditem.Click += delegate
-									//    //{
-									//    //  PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
-									//    //};
-									//    //subcommanditem.DropDownOpened += delegate
-									//    //{
-									//    //  PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
-									//    //};
-									//    //commanditem.MenuItems.Add(subcommanditem);//.DropDownItems.Add(subcommanditem);
-									//  }
-
-									//for (int i = 0; i < commanditem.MenuItems.Count; i++)//.DropDownItems.Count; i++)
-									//{
-									//  MenuItem tmpsubcommandItem = commanditem.MenuItems[i];//.DropDownItems[i] as ToolStripMenuItem;
-									//  if (commandDetails.CommandHasArguments())
-									//  {
-									//    foreach (Commands.CommandDetails.CommandArgumentClass arg in Commands.CommandList[key].commandArguments)
-									//    {
-									//      //ToolStripTextBox subcommandTextboxitem = new ToolStripTextBox();
-									//      MenuItem subcommandTextboxitem = new MenuItem();
-									//      subcommandTextboxitem.Tag = tmpsubcommandItem;
-									//      //subcommandTextboxitem.BackColor = arg.Required ? Color.LightGreen : Color.LightGray;
-									//      subcommandTextboxitem.Click += (sender1, e1) =>
-									//      {
-									//        //if (e1.KeyCode == Keys.Enter)
-									//        //{
-									//        if (subcommandTextboxitem.Tag is MenuItem)
-									//          {
-									//            //ToolStripMenuItem tmpCommandMenuItem = (subcommandTextboxitem.OwnerItem as ToolStripMenuItem).OwnerItem as ToolStripMenuItem;
-									//            MenuItem tmpCommandMenuItem = subcommandTextboxitem.Tag as MenuItem;
-									//            //ToolStripMenuItem tmpArgumentsOwner = subcommandTextboxitem.OwnerItem as ToolStripMenuItem;
-
-									//            bool EmptyRequiredArguments = false;
-									//            Commands.CommandDetails commdet = (Commands.CommandDetails)commanditem.Tag;
-									//            for (int j = 0; j < commdet.commandArguments.Count; j++)
-									//              if (commdet.commandArguments[j].Required && tmpArgumentsOwner.DropDownItems[j].Text.Length == 0)
-									//              {
-									//                EmptyRequiredArguments = true;
-									//                MessageBox.Show("Please complete all required textboxes (green), textbox " + (j + 1).ToString() + " is empty");
-									//              }
-
-									//            if (!EmptyRequiredArguments)
-									//            {
-									//              string concatString = "";
-									//              foreach (ToolStripItem ti1 in tmpArgumentsOwner.DropDownItems)
-									//              {
-									//                if (ti1 is ToolStripTextBox)
-									//                  concatString += (concatString.Length > 0 ? ";" : "") + ((ToolStripTextBox)ti1).Text;
-									//              }
-									//              PerformCommandNow(((Commands.CommandDetails)commanditem.Tag).commandName + " " + concatString, false, true);
-									//            }
-									//            //MessageBox.Show((subcommandTextboxitem.OwnerItem as ToolStripMenuItem).Text);
-									//          }
-									//        //}
-									//        //else if (e1.KeyCode == Keys.Left)
-									//        //{
-									//        //  if (subcommandTextboxitem.Text.Length == 0 || subcommandTextboxitem.SelectionStart == 0)
-									//        //    if (subcommandTextboxitem.OwnerItem is ToolStripMenuItem)
-									//        //      (subcommandTextboxitem.OwnerItem as ToolStripMenuItem).HideDropDown();
-									//        //}
-									//      };
-									//      tmpsubcommandItem.MenuItems.Add(subcommandTextboxitem);//.DropDownItems.Add(subcommandTextboxitem);
-									//    }
-
-									//    if (i > 0)
-									//    {
-									//      string[] splittedArgs = tmpsubcommandItem.Tag.ToString().Substring(key.Length + 1).Split(';');
-									//      for (int k = 0; k < splittedArgs.Length; k++)
-									//        tmpsubcommandItem.DropDownItems[k].Text = splittedArgs[k];
-									//    }
-									//  }
-									//}
-								}
-								else
-								{
-									//commanditem.Click += delegate
-									//{
-									//  UserMessages.ShowInfoMessage("No subcommands");
-									//};
-								}
-								//menuItem_Commands.MenuItems.Add(commanditem);//.DropDownItems.Add(commanditem);
-							}
-						}
-						overlayForm.Show();
-					}
-				}
+				if (MousePosition.X < 5) ShowOverlayCommandWindows();
 			};
 			mouseHook.Start();
 		}
 
-		//public static System.Windows.Media.ImageSource ToImageSource(this Icon icon)
-		//{
-		//  System.Windows.Media.ImageSource imageSource = CreateBitmapSourceFromHIcon(
-		//      icon.Handle,
-		//      System.Windows.Int32Rect.Empty,
-		//      System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+		private void ShowOverlayCommandWindows()
+		{
+			if (overlayWindow == null) overlayWindow = new OverlayWindow();
+			if (overlayWindow.Visibility != System.Windows.Visibility.Visible)
+			{
+				//foreach (string s in s.s)
+				int tmpcounter = 0;
+				foreach (string key in InlineCommands.CommandList.Keys)
+				{
+					tmpcounter++;
+					if (InlineCommands.CommandList[key].commandWindow != null)//.commandForm != null)
+						//overlayForm.ListOfChildForms.Add(InlineCommands.CommandList[key].commandForm);
+						overlayWindow.ListOfChildWindows.Add(InlineCommands.CommandList[key].commandWindow);
+					else
+					{
+						//CommandForm tmpCommandForm = new CommandForm(key);
+						CommandWindow tmpCommandWindow = new CommandWindow(key);
+						tmpCommandWindow.labelShortcutKeyNumber.Content = (tmpcounter).ToString();
 
-		//  return imageSource;
-		//}
+						//InlineCommands.CommandList[key].commandForm = tmpCommandForm;
+						InlineCommands.CommandList[key].commandWindow = tmpCommandWindow;
+						//overlayForm.ListOfChildForms.Add(tmpCommandForm);
+						overlayWindow.ListOfChildWindows.Add(tmpCommandWindow);
+
+						InlineCommands.CommandDetails commandDetails = InlineCommands.CommandList[key];
+
+						if (commandDetails.CommandHasArguments() || commandDetails.CommandHasPredefinedArguments())
+						{
+							if (commandDetails.CommandHasArguments())
+							{
+								foreach (InlineCommands.CommandDetails.CommandArgumentClass arg in commandDetails.commandArguments)
+								{
+									//TextBox textBox = new TextBox()
+									System.Windows.Controls.TextBox textBox = new System.Windows.Controls.TextBox()
+									{
+										//ForeColor = arg.Required ? Color.Red : Color.Green,
+										Tag = commandDetails,
+										MinWidth = 80,
+										Margin = new System.Windows.Thickness(5),
+										VerticalAlignment = System.Windows.VerticalAlignment.Top,
+										UseLayoutRounding = true,
+										IsReadOnly = false
+									};
+
+									if (commandDetails.CommandHasPredefinedArguments())
+									{
+										//textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+										//textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+										//textBox.AutoCompleteCustomSource.Clear();
+										//foreach (string s in commandDetails.commandPredefinedArguments)
+										//  textBox.AutoCompleteCustomSource.Add(s.Substring(s.IndexOf(' ') + 1));
+									}
+
+									textBox.KeyDown += (txtbox, evt) =>
+									{
+										//if (evt.KeyCode == Keys.Enter)
+										if (evt.Key == System.Windows.Input.Key.Enter)
+										{
+											bool EmptyRequiredArguments = false;
+											InlineCommands.CommandDetails thisCommandDetails = (txtbox as TextBox).Tag as InlineCommands.CommandDetails;
+											foreach (InlineCommands.CommandDetails.CommandArgumentClass argument in (thisCommandDetails).commandArguments)
+											{
+												if (argument.Required && argument.textBox.Text.Trim().Length == 0)
+												{
+													EmptyRequiredArguments = true;
+													UserMessages.ShowWarningMessage("Please complete all required textboxes (green), empty textbox for " + argument.ArgumentName);
+												}
+											}
+
+											if (!EmptyRequiredArguments)
+											{
+												string concatString = "";
+												foreach (InlineCommands.CommandDetails.CommandArgumentClass argument in thisCommandDetails.commandArguments)
+													concatString += (concatString.Length > 0 ? ";" : "") + argument.textBox.Text;
+												//UserMessages.ShowInfoMessage(commandDetails.commandName + " " + concatString);
+												PerformCommandNow(commandDetails.commandName + " " + concatString, false, true);
+											}
+										}
+									};
+
+									arg.textBox = textBox;
+									//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? Color.Green : SystemColors.WindowText);
+									//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
+
+									tmpCommandWindow.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
+								}
+							}
+
+							if (commandDetails.CommandHasPredefinedArguments())
+							{
+								foreach (string item in commandDetails.commandPredefinedArguments)
+								{
+									//System.Windows.Controls.TextBlock textBlock = new System.Windows.Controls.TextBlock() { Text = item.Substring(item.IndexOf(' ') + 1) };
+									//System.Windows.Controls.Image image = new System.Windows.Controls.Image();
+									//using (MemoryStream iconStream = new MemoryStream())
+									//{
+									//  this.Icon.Save(iconStream);
+									//  iconStream.Seek(0, SeekOrigin.Begin);
+
+									//  image.Source = System.Windows.Media.Imaging.BitmapFrame.Create(iconStream);
+									//}
+									//System.Windows.Controls.StackPanel stackPanel = new System.Windows.Controls.StackPanel() { Orientation = System.Windows.Controls.Orientation.Horizontal };
+									//stackPanel.Children.Add(image);
+									//stackPanel.Children.Add(textBlock);
+
+									System.Windows.Controls.TreeViewItem treeviewItem = new System.Windows.Controls.TreeViewItem()
+									{
+										Header = item.Substring(item.IndexOf(' ') + 1),//stackPanel,
+										Tag = item
+									};
+									treeviewItem.KeyDown += (send, evtargs) =>
+									{
+										if (evtargs.Key == System.Windows.Input.Key.Enter)
+										{
+											string predefinedArg = (send as System.Windows.Controls.TreeViewItem).Tag as string;
+											if (overlayWindow != null)// && !overlayWindow.IsDisposed)
+												overlayWindow.Close();
+											PerformCommandNow(predefinedArg, false, false);
+										}
+									};
+									treeviewItem.MouseDoubleClick += (send, evtargs) =>
+									{
+										string predefinedArg = (send as System.Windows.Controls.TreeViewItem).Tag as string;
+										if (overlayWindow != null)// && !overlayWindow.IsDisposed)
+											overlayWindow.Close();
+										PerformCommandNow(predefinedArg, false, false);
+										//UserMessages.ShowMessage(((send as System.Windows.Controls.TreeViewItem).Tag as InlineCommands.CommandDetails).commandName);
+									};
+									tmpCommandWindow.AddTreeviewItem(treeviewItem);
+								}
+							}
+						}
+						else
+						{
+							//commanditem.Click += delegate
+							//{
+							//  UserMessages.ShowInfoMessage("No subcommands");
+							//};
+						}
+						//menuItem_Commands.MenuItems.Add(commanditem);//.DropDownItems.Add(commanditem);
+					}
+				}
+				overlayWindow.Show();
+				overlayWindow.SetupAllChildWindows();
+			}
+		}
 
 		private void Form1_Shown(object sender, EventArgs e)
 		{
@@ -290,28 +212,7 @@ namespace QuickAccess
 				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
 					ToggleWindowActivation();
 				if (m.WParam == new IntPtr(Win32Api.Hotkey2))
-				{
-					MousePositionBeforePopup = MousePosition;
-					Cursor.Position = new Point(0, 0);
-					MethodInfo mi = typeof(NotifyIcon).GetMethod("ShowContextMenu", BindingFlags.Instance | BindingFlags.NonPublic);
-					mi.Invoke(notifyIcon1, null);
-					//notifyIcon1.ContextMenu.Show(this, new Point(0, 0));
-					//ShowWindow(notifyIcon1.ContextMenu.Handle, 5);
-					//SetWindowPos((int)notifyIcon1.ContextMenu.Handle, HWND_TOPMOST, 0, 0, 100, 20, 0x0010);
-
-					////contextMenu_TrayIcon.Show(null, new Point(0, 0));//Screen.PrimaryScreen.WorkingArea.Right, Screen.PrimaryScreen.WorkingArea.Bottom));//MousePosition);
-					//this.Activate();
-					////contextMenu_TrayIcon.Focus();
-					//if (contextMenu_TrayIcon.MenuItems.Count > 0)
-					//{
-					//  //DONE TODO: The following line actually dows nothing
-					//  //contextMenu_TrayIcon.ShowDropDown();//.DropDownItems[0].Select();
-					//  contextMenu_TrayIcon.MenuItems[0].PerformSelect();//.DropDownItems[0].Select();
-					//}
-					//else
-					//  menuItem_Commands.PerformSelect();
-					//  //commandsToolStripMenuItem.sel.Select();
-				}
+					ShowOverlayCommandWindows();
 			}
 			base.WndProc(ref m);
 		}
@@ -674,6 +575,8 @@ namespace QuickAccess
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Win32Api.UnregisterHotKey(this.Handle, Win32Api.Hotkey1);
+			overlayWindow.PreventClosing = false;
+			overlayWindow.Close();
 		}
 
 		private void Form1_VisibleChanged(object sender, EventArgs e)
@@ -735,68 +638,6 @@ namespace QuickAccess
 								};*/
 								commanditem.MenuItems.Add(subcommanditem);//.DropDownItems.Add(subcommanditem);
 							}
-
-						/*for (int i = 0; i < commanditem.MenuItems.Count; i++)//.DropDownItems.Count; i++)
-						{
-							MenuItem tmpsubcommandItem = commanditem.MenuItems[i];//.DropDownItems[i] as ToolStripMenuItem;
-							if (commandDetails.CommandHasArguments())
-							{
-								foreach (Commands.CommandDetails.CommandArgumentClass arg in Commands.CommandList[key].commandArguments)
-								{
-									//ToolStripTextBox subcommandTextboxitem = new ToolStripTextBox();
-									MenuItem subcommandTextboxitem = new MenuItem();
-									subcommandTextboxitem.Tag = tmpsubcommandItem;
-									//subcommandTextboxitem.BackColor = arg.Required ? Color.LightGreen : Color.LightGray;
-									subcommandTextboxitem.Click += (sender1, e1) =>
-									{
-										//if (e1.KeyCode == Keys.Enter)
-										//{
-										if (subcommandTextboxitem.Tag is MenuItem)
-											{
-												//ToolStripMenuItem tmpCommandMenuItem = (subcommandTextboxitem.OwnerItem as ToolStripMenuItem).OwnerItem as ToolStripMenuItem;
-												MenuItem tmpCommandMenuItem = subcommandTextboxitem.Tag as MenuItem;
-												//ToolStripMenuItem tmpArgumentsOwner = subcommandTextboxitem.OwnerItem as ToolStripMenuItem;
-
-												bool EmptyRequiredArguments = false;
-												Commands.CommandDetails commdet = (Commands.CommandDetails)commanditem.Tag;
-												for (int j = 0; j < commdet.commandArguments.Count; j++)
-													if (commdet.commandArguments[j].Required && tmpArgumentsOwner.DropDownItems[j].Text.Length == 0)
-													{
-														EmptyRequiredArguments = true;
-														MessageBox.Show("Please complete all required textboxes (green), textbox " + (j + 1).ToString() + " is empty");
-													}
-
-												if (!EmptyRequiredArguments)
-												{
-													string concatString = "";
-													foreach (ToolStripItem ti1 in tmpArgumentsOwner.DropDownItems)
-													{
-														if (ti1 is ToolStripTextBox)
-															concatString += (concatString.Length > 0 ? ";" : "") + ((ToolStripTextBox)ti1).Text;
-													}
-													PerformCommandNow(((Commands.CommandDetails)commanditem.Tag).commandName + " " + concatString, false, true);
-												}
-												//MessageBox.Show((subcommandTextboxitem.OwnerItem as ToolStripMenuItem).Text);
-											}
-										//}
-										//else if (e1.KeyCode == Keys.Left)
-										//{
-										//  if (subcommandTextboxitem.Text.Length == 0 || subcommandTextboxitem.SelectionStart == 0)
-										//    if (subcommandTextboxitem.OwnerItem is ToolStripMenuItem)
-										//      (subcommandTextboxitem.OwnerItem as ToolStripMenuItem).HideDropDown();
-										//}
-									};
-									tmpsubcommandItem.MenuItems.Add(subcommandTextboxitem);//.DropDownItems.Add(subcommandTextboxitem);
-								}
-
-								if (i > 0)
-								{
-									string[] splittedArgs = tmpsubcommandItem.Tag.ToString().Substring(key.Length + 1).Split(';');
-									for (int k = 0; k < splittedArgs.Length; k++)
-										tmpsubcommandItem.DropDownItems[k].Text = splittedArgs[k];
-								}
-							}
-						}*/
 					}
 					else
 					{
@@ -825,30 +666,11 @@ namespace QuickAccess
 				Cursor.Position = MousePositionBeforePopup;
 			MousePositionBeforePopup = new Point(-1, -1);
 			PopulateCommandsMenuItem();
-
-			//this.Activate();
-			//contextMenu_TrayIcon.Focus();
-			/*if (menuItem_Commands.MenuItems.Count > 0)
-			{
-				//DONE TODO: The following line actually dows nothing
-				//contextMenu_TrayIcon.ShowDropDown();//.DropDownItems[0].Select();
-
-				menuItem_Commands.MenuItems[0].PerformSelect();//.DropDownItems[0].Select();
-			}
-			else*/
-			//menuItem_Commands.PerformClick();//.PerformSelect();
 		}
 
 		private void menuItem2_Click(object sender, EventArgs e)
 		{
-			//CommandForm cf = new CommandForm("tmp123");
-			//cf.AddControl("tmp1", new TextBox(), Color.Black);
-			//cf.AddControl("tmp2", new TextBox(), Color.Red);
-			//cf.AddControl("tmp3", new TextBox(), Color.Green);
-			//cf.AddControl("tmp4", new TextBox(), Color.Blue);
-			//cf.Show();
-
-			MainWindow mw = new MainWindow("tmp123");
+			CommandWindow mw = new CommandWindow("tmp123");
 			mw.AddControl("tmp1", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Black);
 			mw.AddControl("tmp2", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Red);
 			mw.AddControl("tmp3", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Green);

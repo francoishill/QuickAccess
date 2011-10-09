@@ -130,6 +130,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\SharedClasses\CustomBalloonTip.cs">
@@ -193,11 +194,8 @@
     <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
       <Link>WindowsInterop.cs</Link>
     </Compile>
-    <Compile Include="CommandForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CommandForm.Designer.cs">
-      <DependentUpon>CommandForm.cs</DependentUpon>
+    <Compile Include="..\..\SharedClasses\WPFinterop.cs">
+      <Link>WPFinterop.cs</Link>
     </Compile>
     <Compile Include="CommandWindow.xaml.cs">
       <DependentUpon>CommandWindow.xaml</DependentUpon>
@@ -208,6 +206,9 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="OverlayWindow.xaml.cs">
+      <DependentUpon>OverlayWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="..\..\SharedClasses\CustomBalloonTip.resx">
@@ -217,9 +218,6 @@
     <EmbeddedResource Include="..\..\SharedClasses\OverlayForm.resx">
       <Link>OverlayForm.resx</Link>
       <DependentUpon>OverlayForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CommandForm.resx">
-      <DependentUpon>CommandForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -301,6 +299,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="CommandWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OverlayWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

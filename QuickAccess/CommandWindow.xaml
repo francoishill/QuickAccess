@@ -1,13 +1,15 @@
-﻿<Window x:Class="MainWindow"
+﻿<Window x:Class="CommandWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="133" Width="227"
+        xmlns:FocusTest="clr-namespace:FocusTest"
+        Title="Command Window" Height="133" Width="227"
         Activated="Window_Activated"
         Deactivated="Window_Deactivated"
-        Name="mainWindow"
+        Name="commandWindow"
         Background="Transparent" SizeToContent="WidthAndHeight"
         Opacity="0.85"
-        Loaded="mainWindow_Loaded">
+        Loaded="mainWindow_Loaded"
+        FocusManager.FocusedElement="{FocusTest:FirstFocusedElement}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -62,11 +64,11 @@
         <EventTrigger RoutedEvent="Window.GotKeyboardFocus">
             <BeginStoryboard>
                 <Storyboard>
-                    <!--<DoubleAnimation Storyboard.TargetName="mainWindow"
+                    <!--<DoubleAnimation Storyboard.TargetName="commandWindow"
                                      Storyboard.TargetProperty="(Window.Top)"
                                      To="0" Duration="0:0:0:2"
                                      AutoReverse="False" RepeatBehavior="1x"/>-->
-                    <DoubleAnimation Storyboard.TargetName="mainWindow"
+                    <DoubleAnimation Storyboard.TargetName="commandWindow"
                                      Storyboard.TargetProperty="(Window.Opacity)"
                                      To="1" Duration="0:0:0:0.2"
                                      AutoReverse="False" RepeatBehavior="1x"/>
@@ -84,11 +86,11 @@
         <EventTrigger RoutedEvent="Window.LostKeyboardFocus">
             <BeginStoryboard>
                 <Storyboard>
-                    <!--<DoubleAnimation Storyboard.TargetName="mainWindow"
+                    <!--<DoubleAnimation Storyboard.TargetName="commandWindow"
                                      Storyboard.TargetProperty="(Window.Top)"
                                      Duration="0:0:0:2"
                                      AutoReverse="False" RepeatBehavior="1x"/>-->
-                    <DoubleAnimation Storyboard.TargetName="mainWindow"
+                    <DoubleAnimation Storyboard.TargetName="commandWindow"
                                      Storyboard.TargetProperty="(Window.Opacity)"
                                      Duration="0:0:0:0.1"
                                      AutoReverse="False" RepeatBehavior="1x"/>
@@ -114,6 +116,7 @@
             </RadialGradientBrush>
         </Border.Background>
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
+            <Label Name="labelShortcutKeyNumber" Foreground="#080" Content="0" />
             <Label Name="labelTitle" Foreground="LightGreen" Content="Testing" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="14" />
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,38,0,0" Name="gridTable">
             <Grid.ColumnDefinitions>
