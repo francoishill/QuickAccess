@@ -24,14 +24,14 @@ public partial class MainWindow : Window
 		InitializeComponent();
 		System.Windows.Forms.Application.EnableVisualStyles();
 		this.Title = WindowTitle;
-		labelTitle.Content = WindowTitle;
+		labelTitle.Content = WindowTitle.ToUpper();
 	}
 
 	public void AddControl(string label, System.Windows.Controls.Control control, Color labelColor)
 	{
 		Label labelControl = new Label() { Content = label, Margin = new Thickness(3, 5, 3, 0), MinWidth = 50, Foreground = Brushes.White };
-		
-		gridTable.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+
+		AddRowToGrid();
 
 		gridTable.Children.Add(labelControl);
 		Grid.SetColumn(labelControl, 0);
@@ -42,14 +42,20 @@ public partial class MainWindow : Window
 		Grid.SetRow(control, gridTable.RowDefinitions.Count - 1);
 	}
 
+	private void AddRowToGrid()
+	{
+		gridTable.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+	}
+
 	public void AddTreeviewItem(object itemToAdd)
 	{
 		if (tmpTreeview == null)
 		{
-			tmpTreeview = new TreeView() { MinWidth = 100, MinHeight = 20, MaxHeight = 40 };
+			tmpTreeview = new TreeView() { MinWidth = 100, MinHeight = 20, MaxHeight = 40, VerticalAlignment = System.Windows.VerticalAlignment.Top };
 			gridTable.Children.Add(tmpTreeview);
 			Grid.SetColumn(tmpTreeview, 2);
-			Grid.SetRow(tmpTreeview, gridTable.RowDefinitions.Count - 1);
+			if (gridTable.RowDefinitions.Count == 0) AddRowToGrid();
+			Grid.SetRow(tmpTreeview, 0);
 			Grid.SetRowSpan(tmpTreeview, 1000);
 		}
 		tmpTreeview.Items.Add(itemToAdd);
