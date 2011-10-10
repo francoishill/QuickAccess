@@ -56,19 +56,19 @@ namespace QuickAccess
 				foreach (string key in InlineCommands.CommandList.Keys)
 				{
 					tmpcounter++;
-					if (InlineCommands.CommandList[key].commandWindow != null)//.commandForm != null)
-						//overlayForm.ListOfChildForms.Add(InlineCommands.CommandList[key].commandForm);
-						overlayWindow.ListOfChildWindows.Add(InlineCommands.CommandList[key].commandWindow);
+					if (InlineCommands.CommandList[key].commandUsercontrol != null)//.commandForm != null)
+						overlayWindow.ListOfCommandUsercontrols.Add(InlineCommands.CommandList[key].commandUsercontrol);
 					else
 					{
 						//CommandForm tmpCommandForm = new CommandForm(key);
-						CommandWindow tmpCommandWindow = new CommandWindow(key);
-						tmpCommandWindow.labelShortcutKeyNumber.Content = (tmpcounter).ToString();
+						//CommandWindow tmpCommandWindow = new CommandWindow(key);
+						CommandUserControl tmpCommandUsercontrol = new CommandUserControl(key);
+						tmpCommandUsercontrol.labelShortcutKeyNumber.Content = (tmpcounter).ToString();
 
 						//InlineCommands.CommandList[key].commandForm = tmpCommandForm;
-						InlineCommands.CommandList[key].commandWindow = tmpCommandWindow;
+						InlineCommands.CommandList[key].commandUsercontrol = tmpCommandUsercontrol;
 						//overlayForm.ListOfChildForms.Add(tmpCommandForm);
-						overlayWindow.ListOfChildWindows.Add(tmpCommandWindow);
+						overlayWindow.ListOfCommandUsercontrols.Add(tmpCommandUsercontrol);
 
 						InlineCommands.CommandDetails commandDetails = InlineCommands.CommandList[key];
 
@@ -130,7 +130,7 @@ namespace QuickAccess
 									//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? Color.Green : SystemColors.WindowText);
 									//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
 
-									tmpCommandWindow.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
+									tmpCommandUsercontrol.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
 								}
 							}
 
@@ -154,13 +154,13 @@ namespace QuickAccess
 									System.Windows.Controls.TreeViewItem treeviewItem = new System.Windows.Controls.TreeViewItem()
 									{
 										Header = item.Substring(item.IndexOf(' ') + 1),//stackPanel,
-										Tag = item
+										Tag = new object[] { item, commandDetails }//predefined string, commandDetails
 									};
 									treeviewItem.KeyDown += (send, evtargs) =>
 									{
 										if (evtargs.Key == System.Windows.Input.Key.Enter)
 										{
-											string predefinedArg = (send as System.Windows.Controls.TreeViewItem).Tag as string;
+											string predefinedArg = ((send as System.Windows.Controls.TreeViewItem).Tag as object[])[0].ToString();
 											if (overlayWindow != null)// && !overlayWindow.IsDisposed)
 												overlayWindow.Close();
 											PerformCommandNow(predefinedArg, false, false);
@@ -168,13 +168,22 @@ namespace QuickAccess
 									};
 									treeviewItem.MouseDoubleClick += (send, evtargs) =>
 									{
-										string predefinedArg = (send as System.Windows.Controls.TreeViewItem).Tag as string;
+										string predefinedArg = ((send as System.Windows.Controls.TreeViewItem).Tag as object[])[0].ToString();
 										if (overlayWindow != null)// && !overlayWindow.IsDisposed)
 											overlayWindow.Close();
 										PerformCommandNow(predefinedArg, false, false);
 										//UserMessages.ShowMessage(((send as System.Windows.Controls.TreeViewItem).Tag as InlineCommands.CommandDetails).commandName);
 									};
-									tmpCommandWindow.AddTreeviewItem(treeviewItem);
+									treeviewItem.MouseRightButtonUp += (send, evtargs) =>
+									{
+										InlineCommands.CommandDetails thisCommandDetails = ((send as System.Windows.Controls.TreeViewItem).Tag as object[])[1] as InlineCommands.CommandDetails;
+										string thisPredefinedArguments = ((send as System.Windows.Controls.TreeViewItem).Tag as object[])[0].ToString();
+										//TODO: Something not working right here (see the MAIL command), does not concat the arguments into one string.
+										//foreach (string s in thisPredefinedArguments.Substring(thisCommandDetails.commandName.Length + 1).Split(InlineCommands.CommandDetails.ArgumentSeparator))
+										//  MessageBox.Show(s);
+									};
+
+									tmpCommandUsercontrol.AddTreeviewItem(treeviewItem);
 								}
 							}
 						}

@@ -7,13 +7,15 @@
         WindowStyle="None"
         AllowsTransparency="True"
         WindowState="Maximized"
-        Background="Black"
-        Opacity="0.3"
+        Background="#dd000000"        
         MouseDown="overlayWindow_MouseDown"
+        MouseUp="overlayWindow_MouseUp"
+        MouseMove="overlayWindow_MouseMove"
         Loaded="overlayWindow_Loaded"
         Closing="overlayWindow_Closing"
         Activated="overlayWindow_Activated"
-        KeyDown="overlayWindow_KeyDown">
+        KeyDown="overlayWindow_KeyDown" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="181" d:DesignWidth="497" xmlns:my="clr-namespace:DragCanvas">
+        <!--xmlns:my="clr-namespace:CommandUsercontrolNamespace">-->
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -24,13 +26,48 @@
                 <!--<ResourceDictionary Source="/PresentationFramework.Luna,Version=3.0.0.0,Culture=neutral,PublicKeyToken=31bf3856ad364e35;component/themes/luna.metallic.xaml" />-->
                 <!--<ResourceDictionary Source="/PresentationFramework.Luna,Version=3.0.0.0,Culture=neutral,PublicKeyToken=31bf3856ad364e35;component/themes/luna.normalcolor.xaml" />-->
                 
-                <ResourceDictionary>                    
+                <ResourceDictionary>
+                    <DataTemplate x:Key="ItemTemplate">
+                        <TextBlock Text="{Binding}" Foreground="Green" Background="Transparent" />
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="SelectedTemplate">
+                        <TextBlock Text="{Binding}" Foreground="Green">
+                            <TextBlock.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <LinearGradientBrush.GradientStops>
+                                        <GradientStop Offset="0" Color="#ccc" />
+                                        <GradientStop Offset="0.85" Color="#ddd" />
+                                        <GradientStop Offset="1" Color="#bbb" />
+                                    </LinearGradientBrush.GradientStops>
+                                </LinearGradientBrush>
+                            </TextBlock.Background>
+                        </TextBlock>
+                    </DataTemplate>
+
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="HeaderTemplate" Value="{StaticResource ItemTemplate}" />
+                        <!--<Setter Property="Background" Value="Transparent" />-->
+                        <Setter Property="FontFamily" Value="Comic Sans MS" />
+                        <Style.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True" />
+                                    <Condition Property="IsFocused" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="HeaderTemplate" Value="{StaticResource SelectedTemplate}" />
+                            </MultiTrigger>
+                            <!--<Trigger Property="IsSelected" Value="True">
+                                <Setter Property="HeaderTemplate" Value="{StaticResource SelectedTemplate}" />
+                            </Trigger>-->
+                        </Style.Triggers>
+                    </Style>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
     <Window.Triggers>
-        <EventTrigger RoutedEvent="Window.Loaded">
+        <!--<EventTrigger RoutedEvent="Window.Loaded">
             <BeginStoryboard>
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="overlayWindow"
@@ -39,7 +76,13 @@
                                      AutoReverse="False" RepeatBehavior="1x"/>
                 </Storyboard>
             </BeginStoryboard>
-        </EventTrigger>
+        </EventTrigger>-->
     </Window.Triggers>
-    <Grid></Grid>
+    <Grid Name="mainGrid">
+        
+        <WrapPanel Name="wrapPanel_UserControls" IsManipulationEnabled="True" >
+            
+        </WrapPanel>       
+        <!--<my:CommandUserControl HorizontalAlignment="Left" Width="106" Height="71" x:Name="commandUserControl1" VerticalAlignment="Top" />-->
+    </Grid>
 </Window>

@@ -34,7 +34,8 @@ public partial class OverlayWindow : Window
 		}
 	}
 
-	public List<Window> ListOfChildWindows = new List<Window>();
+	//public List<Window> ListOfCommandUsercontrols = new List<Window>();
+	public List<CommandUserControl> ListOfCommandUsercontrols = new List<CommandUserControl>();
 
 	public OverlayWindow()
 	{
@@ -43,10 +44,55 @@ public partial class OverlayWindow : Window
 		System.Windows.Forms.Integration.ElementHost.EnableModelessKeyboardInterop(this);
 	}
 
+	private Element currentElement = new Element(); 
 	private void overlayWindow_MouseDown(object sender, MouseButtonEventArgs e)
 	{
-		if (e.ChangedButton == MouseButton.Left)
-			this.Close();//.Hide();
+		if (e.ChangedButton == MouseButton.Left && currentElement.InputElement == null)
+			this.Close();
+
+		currentElement.InputElement = null;
+		//if (this.currentElement == null || this.currentElement.InputElement == null) return;
+
+		//this.currentElement.X = Mouse.GetPosition((IInputElement)sender).X;
+		//this.currentElement.Y = Mouse.GetPosition((IInputElement)sender).Y;
+		//// Ensure object receives all mouse events.
+		//this.currentElement.InputElement.CaptureMouse();
+	}
+
+	private void overlayWindow_MouseUp(object sender, MouseButtonEventArgs e)
+	{
+		//if (this.currentElement == null || this.currentElement.InputElement == null) return;
+		//if (this.currentElement.InputElement != null)
+		//  this.currentElement.InputElement.ReleaseMouseCapture();
+	}
+
+	private void overlayWindow_MouseMove(object sender, MouseEventArgs e)
+	{
+		//if (this.currentElement == null || this.currentElement.InputElement == null) return;
+		//// if mouse is down when its moving, then it's dragging current
+		//if (e.LeftButton == MouseButtonState.Pressed)
+		//  this.currentElement.IsDragging = true;
+
+		//if (this.currentElement.IsDragging && currentElement.InputElement != null)
+		//{
+		//  // Retrieve the current position of the mouse.
+		//  var newX = Mouse.GetPosition((IInputElement)sender).X;
+		//  var newY = Mouse.GetPosition((IInputElement)sender).Y;
+		//  // Reset the location of the object (add to sender's renderTransform
+		//  // newPosition minus currentElement's position
+		//  var rt = ((UIElement)this.currentElement.InputElement).RenderTransform;
+		//  var offsetX = rt.Value.OffsetX;
+		//  var offsetY = rt.Value.OffsetY;
+		//  try
+		//  {
+		//    rt.SetValue(TranslateTransform.XProperty, offsetX + newX - currentElement.X);
+		//    rt.SetValue(TranslateTransform.YProperty, offsetY + newY - currentElement.Y);
+		//    // Update position of the mouse
+		//    currentElement.X = newX;
+		//    currentElement.Y = newY;
+		//  }
+		//  catch (Exception exc) { }
+		//}
 	}
 
 	private void overlayWindow_Loaded(object sender, RoutedEventArgs e)
@@ -64,74 +110,79 @@ public partial class OverlayWindow : Window
 
 	public void SetupAllChildWindows()
 	{
-		foreach (Window window in ListOfChildWindows)
+		foreach (CommandUserControl usercontrol in ListOfCommandUsercontrols)
 		{
-			if (window.Tag == null)
-				window.Tag = new OverlayChildManager(true, false, false);
+			if (usercontrol.Tag == null)
+				usercontrol.Tag = new OverlayChildManager(true, false, false);
 
-			window.WindowStyle = WindowStyle.None;
-			if (!window.AllowsTransparency) window.AllowsTransparency = true;
+			//usercontrol.WindowStyle = WindowStyle.None;
+			//if (!usercontrol.AllowsTransparency) usercontrol.AllowsTransparency = true;
 			//window.MaximizeBox = false;
 			//window.MinimizeBox = false;
-			window.ShowInTaskbar = false;
+			//usercontrol.ShowInTaskbar = false;
 			//form.ShowIcon = false;
 
-			if (!IsEventsAdded(window))//form))
+			if (!IsEventsAdded(usercontrol))//form))
 			{
 				//AddMouseDownEventToControlandSubcontrols(form);
-				AddClosingEventToWindow(window);//form);
-				AddMouseLeftButtonDownEventToWindow(window);
+				//AddClosingEventToWindow(usercontrol);//form);
+				AddMouseLeftButtonDownEventToCommandUsercontrol(usercontrol);
 				//AddMouseRightButtonDownEventToWindow(window);
-				AddMouseWheelEventToWindow(window);
+				AddMouseWheelEventToWindow(usercontrol);
 				//AddKeydownEventToControlandSubcontrols(form);
-				AddKeydownEventToWindowAndChildren(window);
+				AddKeydownEventToWindowAndChildren(usercontrol);
 
-				MarkformEventsAdded(window);
+				MarkformEventsAdded(usercontrol);
 			}
+
+			//WpfDraggableCanvas draggableCanvas = new WpfDraggableCanvas();
+			//draggableCanvas.
+			//draggableCanvas.Children.Add(usercontrol);
+			//wrapPanel_UserControls.Children.Add(draggableCanvas);
+			if (wrapPanel_UserControls.Children.IndexOf(usercontrol) == -1)
+				wrapPanel_UserControls.Children.Add(usercontrol);
+			//this.mainGrid.Children.Add(usercontrol);
+
 			//form.TopMost = true;
-			window.Topmost = true;
-			if (MayFormBeShow(window))
-			{
-				window.WindowStartupLocation = WindowStartupLocation.Manual;
-				//window.Opacity = 0.75F;
-				window.Show();
-				//if (propertyFreezeEvent_Activated != null) propertyFreezeEvent_Activated.SetValue(form, false, null);
-			}
+			//usercontrol.Topmost = true;
+			usercontrol.Visibility = MayUsercontrolBeShown(usercontrol) ? Visibility.Visible : Visibility.Hidden;
 		}
 
 		System.Windows.Forms.Application.DoEvents();
 		AutoLayoutOfForms();
 	}
 
-	private void AddMouseLeftButtonDownEventToWindow(Window window)
+	private void AddMouseLeftButtonDownEventToCommandUsercontrol(CommandUserControl usercontrol)
 	{
-		window.MouseLeftButtonDown += (s, closeargs) =>
+		usercontrol.MouseLeftButtonDown += (s, closeargs) =>
 		{
-			(s as Window).DragMove();
+			this.currentElement.InputElement = (IInputElement)s;
+			//TODO: DragMove to be implemented for usercontrol because its not window anymore
+			//(s as CommandUserControl).DragMove();
 		};
 	}
 
-	private void AddMouseWheelEventToWindow(Window window)
+	private void AddMouseWheelEventToWindow(Control usercontrol)
 	{
-		window.MouseWheel += (s, evtargs) =>
+		usercontrol.MouseWheel += (s, evtargs) =>
 		{
-			if (evtargs.Delta > 0) ActivatePreviousWindowInChildList(FindWindowOfControl(s as System.Windows.Controls.Control));
-			else ActivateNextWindowInChildList(FindWindowOfControl(s as System.Windows.Controls.Control));
+			if (evtargs.Delta > 0) ActivatePreviousWindowInChildList(FindCommandUsercontrolOfControl(s as System.Windows.Controls.Control));
+			else ActivateNextWindowInChildList(FindCommandUsercontrolOfControl(s as System.Windows.Controls.Control));
 		};
 	}
 
-	private bool IsWindowAlreadyPositioned(Window window)//Form form)
+	private bool IsWindowAlreadyPositioned(CommandUserControl usercontrol)//Form form)
 	{
-		if (window == null) return false;
-		if (!(window.Tag is OverlayChildManager)) return false;
-		return (window.Tag as OverlayChildManager).WindowAlreadyPositioned;
+		if (usercontrol == null) return false;
+		if (!(usercontrol.Tag is OverlayChildManager)) return false;
+		return (usercontrol.Tag as OverlayChildManager).WindowAlreadyPositioned;
 	}
 
-	private void MarkfWindowAsAlreadyPositioned(Window window)// Form form)
+	private void MarkfWindowAsAlreadyPositioned(CommandUserControl usercontrol)// Form form)
 	{
-		if (window == null) return;
-		if (!(window.Tag is OverlayChildManager)) return;
-		(window.Tag as OverlayChildManager).WindowAlreadyPositioned = true;
+		if (usercontrol == null) return;
+		if (!(usercontrol.Tag is OverlayChildManager)) return;
+		(usercontrol.Tag as OverlayChildManager).WindowAlreadyPositioned = true;
 	}
 
 	private void AutoLayoutOfForms()
@@ -145,38 +196,37 @@ public partial class OverlayWindow : Window
 
 		System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
 
-		foreach (Window window in ListOfChildWindows)
+		foreach (CommandUserControl usercontrol in ListOfCommandUsercontrols)
 		{
 			//window.WindowStartupLocation = WindowStartupLocation.Manual;
-			if (NextLeftPos + window.Width + leftGap >= workingArea.Right)
+			if (NextLeftPos + usercontrol.Width + leftGap >= workingArea.Right)
 			{
 				NextTopPos += MaxHeightInRow + topGap;
 				NextLeftPos = leftGap;
 				MaxHeightInRow = 0;
 			}
 
-			if (!IsWindowAlreadyPositioned(window))
+			if (!IsWindowAlreadyPositioned(usercontrol))
 			{
-				window.Left = NextLeftPos;
-				window.Top = NextTopPos;
-				MarkfWindowAsAlreadyPositioned(window);
+				//usercontrol.Left = NextLeftPos;
+				//usercontrol.Top = NextTopPos;
+				MarkfWindowAsAlreadyPositioned(usercontrol);
 			}
-			NextLeftPos += (int)window.Width + leftGap;
-			if (window.Height > MaxHeightInRow) MaxHeightInRow = (int)window.Height;
+			NextLeftPos += (int)usercontrol.Width + leftGap;
+			if (usercontrol.Height > MaxHeightInRow) MaxHeightInRow = (int)usercontrol.Height;
 
-			//PositionBeforeActivated = new Point(this.Left, this.Top);
-			PropertyInfo propertyPositionBeforeActivated = window.GetType().GetProperty("PositionBeforeActivated");
-			if (propertyPositionBeforeActivated != null) propertyPositionBeforeActivated.SetValue(window, new System.Windows.Point(window.Left, window.Top), null);
+			//PropertyInfo propertyPositionBeforeActivated = usercontrol.GetType().GetProperty("PositionBeforeActivated");
+			//if (propertyPositionBeforeActivated != null) propertyPositionBeforeActivated.SetValue(usercontrol, new System.Windows.Point(usercontrol.Left, usercontrol.Top), null);
 
-			PropertyInfo propertyFreezeEvent_Activated = window.GetType().GetProperty("AllowedToAnimationLocation");
-			if (propertyFreezeEvent_Activated != null) propertyFreezeEvent_Activated.SetValue(window, true, null);
+			//PropertyInfo propertyFreezeEvent_Activated = usercontrol.GetType().GetProperty("AllowedToAnimationLocation");
+			//if (propertyFreezeEvent_Activated != null) propertyFreezeEvent_Activated.SetValue(usercontrol, true, null);
 		}
 	}
 
-	private void AddKeydownEventToWindowAndChildren(Window window)
+	private void AddKeydownEventToWindowAndChildren(Control usercontrol)
 	{
-		window.KeyDown += new System.Windows.Input.KeyEventHandler(control_KeyDown1);
-		foreach (object o in LogicalTreeHelper.GetChildren(window))
+		usercontrol.KeyDown += new System.Windows.Input.KeyEventHandler(control_KeyDown1);
+		foreach (object o in LogicalTreeHelper.GetChildren(usercontrol))
 			if (o is System.Windows.Controls.Control)
 			{
 				(o as System.Windows.Controls.Control).KeyUp += new System.Windows.Input.KeyEventHandler(control_KeyDown1);
@@ -200,62 +250,61 @@ public partial class OverlayWindow : Window
 		if (e.Key == System.Windows.Input.Key.Tab && System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)
 		{
 			e.Handled = true;
-			ActivateNextWindowInChildList(FindWindowOfControl(sender as System.Windows.Controls.Control));
+			ActivateNextWindowInChildList(FindCommandUsercontrolOfControl(sender as CommandUserControl));
 		}
 		//else if (e.KeyCode == Keys.Tab && (ModifierKeys & (Keys.Control | Keys.Shift)) == (Keys.Control | Keys.Shift))
 		else if (e.Key == System.Windows.Input.Key.Tab && (System.Windows.Forms.Control.ModifierKeys & (System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)) == (System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift))
 		{
 			e.Handled = true;
-			ActivatePreviousWindowInChildList(FindWindowOfControl(sender as System.Windows.Controls.Control));
+			ActivatePreviousWindowInChildList(FindCommandUsercontrolOfControl(sender as CommandUserControl));
 		}
 	}
 
-	private void ActivatePreviousWindowInChildList(Window window)
+	private void ActivatePreviousWindowInChildList(CommandUserControl usercontrol)
 	{
-		if (ListOfChildWindows != null && ListOfChildWindows.IndexOf(window) != -1)
+		if (ListOfCommandUsercontrols != null && ListOfCommandUsercontrols.IndexOf(usercontrol) != -1)
 		{
-			int currentActiveFormIndex = ListOfChildWindows.IndexOf(window);
-			int newIndexToActivate = currentActiveFormIndex == 0 ? ListOfChildWindows.Count - 1 : currentActiveFormIndex - 1;
-			ListOfChildWindows[newIndexToActivate].Activate();
+			int currentActiveFormIndex = ListOfCommandUsercontrols.IndexOf(usercontrol);
+			int newIndexToActivate = currentActiveFormIndex == 0 ? ListOfCommandUsercontrols.Count - 1 : currentActiveFormIndex - 1;
+			ListOfCommandUsercontrols[newIndexToActivate].Focus();
 		}
-		else if (ListOfChildWindows != null)
-			ListOfChildWindows[0].Activate();
+		else if (ListOfCommandUsercontrols != null)
+			ListOfCommandUsercontrols[0].Focus();
 	}
 
-	private void ActivateNextWindowInChildList(Window window)
+	private void ActivateNextWindowInChildList(CommandUserControl usercontrol)
 	{
-		if (ListOfChildWindows != null && ListOfChildWindows.IndexOf(window) != -1)
+		if (ListOfCommandUsercontrols != null && ListOfCommandUsercontrols.IndexOf(usercontrol) != -1)
 		{
-			int currentActiveFormIndex = ListOfChildWindows.IndexOf(window);
-			int newIndexToActivate = currentActiveFormIndex == ListOfChildWindows.Count - 1 ? 0 : currentActiveFormIndex + 1;
-			ListOfChildWindows[newIndexToActivate].Activate();
+			int currentActiveFormIndex = ListOfCommandUsercontrols.IndexOf(usercontrol);
+			int newIndexToActivate = currentActiveFormIndex == ListOfCommandUsercontrols.Count - 1 ? 0 : currentActiveFormIndex + 1;
+			ListOfCommandUsercontrols[newIndexToActivate].Focus();
 		}
-		else if (ListOfChildWindows != null)
-			ListOfChildWindows[0].Activate();
+		else if (ListOfCommandUsercontrols != null)
+			ListOfCommandUsercontrols[0].Focus();
 	}
 
-	private Window FindWindowOfControl(System.Windows.Controls.Control control)
+	private CommandUserControl FindCommandUsercontrolOfControl(System.Windows.Controls.Control control)
 	{
 		System.Windows.Controls.Control tmpControl = control;
-		while (!(tmpControl is Window))
+		while (!(tmpControl is CommandUserControl))
 			tmpControl = (System.Windows.Controls.Control)tmpControl.Parent;
-		return tmpControl as Window;
+		return tmpControl as CommandUserControl;
 	}
 
-	private void AddClosingEventToWindow(System.Windows.Window window)//Form form)
+	private void AddClosingEventToWindow(Control usercontrol)//Form form)
 	{
-		//form.FormClosing += (s, closeargs) =>
-		window.Closing += (s, closeargs) =>
-		{
-			System.Windows.Forms.Form thisForm = s as System.Windows.Forms.Form;
-			//if (closeargs.CloseReason == CloseReason.UserClosing)
-			{
-				closeargs.Cancel = true;
-				thisForm.Hide();
-				SetFormAllowShow(thisForm, false);
-				//UserMessages.ShowMessage("Userclose");
-			}
-		};
+		//usercontrol.Closing += (s, closeargs) =>
+		//{
+		//  System.Windows.Forms.Form thisForm = s as System.Windows.Forms.Form;
+		//  //if (closeargs.CloseReason == CloseReason.UserClosing)
+		//  {
+		//    closeargs.Cancel = true;
+		//    thisForm.Hide();
+		//    SetFormAllowShow(thisForm, false);
+		//    //UserMessages.ShowMessage("Userclose");
+		//  }
+		//};
 	}
 
 	private void SetFormAllowShow(System.Windows.Forms.Form form, bool allowShowValue)
@@ -265,25 +314,25 @@ public partial class OverlayWindow : Window
 		(form.Tag as OverlayChildManager).AllowShow = allowShowValue;
 	}
 
-	private bool MayFormBeShow(System.Windows.Window window)// Form form)
+	private bool MayUsercontrolBeShown(CommandUserControl usercontrol)// Form form)
 	{
-		if (window == null) return true;
-		if (!(window.Tag is OverlayChildManager)) return true;
-		return (window.Tag as OverlayChildManager).AllowShow;
+		if (usercontrol == null) return true;
+		if (!(usercontrol.Tag is OverlayChildManager)) return true;
+		return (usercontrol.Tag as OverlayChildManager).AllowShow;
 	}
 
-	private bool IsEventsAdded(System.Windows.Window window)//Form form)
+	private bool IsEventsAdded(Control usercontrol)//Form form)
 	{
-		if (window == null) return false;
-		if (!(window.Tag is OverlayChildManager)) return false;
-		return (window.Tag as OverlayChildManager).EventAttached;
+		if (usercontrol == null) return false;
+		if (!(usercontrol.Tag is OverlayChildManager)) return false;
+		return (usercontrol.Tag as OverlayChildManager).EventAttached;
 	}
 
-	private void MarkformEventsAdded(System.Windows.Window window)// Form form)
+	private void MarkformEventsAdded(Control usercontrol)// Form form)
 	{
-		if (window == null) return;
-		if (!(window.Tag is OverlayChildManager)) return;
-		(window.Tag as OverlayChildManager).EventAttached = true;
+		if (usercontrol == null) return;
+		if (!(usercontrol.Tag is OverlayChildManager)) return;
+		(usercontrol.Tag as OverlayChildManager).EventAttached = true;
 	}
 
 	public bool PreventClosing = true;
@@ -291,11 +340,11 @@ public partial class OverlayWindow : Window
 	{
 		if (PreventClosing) e.Cancel = true;
 		this.Hide();
-		foreach (System.Windows.Window window in ListOfChildWindows)
-			if (window != null)
+		foreach (CommandUserControl usercontrol in ListOfCommandUsercontrols)
+			if (usercontrol != null)
 			{
-				window.Owner = null;
-				window.Hide();
+				//usercontrol.Owner = null;
+				//usercontrol.Hide();
 			}
 	}
 
@@ -311,13 +360,57 @@ public partial class OverlayWindow : Window
 			this.Close();
 		else if (e.Key == Key.Tab && System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)
 		{
-			if (ListOfChildWindows != null && ListOfChildWindows.Count > 0)
-				ListOfChildWindows[0].Activate();
+			if (ListOfCommandUsercontrols != null && ListOfCommandUsercontrols.Count > 0)
+				ListOfCommandUsercontrols[0].Focus();
 		}
 		else if (e.Key == Key.Tab && (System.Windows.Forms.Control.ModifierKeys & (System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)) == (System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift))
 		{
-			if (ListOfChildWindows != null && ListOfChildWindows.Count > 0)
-				ListOfChildWindows[ListOfChildWindows.Count - 1].Activate();
+			if (ListOfCommandUsercontrols != null && ListOfCommandUsercontrols.Count > 0)
+				ListOfCommandUsercontrols[ListOfCommandUsercontrols.Count - 1].Focus();
 		}
+	}
+
+	public class Element
+	{
+		#region Fields
+		bool isDragging = false;
+		IInputElement inputElement = null;
+		double x, y = 0;
+		#endregion
+
+		#region Constructor
+		public Element() { }
+		#endregion
+
+		#region Properties
+		public IInputElement InputElement
+		{
+			get { return this.inputElement; }
+			set
+			{
+				this.inputElement = value;
+				/* every time inputElement resets, the draggin stops (you actually don't even need to track it, but it made things easier in the begining, I'll change it next time I get to play with it. */
+				this.isDragging = false;
+			}
+		}
+
+		public double X
+		{
+			get { return this.x; }
+			set { this.x = value; }
+		}
+
+		public double Y
+		{
+			get { return this.y; }
+			set { this.y = value; }
+		}
+
+		public bool IsDragging
+		{
+			get { return this.isDragging; }
+			set { this.isDragging = value; }
+		}
+		#endregion
 	}
 }
