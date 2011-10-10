@@ -43,7 +43,7 @@ namespace QuickAccess
 			{
 				if (MousePosition.X < 5) ShowOverlayCommandWindows();
 			};
-			//mouseHook.Start();
+			mouseHook.Start();
 		}
 
 		private void ShowOverlayCommandWindows()
@@ -394,7 +394,10 @@ namespace QuickAccess
 			string errorMsg;
 			InlineCommands.CommandDetails command = InlineCommands.GetCommandDetailsFromTextboxText(text);
 			if (command == null)
+			{
 				appendLogTextbox("Command not recognized: " + text);
+				//Win32Api.SendMessage(comboboxCommand.Handle, Win32Api.CB_SHOWDROPDOWN, 1, 0);
+			}
 			else if (text.Trim().Length == 0)
 				appendLogTextbox("No command entered.");
 			else if (command == null && text.Contains(' '))
@@ -552,7 +555,7 @@ namespace QuickAccess
 				{
 					SetAutoCompleteForAction(tmpkey);
 					//TODO: Must still adapt combobox to use the Dropdown, instead of its built in autocomplete
-					Win32Api.SendMessage(comboboxCommand.Handle, Win32Api.CB_SHOWDROPDOWN, 1, 0);
+					//Win32Api.SendMessage(comboboxCommand.Handle, Win32Api.CB_SHOWDROPDOWN, 1, 0);
 				}
 			}
 			else

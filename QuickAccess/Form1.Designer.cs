@@ -123,15 +123,20 @@
 					this.menuItem2.Text = "Test commandform";
 					this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
 					// 
-					// textBoxCommand
+					// comboboxCommand
 					// 
 					this.comboboxCommand.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 											| System.Windows.Forms.AnchorStyles.Right)));
 					this.comboboxCommand.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
 					this.comboboxCommand.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
 					this.comboboxCommand.FormattingEnabled = true;
+					this.comboboxCommand.Items.AddRange(new object[] {
+            "Edit1",
+            "Edit2",
+            "Edit3",
+            "Francois"});
 					this.comboboxCommand.Location = new System.Drawing.Point(12, 156);
-					this.comboboxCommand.Name = "textBoxCommand";
+					this.comboboxCommand.Name = "comboboxCommand";
 					this.comboboxCommand.Size = new System.Drawing.Size(314, 32);
 					this.comboboxCommand.TabIndex = 4;
 					this.comboboxCommand.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
