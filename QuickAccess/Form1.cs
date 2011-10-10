@@ -28,7 +28,8 @@ namespace QuickAccess
 		{
 			InitializeComponent();
 
-			textBox1.Tag = new List<string>();
+			//textBoxCommand.Tag = new List<string>();
+			comboboxCommand.Tag = new List<string>();
 			InlineCommands.PopulateCommandList();
 
 			origOpacity = this.Opacity;
@@ -42,7 +43,7 @@ namespace QuickAccess
 			{
 				if (MousePosition.X < 5) ShowOverlayCommandWindows();
 			};
-			mouseHook.Start();
+			//mouseHook.Start();
 		}
 
 		private void ShowOverlayCommandWindows()
@@ -244,8 +245,10 @@ namespace QuickAccess
 
 			if (e.KeyCode == Keys.Escape)
 			{
-				if (textBox1.Text.Length > 0) textBox1.Text = "";
+				if (comboboxCommand.Text.Length > 0) comboboxCommand.Text = "";
 				else this.Hide();
+				//if (textBoxCommand.Text.Length > 0) textBoxCommand.Text = "";
+				//else this.Hide();
 			}
 			else if (IsControlShiftAltDown())
 			{
@@ -328,18 +331,18 @@ namespace QuickAccess
 
 		void SetAutocompleteActionList()
 		{
-			if (textBox1.AutoCompleteCustomSource != InlineCommands.AutoCompleteAllactionList)
+			if (comboboxCommand.AutoCompleteCustomSource != InlineCommands.AutoCompleteAllactionList)
 			{
-				textBox1.AutoCompleteCustomSource = InlineCommands.AutoCompleteAllactionList;
+				comboboxCommand.AutoCompleteCustomSource = InlineCommands.AutoCompleteAllactionList;
 			}
 		}
 
 		void SetAutoCompleteForAction(string action)
 		{
 			InlineCommands.CommandDetails commDetails = InlineCommands.CommandList[action];
-			if (textBox1.AutoCompleteCustomSource != commDetails.commandPredefinedArguments && textBox1.TextLength > 2)
+			if (comboboxCommand.AutoCompleteCustomSource != commDetails.commandPredefinedArguments && action.Length > 2)
 			{
-				textBox1.AutoCompleteCustomSource = commDetails.commandPredefinedArguments;
+				comboboxCommand.AutoCompleteCustomSource = commDetails.commandPredefinedArguments;
 			}
 		}
 
@@ -348,7 +351,7 @@ namespace QuickAccess
 		{
 			if (e.KeyCode == Keys.Enter)
 			{
-				PerformCommandNow(textBox1.Text);
+				PerformCommandNow(comboboxCommand.Text);
 			}
 			else if (IsControlDown() && e.KeyCode == Keys.Down)
 			{
@@ -362,24 +365,24 @@ namespace QuickAccess
 			}
 			else if ((e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) && ModifierKeys == Keys.None)
 			{
-				if (textBox1.TextLength == 0)
+				if (comboboxCommand.Text.Length == 0)
 				{
-					List<string> historyList = textBox1.Tag as List<string>;
+					List<string> historyList = comboboxCommand.Tag as List<string>;
 					if (historyList.Count > 0)
 					{
 						ScrollTextHistoryOnUpDownKeys = true;
-						textBox1.Text = historyList[e.KeyCode == Keys.Down ? 0 : historyList.Count - 1];
+						comboboxCommand.Text = historyList[e.KeyCode == Keys.Down ? 0 : historyList.Count - 1];
 					}
 				}
 				else if (ScrollTextHistoryOnUpDownKeys)
 				{
-					List<string> historyList = textBox1.Tag as List<string>;
+					List<string> historyList = comboboxCommand.Tag as List<string>;
 					if (historyList.Count > 0)
 					{
-						if (e.KeyCode == Keys.Down && historyList.IndexOf(textBox1.Text) < historyList.Count - 1)
-							textBox1.Text = historyList[historyList.IndexOf(textBox1.Text) + 1];
-						else if (e.KeyCode == Keys.Up && historyList.IndexOf(textBox1.Text) > 0)
-							textBox1.Text = historyList[historyList.IndexOf(textBox1.Text) - 1];
+						if (e.KeyCode == Keys.Down && historyList.IndexOf(comboboxCommand.Text) < historyList.Count - 1)
+							comboboxCommand.Text = historyList[historyList.IndexOf(comboboxCommand.Text) + 1];
+						else if (e.KeyCode == Keys.Up && historyList.IndexOf(comboboxCommand.Text) > 0)
+							comboboxCommand.Text = historyList[historyList.IndexOf(comboboxCommand.Text) - 1];
 					}
 				}
 				//if (textBox1.AutoCompleteSource.
@@ -390,7 +393,11 @@ namespace QuickAccess
 		{
 			string errorMsg;
 			InlineCommands.CommandDetails command = InlineCommands.GetCommandDetailsFromTextboxText(text);
-			if (command == null && text.Contains(' '))
+			if (command == null)
+				appendLogTextbox("Command not recognized: " + text);
+			else if (text.Trim().Length == 0)
+				appendLogTextbox("No command entered.");
+			else if (command == null && text.Contains(' '))
 				appendLogTextbox("Command not regonized: " + text);
 			else if (command != null && text.Contains(' ') && text.Length < command.commandName.Length + 2
 				&& command.CommandHasRequiredArguments())
@@ -404,10 +411,10 @@ namespace QuickAccess
 				ScrollTextHistoryOnUpDownKeys = false;
 				appendLogTextbox("");
 				appendLogTextbox("Performing command: " + text);
-				(textBox1.Tag as List<string>).Add(text);
+				(comboboxCommand.Tag as List<string>).Add(text);
 				Logging.staticNotifyIcon = notifyIcon1;
-				command.PerformCommand(text, this.textBox1, this.textBox_Messages);
-				if (ClearCommandTextboxOnSuccess) textBox1.Text = "";
+				command.PerformCommand(text, this.comboboxCommand, this.textBox_Messages);
+				if (ClearCommandTextboxOnSuccess) comboboxCommand.Text = "";
 				if (HideAfterSuccess) this.Hide();
 			}
 		}
@@ -475,17 +482,17 @@ namespace QuickAccess
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
 			//TODO: Should check out the debugging tools for Windows, Run the "Global Flags" and in the "Kernel Flags" tab enable items "Enable heap tail checking", "Enable heap free checking", "Enable page heap"
-			string tmpkey = "987654321abcde";
-			if (textBox1.Text.ToLower().IndexOf(' ') != -1)
-				tmpkey = textBox1.Text.ToLower().Substring(0, textBox1.Text.ToLower().IndexOf(' '));
-			if (InlineCommands.CommandList.ContainsKey(tmpkey))
+			string tmpkey = null;
+			if (comboboxCommand.Text.ToLower().IndexOf(' ') != -1)
+				tmpkey = comboboxCommand.Text.ToLower().Substring(0, comboboxCommand.Text.ToLower().IndexOf(' '));
+			if (tmpkey != null && InlineCommands.CommandList != null && InlineCommands.CommandList.ContainsKey(tmpkey))
 			{
 				label1.Text = InlineCommands.CommandList[tmpkey].UserLabel;
 
-				string textboxArgsString = textBox1.Text.Substring(textBox1.Text.IndexOf(' ') + 1);
+				string textboxArgsString =  comboboxCommand.Text.Length >= comboboxCommand.Text.IndexOf(' ') + 2 ? comboboxCommand.Text.Substring(comboboxCommand.Text.IndexOf(' ') + 1) : "";
 
 				string[] textBoxArgsSplitted = textboxArgsString.Split(InlineCommands.CommandDetails.ArgumentSeparator);
-				string lastetextboxArg = textBoxArgsSplitted[textBoxArgsSplitted.Length - 1];
+				string lastetextboxArg = textBoxArgsSplitted.Length > 0 ? textBoxArgsSplitted[textBoxArgsSplitted.Length - 1] : "";
 				if (textboxArgsString.EndsWith(@"\") && lastetextboxArg.Contains(@":\"))
 				{
 					if (Directory.Exists(lastetextboxArg))
@@ -497,19 +504,19 @@ namespace QuickAccess
 								|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Directories
 								|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Files)
 							{
-								string textboxText = textBox1.Text;
+								string textboxText = comboboxCommand.Text;
 								string argswithoutlast = textboxArgsString.Substring(0, textboxArgsString.Length - lastetextboxArg.Length);
 								if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Directories
 									|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Both)
 									foreach (string dir in Directory.GetDirectories(lastetextboxArg))
-										if (!textBox1.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + dir))
-											textBox1.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + dir);
+										if (!comboboxCommand.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + dir))
+											comboboxCommand.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + dir);
 
 								if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Files
 									|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Both)
 									foreach (string file in Directory.GetFiles(lastetextboxArg))
-										if (!textBox1.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + file))
-											textBox1.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + file);
+										if (!comboboxCommand.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + file))
+											comboboxCommand.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + file);
 							}
 
 
@@ -530,7 +537,7 @@ namespace QuickAccess
 				{
 					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 						{
-							ThreadingInterop.ClearTextboxAutocompleteCustomSource(textBox1);
+							ThreadingInterop.ClearTextboxAutocompleteCustomSource(comboboxCommand);
 							//textBox1.AutoCompleteCustomSource.Clear();
 							//textBox_Messages.Invoke(new ClearTextboxAutocompleteDelegate(ClearTextboxAutocomplete), new object[] { });
 							Process[] procs = Process.GetProcesses();
@@ -538,15 +545,20 @@ namespace QuickAccess
 								if (proc.ProcessName.ToLower().StartsWith(textboxArgsString.ToLower()))
 									//textBox_Messages.Invoke(new AddTextboxAutocompleteDelegate(AddTextboxAutocomplete), new object[] { tmpkey + " " + proc.ProcessName });
 									//textBox1.AutoCompleteCustomSource.Add(tmpkey + " " + proc.ProcessName);
-									ThreadingInterop.AddTextboxAutocompleteCustomSource(textBox1, tmpkey + " " + proc.ProcessName);
+									ThreadingInterop.AddTextboxAutocompleteCustomSource(comboboxCommand, tmpkey + " " + proc.ProcessName);
 						});
 				}
-				else SetAutoCompleteForAction(tmpkey);
+				else
+				{
+					SetAutoCompleteForAction(tmpkey);
+					//TODO: Must still adapt combobox to use the Dropdown, instead of its built in autocomplete
+					Win32Api.SendMessage(comboboxCommand.Handle, Win32Api.CB_SHOWDROPDOWN, 1, 0);
+				}
 			}
 			else
 			{
 				label1.Text = InlineCommands.AvailableActionList;
-				if (textBox1.Text.Length == 0) SetAutocompleteActionList();
+				if (comboboxCommand.Text.Length == 0) SetAutocompleteActionList();
 			}
 		}
 
@@ -582,7 +594,7 @@ namespace QuickAccess
 		private void Form1_VisibleChanged(object sender, EventArgs e)
 		{
 			notifyIcon1.Visible = !this.Visible;
-			if (notifyIcon1.Visible) textBox1.Focus();
+			if (notifyIcon1.Visible) comboboxCommand.Focus();
 		}
 
 		private void Form1_MouseClick(object sender, MouseEventArgs e)

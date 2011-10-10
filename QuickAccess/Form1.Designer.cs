@@ -31,7 +31,6 @@
 					this.components = new System.ComponentModel.Container();
 					System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 					this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-					this.textBox1 = new System.Windows.Forms.TextBox();
 					this.label1 = new System.Windows.Forms.Label();
 					this.textBox_Messages = new System.Windows.Forms.TextBox();
 					this.label2 = new System.Windows.Forms.Label();
@@ -40,6 +39,7 @@
 					this.menuItem_Commands = new System.Windows.Forms.MenuItem();
 					this.menuItem1 = new System.Windows.Forms.MenuItem();
 					this.menuItem2 = new System.Windows.Forms.MenuItem();
+					this.comboboxCommand = new System.Windows.Forms.ComboBox();
 					this.SuspendLayout();
 					// 
 					// notifyIcon1
@@ -49,22 +49,6 @@
 					this.notifyIcon1.Visible = true;
 					this.notifyIcon1.BalloonTipClicked += new System.EventHandler(this.notifyIcon1_BalloonTipClicked);
 					this.notifyIcon1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseClick);
-					// 
-					// textBox1
-					// 
-					this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-											| System.Windows.Forms.AnchorStyles.Right)));
-					this.textBox1.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-					this.textBox1.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-					this.textBox1.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-					this.textBox1.Location = new System.Drawing.Point(14, 150);
-					this.textBox1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-					this.textBox1.Name = "textBox1";
-					this.textBox1.Size = new System.Drawing.Size(298, 30);
-					this.textBox1.TabIndex = 0;
-					this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-					this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
-					this.textBox1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
 					// 
 					// label1
 					// 
@@ -139,6 +123,21 @@
 					this.menuItem2.Text = "Test commandform";
 					this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
 					// 
+					// textBoxCommand
+					// 
+					this.comboboxCommand.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+											| System.Windows.Forms.AnchorStyles.Right)));
+					this.comboboxCommand.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+					this.comboboxCommand.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+					this.comboboxCommand.FormattingEnabled = true;
+					this.comboboxCommand.Location = new System.Drawing.Point(12, 156);
+					this.comboboxCommand.Name = "textBoxCommand";
+					this.comboboxCommand.Size = new System.Drawing.Size(314, 32);
+					this.comboboxCommand.TabIndex = 4;
+					this.comboboxCommand.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+					this.comboboxCommand.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
+					this.comboboxCommand.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
+					// 
 					// Form1
 					// 
 					this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -146,10 +145,10 @@
 					this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(51)))), ((int)(((byte)(68)))));
 					this.ClientSize = new System.Drawing.Size(492, 200);
 					this.ControlBox = false;
+					this.Controls.Add(this.comboboxCommand);
 					this.Controls.Add(this.label2);
 					this.Controls.Add(this.textBox_Messages);
 					this.Controls.Add(this.label1);
-					this.Controls.Add(this.textBox1);
 					this.DoubleBuffered = true;
 					this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -178,8 +177,7 @@
 
         #endregion
 
-        public System.Windows.Forms.NotifyIcon notifyIcon1;
-        public System.Windows.Forms.TextBox textBox1;
+				public System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.Label label1;
 				public System.Windows.Forms.TextBox textBox_Messages;
 				private System.Windows.Forms.Label label2;
@@ -188,6 +186,7 @@
 				private System.Windows.Forms.MenuItem menuItem_Commands;
 				private System.Windows.Forms.MenuItem menuItem1;
 				private System.Windows.Forms.MenuItem menuItem2;
+				public System.Windows.Forms.ComboBox comboboxCommand;
     }
 }
 
