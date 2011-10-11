@@ -238,15 +238,19 @@ public partial class OverlayWindow : Window
 
 	private double GetActualWidthConsiderScaling(Control control)
 	{
-		if (control.LayoutTransform == null || control.LayoutTransform is MatrixTransform) return control.ActualWidth;
+		if (control.LayoutTransform == null || (control.LayoutTransform is MatrixTransform && control.RenderTransform is MatrixTransform)) return control.ActualWidth;
+		else if (control.LayoutTransform is ScaleTransform && control.RenderTransform is ScaleTransform) return control.ActualWidth * (control.LayoutTransform as ScaleTransform).ScaleX * (control.RenderTransform as ScaleTransform).ScaleX;
 		else if (control.LayoutTransform is ScaleTransform) return control.ActualWidth * (control.LayoutTransform as ScaleTransform).ScaleX;
+		else if (control.RenderTransform is ScaleTransform) return control.ActualWidth * (control.RenderTransform as ScaleTransform).ScaleX;
 		else return control.ActualWidth;
 	}
 
 	private double GetActualHeightConsiderScaling(Control control)
 	{
-		if (control.LayoutTransform == null || control.LayoutTransform is MatrixTransform) return control.ActualHeight;
+		if (control.LayoutTransform == null || (control.LayoutTransform is MatrixTransform && control.RenderTransform is MatrixTransform)) return control.ActualHeight;
+		else if (control.LayoutTransform is ScaleTransform && control.RenderTransform is ScaleTransform) return control.ActualHeight * (control.LayoutTransform as ScaleTransform).ScaleY * (control.RenderTransform as ScaleTransform).ScaleY;
 		else if (control.LayoutTransform is ScaleTransform) return control.ActualHeight * (control.LayoutTransform as ScaleTransform).ScaleY;
+		else if (control.RenderTransform is ScaleTransform) return control.ActualHeight * (control.RenderTransform as ScaleTransform).ScaleY;
 		else return control.ActualHeight;
 	}
 
@@ -391,20 +395,24 @@ public partial class OverlayWindow : Window
 
 	private void AddClosingEventToUsercontrol(CommandUserControl usercontrol)//Form form)
 	{
-		usercontrol.storyboardFadeout.Completed += (sendr, evtargs) =>
-		{
-			int indexOfClosedItem = ListOfCommandUsercontrols.IndexOf(usercontrol);
-			//for (int i = indexOfClosedItem; i < ListOfCommandUsercontrols.Count; i++)
-			//{
-			//  double currentLeft = ListOfCommandUsercontrols[i].Margin.Left;
-			//  double currentTop = ListOfCommandUsercontrols[i].Margin.Top;
-			//  ListOfCommandUsercontrols[i].Margin = new Thickness(currentLeft - 100, currentTop, 0, 0);
-			//}
-			for (int i = indexOfClosedItem + 1; i < ListOfCommandUsercontrols.Count; i++)
-				MarkfWindowNOTAlreadyPositioned(ListOfCommandUsercontrols[i]);
-			AutoLayoutOfForms(indexOfClosedItem + 1);
-			ActivateNextWindowInChildList(usercontrol);
-		};
+		//usercontrol.storyboardFadeout.Completed += (sendr, evtargs) =>
+		//{
+		//  int indexOfClosedItem = ListOfCommandUsercontrols.IndexOf(usercontrol);			
+		//  for (int i = indexOfClosedItem + 1; i < ListOfCommandUsercontrols.Count; i++)
+		//    MarkfWindowNOTAlreadyPositioned(ListOfCommandUsercontrols[i]);
+		//  AutoLayoutOfForms(indexOfClosedItem + 1);
+		//  ActivateNextWindowInChildList(usercontrol);
+		//};
+
+		//usercontrol.storyboardFadein.Completed += (sendr, evtargs) =>
+		//{
+		//  int indexOfClosedItem = ListOfCommandUsercontrols.IndexOf(usercontrol);
+		//  for (int i = indexOfClosedItem + 1; i < ListOfCommandUsercontrols.Count; i++)
+		//    MarkfWindowNOTAlreadyPositioned(ListOfCommandUsercontrols[i]);
+		//  AutoLayoutOfForms(indexOfClosedItem + 1);
+		//  usercontrol.currentFocusedElement.Focus();
+		//  //ActivateNextWindowInChildList(usercontrol);
+		//};
 		//usercontrol.Closing += (s, closeargs) =>
 		//{
 		//  System.Windows.Forms.Form thisForm = s as System.Windows.Forms.Form;

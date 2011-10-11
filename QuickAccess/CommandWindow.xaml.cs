@@ -172,7 +172,7 @@ public partial class CommandWindow : Window
 
 	private void mainWindow_Loaded(object sender, RoutedEventArgs e)
 	{
-		mainBorder.LayoutTransform = new ScaleTransform(1, 1);
+		mainBorder.LayoutTransform = new MatrixTransform();//new ScaleTransform(1, 1);
 		PositionBeforeActivated = new Point(this.Left, this.Top);
 	}
 }

@@ -113,7 +113,7 @@ namespace QuickAccess
 										if (evt.Key == System.Windows.Input.Key.Enter)
 										{
 											bool EmptyRequiredArguments = false;
-											InlineCommands.CommandDetails thisCommandDetails = (txtbox as TextBox).Tag as InlineCommands.CommandDetails;
+											InlineCommands.CommandDetails thisCommandDetails = (txtbox as System.Windows.Controls.TextBox).Tag as InlineCommands.CommandDetails;
 											foreach (InlineCommands.CommandDetails.CommandArgumentClass argument in (thisCommandDetails).commandArguments)
 											{
 												if (argument.Required && argument.textBox.Text.Trim().Length == 0)
@@ -129,6 +129,7 @@ namespace QuickAccess
 												foreach (InlineCommands.CommandDetails.CommandArgumentClass argument in thisCommandDetails.commandArguments)
 													concatString += (concatString.Length > 0 ? ";" : "") + argument.textBox.Text;
 												//UserMessages.ShowInfoMessage(commandDetails.commandName + " " + concatString);
+												overlayWindow.Close();
 												PerformCommandNow(commandDetails.commandName + " " + concatString, false, true);
 											}
 										}
@@ -214,7 +215,17 @@ namespace QuickAccess
 				}
 				//overlayWindow.Loaded += delegate { overlayWindow.SetupAllChildWindows(); };
 				overlayWindow.Show();
-				overlayWindow.SetupAllChildWindows();
+				Application.DoEvents();
+				Timer timer = new Timer();
+				timer.Interval = 100;
+				timer.Tick += delegate
+				{
+					timer.Stop();
+					timer.Dispose();
+					timer = null;
+					overlayWindow.SetupAllChildWindows();
+				};				
+				timer.Start();
 			}
 		}
 

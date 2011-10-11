@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
+using System.Windows.Media.Animation;
 
 	/// <summary>
 	/// Interaction logic for tmpUserControl.xaml
@@ -64,13 +65,65 @@ public partial class CommandUserControl : UserControl
 
 	private void border_Closebutton_MouseUp(object sender, MouseButtonEventArgs e)
 	{
+		//this.LayoutTransform = new ScaleTransform();
+		//DoubleAnimation opacityAnimation = new DoubleAnimation() { To = 0.3 };
+		//DoubleAnimation scaleyAnimation = new DoubleAnimation() { To = 0.1 };
+		//DoubleAnimation scalexAnimation = new DoubleAnimation() { To = 0.1 };
+
+		//Storyboard storyboard = new Storyboard()
+		//{
+		//  Name = "storyboardFadeout",
+		//  AutoReverse = false,
+		//  RepeatBehavior = new RepeatBehavior(1),
+		//  Duration = new Duration(TimeSpan.FromSeconds(0.8)),
+		//  FillBehavior = FillBehavior.HoldEnd
+		//};
+		//Storyboard.SetTargetName(storyboard, parentUsercontrol.Name);
+		//Storyboard.SetTargetProperty(opacityAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("Opacity"));
+		//Storyboard.SetTargetProperty(scaleyAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"));
+		//Storyboard.SetTargetProperty(scalexAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleX)"));
+		//storyboard.Children.Add(opacityAnimation);
+		//storyboard.Children.Add(scaleyAnimation);
+		//storyboard.Children.Add(scalexAnimation);
+		//storyboard.Begin(this);
+
+		//<Storyboard
+		//            Name='storyboardFadeout'
+		//            AutoReverse='False'
+		//            RepeatBehavior='1x'
+		//            Duration='0:0:0:0.8'
+		//            Storyboard.TargetName='parentUsercontrol'                
+		//            Completed='storyboardFadeout_Completed'
+		//            FillBehavior='HoldEnd'>
+		//            <DoubleAnimation
+		//              Storyboard.TargetProperty='Opacity'
+		//              To='{StaticResource OpacityWhenClosed}' />
+		//            <DoubleAnimation
+		//              Storyboard.TargetProperty='(RenderTransform).(ScaleTransform.ScaleY)'
+		//              To='{StaticResource ScaleFactorWhenClosed}'/>
+		//            <DoubleAnimation
+		//              Storyboard.TargetProperty='(RenderTransform).(ScaleTransform.ScaleX)'
+		//              To='{StaticResource ScaleFactorWhenClosed}' />
+		//          </Storyboard>
+
+		//this.RenderTransform = new ScaleTransform(1, 1, this.ActualWidth / 2, this.ActualHeight / 2);
 		//this.Opacity = System.Windows.Visibility.Collapsed;
 	}
 
+	//public static readonly double ScaleFactorWhenClosed = 0.1;
+	//public static readonly double OpacityWhenClosed = 0.3;
 	private void storyboardFadeout_Completed(object sender, EventArgs e)
 	{
+		//System.Windows.Forms.MessageBox.Show(findResource("ScaleFactorWhenClosed").ToString());
+		//double scaleFactorWhenclosed = double.Parse(findResource("ScaleFactorWhenClosed").ToString());
+		//this.RenderTransform = new ScaleTransform(scaleFactorWhenclosed, scaleFactorWhenclosed);
 		//this.Visibility = System.Windows.Visibility.Collapsed;
-		this.LayoutTransform = new ScaleTransform(0.1, 0.1);
+		//this.LayoutTransform = new ScaleTransform(0.1, 0.1);
+	}
+
+	private object findResource(string name)
+	{
+		return this.FindResource(name);
 	}
 
 	private void mainGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -93,7 +146,76 @@ public partial class CommandUserControl : UserControl
 				currentFocusedElement.Focus();
 			}
 		}
+		if (this.Opacity != 1)
+		{
+		}
+		
+		//System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+		//timer.Interval = 100;
+		//timer.Tick += delegate
+		//{
+		//  DoLargeScale();
+		//  timer.Stop();
+		//  timer.Dispose();
+		//  timer = null;
+		//};
+		//timer.Start();
 	}
+
+	private void parentUsercontrol_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+	{
+		//DoLargeScale();
+	}
+
+	private bool LargeScalingWasDone = false;
+	private void parentUsercontrol_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+	{
+		//DoLargeScale();
+	}
+
+	private void DoLargeScale()
+	{
+		//if (this.RenderTransform is MatrixTransform)
+		//{
+		this.Opacity = 1;
+		Canvas.SetZIndex(this, 99);
+
+		TransformGroup transformGroup = new TransformGroup();
+		//transformGroup.Children.Add(new TranslateTransform(100, 100));
+		transformGroup.Children.Add(new ScaleTransform(3, 3));
+		//transformGroup.Children.Add(new SkewTransform(10, 10));
+		//this.LayoutTransform = transformGroup;
+		this.RenderTransform = transformGroup;
+
+		LargeScalingWasDone = true;
+		//}
+		////else if (this.LayoutTransform is ScaleTransform)
+		////{
+		////  ScaleTransform scaleTransform = this.LayoutTransform as ScaleTransform;
+		////  System.Windows.Forms.MessageBox.Show(scaleTransform.ScaleX + ", " + scaleTransform.ScaleY);
+		////}
+	}
+
+	private void parentUsercontrol_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+	{
+		//ScaleToOriginal();
+	}
+
+	private void ScaleToOriginal()
+	{
+		if (LargeScalingWasDone)
+		{
+			//this.LayoutTransform = new MatrixTransform();
+			this.RenderTransform = new MatrixTransform();
+			Canvas.SetZIndex(this, 0);
+			this.UpdateLayout();
+		}
+	}
+
+	//private void storyboardFadein_Completed(object sender, EventArgs e)
+	//{
+
+	//}
 
 	//private void mainGrid_GotFocus(object sender, RoutedEventArgs e)
 	//{
