@@ -65,27 +65,27 @@ public partial class CommandUserControl : UserControl
 
 	private void border_Closebutton_MouseUp(object sender, MouseButtonEventArgs e)
 	{
-		//this.LayoutTransform = new ScaleTransform();
-		//DoubleAnimation opacityAnimation = new DoubleAnimation() { To = 0.3 };
-		//DoubleAnimation scaleyAnimation = new DoubleAnimation() { To = 0.1 };
-		//DoubleAnimation scalexAnimation = new DoubleAnimation() { To = 0.1 };
+		this.LayoutTransform = new ScaleTransform();
+		DoubleAnimation opacityAnimation = new DoubleAnimation() { To = 0.3 };
+		DoubleAnimation scaleyAnimation = new DoubleAnimation() { To = 0.1 };
+		DoubleAnimation scalexAnimation = new DoubleAnimation() { To = 0.1 };
 
-		//Storyboard storyboard = new Storyboard()
-		//{
-		//  Name = "storyboardFadeout",
-		//  AutoReverse = false,
-		//  RepeatBehavior = new RepeatBehavior(1),
-		//  Duration = new Duration(TimeSpan.FromSeconds(0.8)),
-		//  FillBehavior = FillBehavior.HoldEnd
-		//};
-		//Storyboard.SetTargetName(storyboard, parentUsercontrol.Name);
-		//Storyboard.SetTargetProperty(opacityAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("Opacity"));
-		//Storyboard.SetTargetProperty(scaleyAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"));
-		//Storyboard.SetTargetProperty(scalexAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleX)"));
-		//storyboard.Children.Add(opacityAnimation);
-		//storyboard.Children.Add(scaleyAnimation);
-		//storyboard.Children.Add(scalexAnimation);
-		//storyboard.Begin(this);
+		Storyboard storyboard = new Storyboard()
+		{
+			Name = "storyboardFadeout",
+			AutoReverse = false,
+			RepeatBehavior = new RepeatBehavior(1),
+			Duration = new Duration(TimeSpan.FromSeconds(0.8)),
+			FillBehavior = FillBehavior.HoldEnd
+		};
+		Storyboard.SetTargetName(storyboard, parentUsercontrol.Name);
+		Storyboard.SetTargetProperty(opacityAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("Opacity"));
+		Storyboard.SetTargetProperty(scaleyAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"));
+		Storyboard.SetTargetProperty(scalexAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleX)"));
+		storyboard.Children.Add(opacityAnimation);
+		storyboard.Children.Add(scaleyAnimation);
+		storyboard.Children.Add(scalexAnimation);
+		storyboard.Begin(this);
 
 		//<Storyboard
 		//            Name='storyboardFadeout'
@@ -170,7 +170,7 @@ public partial class CommandUserControl : UserControl
 	private bool LargeScalingWasDone = false;
 	private void parentUsercontrol_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 	{
-		//DoLargeScale();
+		DoLargeScale();
 	}
 
 	private void DoLargeScale()
@@ -183,7 +183,7 @@ public partial class CommandUserControl : UserControl
 		TransformGroup transformGroup = new TransformGroup();
 		//transformGroup.Children.Add(new TranslateTransform(100, 100));
 		transformGroup.Children.Add(new ScaleTransform(3, 3));
-		//transformGroup.Children.Add(new SkewTransform(10, 10));
+		transformGroup.Children.Add(new SkewTransform(10, 10));
 		//this.LayoutTransform = transformGroup;
 		this.RenderTransform = transformGroup;
 
