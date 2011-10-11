@@ -175,9 +175,11 @@ public partial class OverlayWindow : Window
 		{
 			this.currentElement.InputElement = (IInputElement)s;
 
-			if (!(usercontrol.LayoutTransform is MatrixTransform))
-				usercontrol.LayoutTransform = new MatrixTransform();
-			usercontrol.Opacity = 1;
+			//usercontrol.ActivateControl();
+			//usercontrol.ResetLayoutNow();
+			//if (!(usercontrol.LayoutTransform is MatrixTransform))
+			//  usercontrol.LayoutTransform = new MatrixTransform();
+			//usercontrol.Opacity = 1;
 
 			int indexOfClosedItem = ListOfCommandUsercontrols.IndexOf(usercontrol);
 			for (int i = indexOfClosedItem + 1; i < ListOfCommandUsercontrols.Count; i++)
@@ -254,7 +256,7 @@ public partial class OverlayWindow : Window
 		else return control.ActualHeight;
 	}
 
-	private void AutoLayoutOfForms(int startIndex = 0)
+	private void AutoLayoutOfForms(int startIndex = 0, bool ForceDoLayoutForFollowingControls = false)
 	{
 		//while (!this.IsLoaded) System.Windows.Forms.Application.DoEvents();
 		int leftGap = 20;
@@ -298,7 +300,7 @@ public partial class OverlayWindow : Window
 				MaxHeightInRow = 0;
 			}
 
-			if (!IsWindowAlreadyPositioned(usercontrol))
+			if (ForceDoLayoutForFollowingControls || !IsWindowAlreadyPositioned(usercontrol))
 			{
 				usercontrol.Margin = new Thickness(NextLeftPos, NextTopPos, 0, 0);
 				//usercontrol.Left = NextLeftPos;
@@ -395,9 +397,19 @@ public partial class OverlayWindow : Window
 
 	private void AddClosingEventToUsercontrol(CommandUserControl usercontrol)//Form form)
 	{
+		usercontrol.AnimationComplete_Closing += (snder, evtargs) =>
+		{
+			AutoLayoutOfForms(ListOfCommandUsercontrols.IndexOf(snder as CommandUserControl) + 1, true);
+			//if (snder is CommandUserControl)
+			//  (snder as CommandUserControl)
+		};
+		usercontrol.AnimationComplete_Activating += (snder, evtargs) =>
+		{
+			AutoLayoutOfForms(ListOfCommandUsercontrols.IndexOf(snder as CommandUserControl) + 1, true);
+		};
 		//usercontrol.storyboardFadeout.Completed += (sendr, evtargs) =>
 		//{
-		//  int indexOfClosedItem = ListOfCommandUsercontrols.IndexOf(usercontrol);			
+		//  int indexOfClosedItem = ListOfCommandUsercontrols.IndexOf(usercontrol);
 		//  for (int i = indexOfClosedItem + 1; i < ListOfCommandUsercontrols.Count; i++)
 		//    MarkfWindowNOTAlreadyPositioned(ListOfCommandUsercontrols[i]);
 		//  AutoLayoutOfForms(indexOfClosedItem + 1);
@@ -519,7 +531,7 @@ public partial class OverlayWindow : Window
 		else if (IsAnumberKey(e.Key) && IsOnlyControlModifierDown())
 		{
 			if (ListOfCommandUsercontrols.Count > NumberKeys.IndexOf(e.Key))
-				ListOfCommandUsercontrols[NumberKeys.IndexOf(e.Key)].Focus();
+				ListOfCommandUsercontrols[NumberKeys.IndexOf(e.Key)].currentFocusedElement.Focus();
 		}
 	}
 

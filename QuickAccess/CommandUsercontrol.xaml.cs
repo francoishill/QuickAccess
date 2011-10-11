@@ -19,6 +19,9 @@ using System.Windows.Media.Animation;
 	/// </summary>
 public partial class CommandUserControl : UserControl
 {
+	public event EventHandler AnimationComplete_Closing;
+	public event EventHandler AnimationComplete_Activating;
+
 	public UIElement currentFocusedElement = null;
 
 	public CommandUserControl(string CommandTitle)
@@ -26,6 +29,13 @@ public partial class CommandUserControl : UserControl
 		InitializeComponent();
 
 		labelTitle.Content = CommandTitle;
+	}
+
+	public void ResetLayoutNow()
+	{
+		if (!(this.LayoutTransform is MatrixTransform)) this.LayoutTransform = new MatrixTransform();
+		if (!(this.RenderTransform is MatrixTransform)) this.RenderTransform = new MatrixTransform();
+		if (this.Opacity != 1) this.Opacity = 1;
 	}
 
 	public void AddControl(string label, System.Windows.Controls.Control control, Color labelColor)
@@ -65,10 +75,15 @@ public partial class CommandUserControl : UserControl
 
 	private void border_Closebutton_MouseUp(object sender, MouseButtonEventArgs e)
 	{
+		CloseControl();
+	}
+
+	public void CloseControl()
+	{
 		this.LayoutTransform = new ScaleTransform();
-		DoubleAnimation opacityAnimation = new DoubleAnimation() { To = 0.3 };
-		DoubleAnimation scaleyAnimation = new DoubleAnimation() { To = 0.1 };
-		DoubleAnimation scalexAnimation = new DoubleAnimation() { To = 0.1 };
+		DoubleAnimation opacityAnimation = new DoubleAnimation() { To = OpacityWhenClosed };
+		DoubleAnimation scaleyAnimation = new DoubleAnimation() { To = ScaleFactorWhenClosed };
+		DoubleAnimation scalexAnimation = new DoubleAnimation() { To = ScaleFactorWhenClosed };
 
 		Storyboard storyboard = new Storyboard()
 		{
@@ -76,7 +91,7 @@ public partial class CommandUserControl : UserControl
 			AutoReverse = false,
 			RepeatBehavior = new RepeatBehavior(1),
 			Duration = new Duration(TimeSpan.FromSeconds(0.8)),
-			FillBehavior = FillBehavior.HoldEnd
+			FillBehavior = FillBehavior.Stop
 		};
 		Storyboard.SetTargetName(storyboard, parentUsercontrol.Name);
 		Storyboard.SetTargetProperty(opacityAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("Opacity"));
@@ -85,30 +100,67 @@ public partial class CommandUserControl : UserControl
 		storyboard.Children.Add(opacityAnimation);
 		storyboard.Children.Add(scaleyAnimation);
 		storyboard.Children.Add(scalexAnimation);
+
+		storyboard.Completed += delegate
+		{
+			if (AnimationComplete_Closing != null)
+				AnimationComplete_Closing(this, new EventArgs());
+			this.Opacity = OpacityWhenClosed;
+			this.LayoutTransform = new ScaleTransform(ScaleFactorWhenClosed, ScaleFactorWhenClosed);
+			//this.Opacity = findResource("ScaleFactorWhenClosed")
+		};
 		storyboard.Begin(this);
 
-		//<Storyboard
-		//            Name='storyboardFadeout'
-		//            AutoReverse='False'
-		//            RepeatBehavior='1x'
-		//            Duration='0:0:0:0.8'
-		//            Storyboard.TargetName='parentUsercontrol'                
-		//            Completed='storyboardFadeout_Completed'
-		//            FillBehavior='HoldEnd'>
-		//            <DoubleAnimation
-		//              Storyboard.TargetProperty='Opacity'
-		//              To='{StaticResource OpacityWhenClosed}' />
-		//            <DoubleAnimation
-		//              Storyboard.TargetProperty='(RenderTransform).(ScaleTransform.ScaleY)'
-		//              To='{StaticResource ScaleFactorWhenClosed}'/>
-		//            <DoubleAnimation
-		//              Storyboard.TargetProperty='(RenderTransform).(ScaleTransform.ScaleX)'
-		//              To='{StaticResource ScaleFactorWhenClosed}' />
-		//          </Storyboard>
-
+		//while (1==1)//storyboard.GetCurrentState == 
+		//  System.Windows.Forms.MessageBox.Show(storyboard.GetCurrentState(this).ToString());
 		//this.RenderTransform = new ScaleTransform(1, 1, this.ActualWidth / 2, this.ActualHeight / 2);
 		//this.Opacity = System.Windows.Visibility.Collapsed;
 	}
+
+	public void ActivateControl()
+	{
+		this.RenderTransform = new MatrixTransform();
+		this.LayoutTransform = new ScaleTransform();
+		DoubleAnimation opacityAnimation = new DoubleAnimation() { To = 1 };
+		DoubleAnimation scaleyAnimation = new DoubleAnimation() { To = 1 };
+		DoubleAnimation scalexAnimation = new DoubleAnimation() { To = 1 };
+
+		Storyboard storyboard = new Storyboard()
+		{
+			Name = "storyboardFadeout",
+			AutoReverse = false,
+			RepeatBehavior = new RepeatBehavior(1),
+			Duration = new Duration(TimeSpan.FromSeconds(0.8)),
+			FillBehavior = FillBehavior.Stop
+		};
+		Storyboard.SetTargetName(storyboard, parentUsercontrol.Name);
+		Storyboard.SetTargetProperty(opacityAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("Opacity"));
+		Storyboard.SetTargetProperty(scaleyAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"));
+		Storyboard.SetTargetProperty(scalexAnimation, (PropertyPath)new PropertyPathConverter().ConvertFromString("(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleX)"));
+		storyboard.Children.Add(opacityAnimation);
+		storyboard.Children.Add(scaleyAnimation);
+		storyboard.Children.Add(scalexAnimation);
+
+		storyboard.Completed += delegate
+		{
+			if (AnimationComplete_Activating != null)
+				AnimationComplete_Activating(this, new EventArgs());
+			ResetLayoutNow();
+			//this.Opacity = findResource("ScaleFactorWhenClosed")
+		};
+		storyboard.Begin(this);
+
+		//while (1==1)//storyboard.GetCurrentState == 
+		//  System.Windows.Forms.MessageBox.Show(storyboard.GetCurrentState(this).ToString());
+		//this.RenderTransform = new ScaleTransform(1, 1, this.ActualWidth / 2, this.ActualHeight / 2);
+		//this.Opacity = System.Windows.Visibility.Collapsed;
+	}
+
+	/// <summary>
+	/// Use in XAML as follows: Opacity="{x:Static local:CommandUserControl.ScaleFactorWhenClosed}"
+	/// </summary>
+	public double ScaleFactorWhenClosed { get { return 0.3; } }
+	public double OpacityWhenClosed { get { return 0.1; } }
 
 	//public static readonly double ScaleFactorWhenClosed = 0.1;
 	//public static readonly double OpacityWhenClosed = 0.3;
@@ -126,11 +178,6 @@ public partial class CommandUserControl : UserControl
 		return this.FindResource(name);
 	}
 
-	private void mainGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-	{
-		
-	}
-
 	private void parentUsercontrol_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 	{
 		this.Focus();
@@ -145,9 +192,6 @@ public partial class CommandUserControl : UserControl
 			{
 				currentFocusedElement.Focus();
 			}
-		}
-		if (this.Opacity != 1)
-		{
 		}
 		
 		//System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
@@ -170,14 +214,14 @@ public partial class CommandUserControl : UserControl
 	private bool LargeScalingWasDone = false;
 	private void parentUsercontrol_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 	{
-		DoLargeScale();
+		//DoLargeScale();
 	}
 
 	private void DoLargeScale()
 	{
 		//if (this.RenderTransform is MatrixTransform)
 		//{
-		this.Opacity = 1;
+		//this.Opacity = 1;
 		Canvas.SetZIndex(this, 99);
 
 		TransformGroup transformGroup = new TransformGroup();
@@ -209,6 +253,14 @@ public partial class CommandUserControl : UserControl
 			this.RenderTransform = new MatrixTransform();
 			Canvas.SetZIndex(this, 0);
 			this.UpdateLayout();
+		}
+	}
+
+	private void parentUsercontrol_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+	{
+		if (this.Opacity != 1)
+		{
+			ActivateControl();
 		}
 	}
 

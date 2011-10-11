@@ -13,8 +13,9 @@
   Name='parentUsercontrol'
   VerticalAlignment='Top'
   HorizontalAlignment='Left'
-  MouseLeftButtonDown='parentUsercontrol_MouseLeftButtonDown'
+  MouseLeftButtonDown="parentUsercontrol_MouseLeftButtonDown"
   MouseLeftButtonUp='parentUsercontrol_MouseLeftButtonUp'
+  MouseDoubleClick="parentUsercontrol_MouseDoubleClick"
   GotKeyboardFocus='parentUsercontrol_GotKeyboardFocus'
   LostKeyboardFocus='parentUsercontrol_LostKeyboardFocus'>
   <UserControl.Resources>
@@ -28,10 +29,10 @@
         <!--<ResourceDictionary Source='/PresentationFramework.Luna,Version=3.0.0.0,Culture=neutral,PublicKeyToken=31bf3856ad364e35;component/themes/luna.normalcolor.xaml' />-->
 
         <ResourceDictionary>
-          <clr:Double
+          <!--<clr:Double
             x:Key='ScaleFactorWhenClosed'>0.3</clr:Double>
           <clr:Double
-            x:Key='OpacityWhenClosed'>0.1</clr:Double>
+            x:Key='OpacityWhenClosed'>0.1</clr:Double>-->
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
