@@ -41,9 +41,12 @@ namespace QuickAccess
 			//mouseHook.MouseGestureEvent += (o, gest) => { if (gest.MouseGesture == Win32Api.MouseGestures.RL) UserMessages.ShowErrorMessage("Message"); };
 			mouseHook.MouseMoveEvent += delegate
 			{
-				if (MousePosition.X < 5) ShowOverlayCommandWindows();
+				if (MousePosition.X < 5 && MousePosition.Y < Screen.FromPoint(new Point(0,0)).WorkingArea.Bottom - 50) ShowOverlayCommandWindows();
 			};
-			mouseHook.Start();
+			if (!Debugger.IsAttached)
+				mouseHook.Start();
+			else
+				notifyIcon1.ShowBalloonTip(3000, "Mousehook", "Mousehook not started due to debugging mode", ToolTipIcon.Info);
 		}
 
 		private void ShowOverlayCommandWindows()
@@ -57,7 +60,10 @@ namespace QuickAccess
 				{
 					tmpcounter++;
 					if (InlineCommands.CommandList[key].commandUsercontrol != null)//.commandForm != null)
-						overlayWindow.ListOfCommandUsercontrols.Add(InlineCommands.CommandList[key].commandUsercontrol);
+					{
+						if (!overlayWindow.ListOfCommandUsercontrols.Contains(InlineCommands.CommandList[key].commandUsercontrol))
+							overlayWindow.ListOfCommandUsercontrols.Add(InlineCommands.CommandList[key].commandUsercontrol);
+					}
 					else
 					{
 						//CommandForm tmpCommandForm = new CommandForm(key);
@@ -68,7 +74,8 @@ namespace QuickAccess
 						//InlineCommands.CommandList[key].commandForm = tmpCommandForm;
 						InlineCommands.CommandList[key].commandUsercontrol = tmpCommandUsercontrol;
 						//overlayForm.ListOfChildForms.Add(tmpCommandForm);
-						overlayWindow.ListOfCommandUsercontrols.Add(tmpCommandUsercontrol);
+						if (!overlayWindow.ListOfCommandUsercontrols.Contains(tmpCommandUsercontrol))
+							overlayWindow.ListOfCommandUsercontrols.Add(tmpCommandUsercontrol);
 
 						InlineCommands.CommandDetails commandDetails = InlineCommands.CommandList[key];
 
@@ -76,6 +83,7 @@ namespace QuickAccess
 						{
 							if (commandDetails.CommandHasArguments())
 							{
+								bool SetUsercontrolTagAsFirstTextbox = false;//Set the tag of the CommandUserControl as the first textbox to easily set focus to it
 								foreach (InlineCommands.CommandDetails.CommandArgumentClass arg in commandDetails.commandArguments)
 								{
 									//TextBox textBox = new TextBox()
@@ -131,6 +139,13 @@ namespace QuickAccess
 									//tmpCommandForm.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
 
 									tmpCommandUsercontrol.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
+
+									if (!SetUsercontrolTagAsFirstTextbox)
+									{
+										tmpCommandUsercontrol.Tag = new OverlayWindow.OverlayChildManager(true, false, false, textBox);
+										tmpCommandUsercontrol.currentFocusedElement = textBox;
+										SetUsercontrolTagAsFirstTextbox = true;
+									}
 								}
 							}
 
@@ -197,6 +212,7 @@ namespace QuickAccess
 						//menuItem_Commands.MenuItems.Add(commanditem);//.DropDownItems.Add(commanditem);
 					}
 				}
+				//overlayWindow.Loaded += delegate { overlayWindow.SetupAllChildWindows(); };
 				overlayWindow.Show();
 				overlayWindow.SetupAllChildWindows();
 			}

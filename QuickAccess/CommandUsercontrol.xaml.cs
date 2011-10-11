@@ -11,12 +11,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Media.Media3D;
 
 	/// <summary>
 	/// Interaction logic for tmpUserControl.xaml
 	/// </summary>
 public partial class CommandUserControl : UserControl
 {
+	public UIElement currentFocusedElement = null;
+
 	public CommandUserControl(string CommandTitle)
 	{
 		InitializeComponent();
@@ -69,4 +72,33 @@ public partial class CommandUserControl : UserControl
 		//this.Visibility = System.Windows.Visibility.Collapsed;
 		this.LayoutTransform = new ScaleTransform(0.1, 0.1);
 	}
+
+	private void mainGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+	{
+		
+	}
+
+	private void parentUsercontrol_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+	{
+		this.Focus();
+		if (this.Tag != null && this.Tag is OverlayWindow.OverlayChildManager && (this.Tag as OverlayWindow.OverlayChildManager).FirstUIelementToFocus != null)
+		{
+			if (currentFocusedElement == null)
+			{
+				(this.Tag as OverlayWindow.OverlayChildManager).FirstUIelementToFocus.Focus();
+				currentFocusedElement = (this.Tag as OverlayWindow.OverlayChildManager).FirstUIelementToFocus;
+			}
+			else
+			{
+				currentFocusedElement.Focus();
+			}
+		}
+	}
+
+	//private void mainGrid_GotFocus(object sender, RoutedEventArgs e)
+	//{
+	//  System.Windows.Forms.MessageBox.Show("Test");
+	//  if (this.Tag != null && this.Tag is Control)
+	//    (this.Tag as Control).Focus();
+	//}
 }
