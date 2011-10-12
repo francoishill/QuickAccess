@@ -7,7 +7,7 @@
   WindowStyle="None"
   AllowsTransparency="True"
   WindowState="Maximized"
-  Background="#dd000000"
+  Background="Transparent"
   MouseDown="overlayWindow_MouseDown"
   MouseUp="overlayWindow_MouseUp"
   MouseMove="overlayWindow_MouseMove"
@@ -117,21 +117,38 @@
       </BeginStoryboard>
     </EventTrigger>-->
   </Window.Triggers>
+    <!--<Window.RenderTransform>
+        <ScaleTransform ScaleX="0.1" ScaleY="0.1"></ScaleTransform>
+    </Window.RenderTransform>-->
+    <!--<Window.LayoutTransform>
+        <ScaleTransform ScaleX="0.1" ScaleY="0.1"></ScaleTransform>
+    </Window.LayoutTransform>-->
   <Grid
     Name="mainGrid"
     UseLayoutRounding="True">
+        <!--<Grid.LayoutTransform>
+            <ScaleTransform ScaleX="0.1" ScaleY="0.1"></ScaleTransform>
+        </Grid.LayoutTransform>-->
+        <!--<Grid.RenderTransform>
+            <ScaleTransform ScaleX="0.1" ScaleY="0.1"></ScaleTransform>
+        </Grid.RenderTransform>-->
 
-    <!--<WrapPanel
+        <!--<WrapPanel
       Name="wrapPanel_UserControls"
       IsManipulationEnabled="True">
 
     </WrapPanel>-->
-    <my:WpfDraggableCanvas
+        <my:WpfDraggableCanvas
       x:Name="wpfDraggableCanvas1"
       HorizontalAlignment="Stretch"      
       VerticalAlignment="Stretch"
+      Background="#dd000000"
       AllowDragOutOfView="True"
       SnapsToDevicePixels="True" />
-    <!--<my:CommandUserControl HorizontalAlignment="Left" Width="106" Height="71" x:Name="commandUserControl1" VerticalAlignment="Top" />-->
+            <!--<my:WpfDraggableCanvas.RenderTransform>
+                <ScaleTransform ScaleX="0.3" ScaleY="0.3"></ScaleTransform>
+            </my:WpfDraggableCanvas.RenderTransform>
+        </my:WpfDraggableCanvas>-->
+            <!--<my:CommandUserControl HorizontalAlignment="Left" Width="106" Height="71" x:Name="commandUserControl1" VerticalAlignment="Top" />-->
   </Grid>
 </Window>

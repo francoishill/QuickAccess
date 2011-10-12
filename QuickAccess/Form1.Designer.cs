@@ -40,6 +40,8 @@
 					this.menuItem1 = new System.Windows.Forms.MenuItem();
 					this.menuItem2 = new System.Windows.Forms.MenuItem();
 					this.comboboxCommand = new System.Windows.Forms.ComboBox();
+					this.buttonTestCrash = new System.Windows.Forms.Button();
+					this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
 					this.SuspendLayout();
 					// 
 					// notifyIcon1
@@ -84,7 +86,7 @@
 					this.label2.AutoSize = true;
 					this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 					this.label2.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-					this.label2.Location = new System.Drawing.Point(340, 183);
+					this.label2.Location = new System.Drawing.Point(359, 185);
 					this.label2.Name = "label2";
 					this.label2.Size = new System.Drawing.Size(132, 13);
 					this.label2.TabIndex = 3;
@@ -143,6 +145,32 @@
 					this.comboboxCommand.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
 					this.comboboxCommand.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
 					// 
+					// buttonTestCrash
+					// 
+					this.buttonTestCrash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+					this.buttonTestCrash.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+					this.buttonTestCrash.Location = new System.Drawing.Point(395, 10);
+					this.buttonTestCrash.Name = "buttonTestCrash";
+					this.buttonTestCrash.Size = new System.Drawing.Size(75, 23);
+					this.buttonTestCrash.TabIndex = 5;
+					this.buttonTestCrash.Text = "Test crash";
+					this.buttonTestCrash.UseVisualStyleBackColor = true;
+					this.buttonTestCrash.Visible = false;
+					this.buttonTestCrash.Click += new System.EventHandler(this.button1_Click);
+					// 
+					// labelRecoveryAndRestartSafe
+					// 
+					this.labelRecoveryAndRestartSafe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+					this.labelRecoveryAndRestartSafe.AutoSize = true;
+					this.labelRecoveryAndRestartSafe.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+					this.labelRecoveryAndRestartSafe.ForeColor = System.Drawing.Color.Green;
+					this.labelRecoveryAndRestartSafe.Location = new System.Drawing.Point(359, 171);
+					this.labelRecoveryAndRestartSafe.Name = "labelRecoveryAndRestartSafe";
+					this.labelRecoveryAndRestartSafe.Size = new System.Drawing.Size(133, 13);
+					this.labelRecoveryAndRestartSafe.TabIndex = 6;
+					this.labelRecoveryAndRestartSafe.Text = "Recovery and Restart Safe";
+					this.labelRecoveryAndRestartSafe.Visible = false;
+					// 
 					// Form1
 					// 
 					this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -150,6 +178,8 @@
 					this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(51)))), ((int)(((byte)(68)))));
 					this.ClientSize = new System.Drawing.Size(492, 200);
 					this.ControlBox = false;
+					this.Controls.Add(this.labelRecoveryAndRestartSafe);
+					this.Controls.Add(this.buttonTestCrash);
 					this.Controls.Add(this.comboboxCommand);
 					this.Controls.Add(this.label2);
 					this.Controls.Add(this.textBox_Messages);
@@ -192,6 +222,8 @@
 				private System.Windows.Forms.MenuItem menuItem1;
 				private System.Windows.Forms.MenuItem menuItem2;
 				public System.Windows.Forms.ComboBox comboboxCommand;
+				private System.Windows.Forms.Button buttonTestCrash;
+				private System.Windows.Forms.Label labelRecoveryAndRestartSafe;
     }
 }
 

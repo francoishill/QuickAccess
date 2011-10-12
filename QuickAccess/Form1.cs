@@ -15,7 +15,7 @@ namespace QuickAccess
 		private double origOpacity;
 		private bool ScrollTextHistoryOnUpDownKeys = false;
 
-		MouseHooks.MouseHook mouseHook;
+		//MouseHooks.MouseHook mouseHook;
 		//OverlayForm overlayForm = new OverlayForm();
 		OverlayWindow overlayWindow = new OverlayWindow();
 
@@ -26,8 +26,32 @@ namespace QuickAccess
 
 		public Form1()
 		{
-            //TODO: Need to add Application Restart and Recovery
-            InitializeComponent();
+			InitializeComponent();
+			if (IsApplicationArestartedInstance())
+			{
+				//MessageBox.Show("Application successfully restarted from crash. No functionality incorporated yet.", "Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				if (Directory.Exists(ApplicationRecoveryAndRestart.CrashReportsDirectory))
+				{
+					MessageBox.Show("QuickAccess successfully restarted from crash. See Crash report.", "Restarted successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					Process.Start("explorer", "\"" + ApplicationRecoveryAndRestart.CrashReportsDirectory + "\"");
+				}
+				else MessageBox.Show("QuickAccess successfully restarted from crash. Could not find Crash reports folder ("
+					+ ApplicationRecoveryAndRestart.CrashReportsDirectory
+					+ ").", "Successfully Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+
+			ApplicationRecoveryAndRestart.RegisterApplicationRecoveryAndRestart(delegate
+			{
+				//TODO: Application Restart and Recovery is there but no use so far?
+				//File.WriteAllText(@"C:\Francois\Crash reports\tmpQuickAccess.log", "Application crashed, more details not incorporated yet." + DateTime.Now.ToString());
+				//using (StreamWriter sw = new StreamWriter())
+				ApplicationRecoveryAndRestart.WriteCrashReportFile("QuickAccess", "Application crashed, more details not incorporated yet.");
+			},
+			delegate
+			{
+				labelRecoveryAndRestartSafe.Visible = true;
+				notifyIcon1.ShowBalloonTip(3000, "Recovery and Restart", "QuickAccess is now Recovery and Restart Safe", ToolTipIcon.Info);
+			});
 
 			//textBoxCommand.Tag = new List<string>();
 			comboboxCommand.Tag = new List<string>();
@@ -38,21 +62,49 @@ namespace QuickAccess
 
 			notifyIcon1.ContextMenu = contextMenu_TrayIcon;
 
-			mouseHook = new MouseHooks.MouseHook();
-			//mouseHook.MouseGestureEvent += (o, gest) => { if (gest.MouseGesture == Win32Api.MouseGestures.RL) UserMessages.ShowErrorMessage("Message"); };
-			mouseHook.MouseMoveEvent += delegate
+			//mouseHook = new MouseHooks.MouseHook();
+			////mouseHook.MouseGestureEvent += (o, gest) => { if (gest.MouseGesture == Win32Api.MouseGestures.RL) UserMessages.ShowErrorMessage("Message"); };
+			//mouseHook.MouseMoveEvent += delegate
+			//{
+			//  if (MousePosition.X < 5 && MousePosition.Y < Screen.FromPoint(new Point(0, 0)).WorkingArea.Bottom - 50)
+			//  {
+			//    //ShowOverlayCommandWindows();
+			//    //ShowOverlayRibbon();
+			//  }
+			//};
+			//if (!Debugger.IsAttached)
+			//  mouseHook.Start();
+			//else
+			//  notifyIcon1.ShowBalloonTip(3000, "Mousehook", "Mousehook not started due to debugging mode", ToolTipIcon.Info);
+			ShowOverlayRibbon();
+
+			overlayWindow.IsVisibleChanged += delegate
 			{
-				if (MousePosition.X < 5 && MousePosition.Y < Screen.FromPoint(new Point(0,0)).WorkingArea.Bottom - 50) ShowOverlayCommandWindows();
+				if (overlayWindow.IsVisible) overlayRibbon.Hide();
+				else overlayRibbon.Show();
 			};
-			if (!Debugger.IsAttached)
-				mouseHook.Start();
-			else
-				notifyIcon1.ShowBalloonTip(3000, "Mousehook", "Mousehook not started due to debugging mode", ToolTipIcon.Info);
+			ShowOverlayCommandWindows(true);
 		}
 
-		private void ShowOverlayCommandWindows()
+		private bool IsApplicationArestartedInstance()
 		{
-			if (overlayWindow == null) overlayWindow = new OverlayWindow();
+			return System.Environment.GetCommandLineArgs().Length > 1 && System.Environment.GetCommandLineArgs()[1] == "/restart";
+		}
+
+		OverlayRibbon overlayRibbon = new OverlayRibbon();
+		private void ShowOverlayRibbon()
+		{
+			Rectangle workingArea = Screen.FromPoint(new Point(0, 0)).WorkingArea;
+			overlayRibbon.Top = workingArea.Top + (workingArea.Height - overlayRibbon.ActualHeight) / 2 + 100;
+			overlayRibbon.Left = 0;
+			//MessageBox.Show(overlayRibbon.Left + ", " + overlayRibbon.Top);
+			overlayRibbon.MouseClickedRequestToOpenOverlayWindow += delegate { ShowOverlayCommandWindows(); };
+			overlayRibbon.Show();
+		}
+
+		private void ShowOverlayCommandWindows(bool JustCreateDoNotShow = false)
+		{
+			//if (overlayWindow == null) overlayWindow = new OverlayWindow();
 			if (overlayWindow.Visibility != System.Windows.Visibility.Visible)
 			{
 				//foreach (string s in s.s)
@@ -216,6 +268,7 @@ namespace QuickAccess
 				}
 				//overlayWindow.Loaded += delegate { overlayWindow.SetupAllChildWindows(); };
 				overlayWindow.Show();
+				if (JustCreateDoNotShow) overlayWindow.Close();
 				Application.DoEvents();
 				Timer timer = new Timer();
 				timer.Interval = 100;
@@ -225,7 +278,7 @@ namespace QuickAccess
 					timer.Dispose();
 					timer = null;
 					overlayWindow.SetupAllChildWindows();
-				};				
+				};
 				timer.Start();
 			}
 		}
@@ -240,6 +293,8 @@ namespace QuickAccess
 			//InitializeHooks(false, true);
 			this.Hide();
 			this.Opacity = origOpacity;
+
+			if (Environment.CommandLine.ToLower().Contains(@"documents\visual studio 2010\")) buttonTestCrash.Visible = true;
 		}
 
 		private Point MousePositionBeforePopup = new Point(-1, -1);
@@ -260,7 +315,7 @@ namespace QuickAccess
 			return ((ModifierKeys & Keys.Alt) == Keys.Alt);
 		}
 
-		private bool IsControlDown()
+		public static bool IsControlDown()
 		{
 			return ((ModifierKeys & Keys.Control) == Keys.Control);
 		}
@@ -626,6 +681,7 @@ namespace QuickAccess
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			ApplicationRecoveryAndRestart.UnregisterApplicationRecoveryAndRestart();
 			Win32Api.UnregisterHotKey(this.Handle, Win32Api.Hotkey1);
 			overlayWindow.PreventClosing = false;
 			overlayWindow.Close();
@@ -728,6 +784,11 @@ namespace QuickAccess
 			mw.AddControl("tmp3", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Green);
 			mw.AddControl("tmp4", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Blue);
 			mw.Show();
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			ApplicationRecoveryAndRestart.TestCrash(true);
 		}
 	}
 }

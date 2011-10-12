@@ -145,6 +145,10 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SharedClasses\DLLs\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
@@ -163,6 +167,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
+      <Link>ApplicationRecoveryAndRestart.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\CustomBalloonTip.cs">
       <Link>CustomBalloonTip.cs</Link>
       <SubType>Form</SubType>
@@ -244,6 +251,9 @@
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OverlayRibbon.xaml.cs">
+      <DependentUpon>OverlayRibbon.xaml</DependentUpon>
     </Compile>
     <Compile Include="OverlayWindow.xaml.cs">
       <DependentUpon>OverlayWindow.xaml</DependentUpon>
@@ -346,6 +356,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CommandWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OverlayRibbon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
