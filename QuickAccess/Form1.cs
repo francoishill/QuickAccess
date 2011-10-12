@@ -26,7 +26,8 @@ namespace QuickAccess
 
 		public Form1()
 		{
-			InitializeComponent();
+            //TODO: Need to add Application Restart and Recovery
+            InitializeComponent();
 
 			//textBoxCommand.Tag = new List<string>();
 			comboboxCommand.Tag = new List<string>();
