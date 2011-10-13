@@ -269,17 +269,8 @@ namespace QuickAccess
 				//overlayWindow.Loaded += delegate { overlayWindow.SetupAllChildWindows(); };
 				overlayWindow.Show();
 				if (JustCreateDoNotShow) overlayWindow.Close();
-				Application.DoEvents();
-				Timer timer = new Timer();
-				timer.Interval = 100;
-				timer.Tick += delegate
-				{
-					timer.Stop();
-					timer.Dispose();
-					timer = null;
-					overlayWindow.SetupAllChildWindows();
-				};
-				timer.Start();
+				overlayWindow.SetupAllChildWindows();
+				overlayWindow.AddEventsToAllChildUsercontrols();
 			}
 		}
 
@@ -629,6 +620,10 @@ namespace QuickAccess
 					//    }
 					//  }
 				}
+					//TODO: Should eventually (on next commented lines) add autocomplete for COMMAseparated arguments like svnupdate MonitorSystem,QuickAccess
+				//else if (textboxArgsString.EndsWith(@","))// && lastetextboxArg.Contains(@":\"))
+				//{
+				//}
 				else if (tmpkey == "kill" && textboxArgsString.Length >= 2)
 				{
 					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
