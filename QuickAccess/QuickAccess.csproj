@@ -170,6 +170,10 @@
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
       <Link>ApplicationRecoveryAndRestart.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\CommandUsercontrol.xaml.cs">
+      <Link>CommandUsercontrol.xaml.cs</Link>
+      <DependentUpon>CommandUsercontrol.xaml</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\CustomBalloonTip.cs">
       <Link>CustomBalloonTip.cs</Link>
       <SubType>Form</SubType>
@@ -203,6 +207,10 @@
     <Compile Include="..\..\SharedClasses\OverlayForm.designer.cs">
       <Link>OverlayForm.designer.cs</Link>
       <DependentUpon>OverlayForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\OverlayWindow.xaml.cs">
+      <Link>OverlayWindow.xaml.cs</Link>
+      <DependentUpon>OverlayWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\PhpInterop.cs">
       <Link>PhpInterop.cs</Link>
@@ -240,9 +248,6 @@
     <Compile Include="CommandArgumentsWindow.xaml.cs">
       <DependentUpon>CommandArgumentsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CommandUsercontrol.xaml.cs">
-      <DependentUpon>CommandUsercontrol.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CommandWindow.xaml.cs">
       <DependentUpon>CommandWindow.xaml</DependentUpon>
     </Compile>
@@ -254,9 +259,6 @@
     </Compile>
     <Compile Include="OverlayRibbon.xaml.cs">
       <DependentUpon>OverlayRibbon.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="OverlayWindow.xaml.cs">
-      <DependentUpon>OverlayWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -347,11 +349,17 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="CommandArgumentsWindow.xaml">
+    <Page Include="..\..\SharedClasses\CommandUsercontrol.xaml">
+      <Link>CommandUsercontrol.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CommandUsercontrol.xaml">
+    <Page Include="..\..\SharedClasses\OverlayWindow.xaml">
+      <Link>OverlayWindow.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CommandArgumentsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -360,10 +368,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="OverlayRibbon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="OverlayWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
