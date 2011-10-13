@@ -39,6 +39,16 @@ public partial class OverlayRibbon : Window
 	private void mainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 	{
 		if (QuickAccess.Form1.IsControlDown()) this.DragMove();
-		else { if (MouseClickedRequestToOpenOverlayWindow != null) MouseClickedRequestToOpenOverlayWindow(this, new EventArgs()); }
+        else CallEvent_MouseClickedRequestToOpenOverlayWindow();
 	}
+
+    private void CallEvent_MouseClickedRequestToOpenOverlayWindow()
+    {
+        if (MouseClickedRequestToOpenOverlayWindow != null) MouseClickedRequestToOpenOverlayWindow(this, new EventArgs());
+    }
+
+    private void mainWindow_DragEnter(object sender, DragEventArgs e)
+    {
+        CallEvent_MouseClickedRequestToOpenOverlayWindow();
+    }
 }

@@ -13,11 +13,13 @@
   Name='parentUsercontrol'
   VerticalAlignment='Top'
   HorizontalAlignment='Left'
-  MouseLeftButtonDown="parentUsercontrol_MouseLeftButtonDown"
+  MouseLeftButtonDown='parentUsercontrol_MouseLeftButtonDown'
   MouseLeftButtonUp='parentUsercontrol_MouseLeftButtonUp'
-  MouseDoubleClick="parentUsercontrol_MouseDoubleClick"
+  MouseDoubleClick='parentUsercontrol_MouseDoubleClick'
   GotKeyboardFocus='parentUsercontrol_GotKeyboardFocus'
-  LostKeyboardFocus='parentUsercontrol_LostKeyboardFocus'>
+  LostKeyboardFocus='parentUsercontrol_LostKeyboardFocus'
+  AllowDrop='True'
+    Drop='parentUsercontrol_Drop'>
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -79,25 +81,25 @@
       </BeginStoryboard>
     </EventTrigger>
     <!--<EventTrigger
-      RoutedEvent="MouseDown">
+      RoutedEvent='MouseDown'>
       <BeginStoryboard>
         <Storyboard
-          Name="storyboardFadein"
-          AutoReverse="False"
-          RepeatBehavior="1x"
-          Duration="0:0:0:0.8"
-          Storyboard.TargetName="parentUsercontrol"
-          Completed="storyboardFadein_Completed"
-          FillBehavior="HoldEnd">
+          Name='storyboardFadein'
+          AutoReverse='False'
+          RepeatBehavior='1x'
+          Duration='0:0:0:0.8'
+          Storyboard.TargetName='parentUsercontrol'
+          Completed='storyboardFadein_Completed'
+          FillBehavior='HoldEnd'>
           <DoubleAnimation
-            Storyboard.TargetProperty="Opacity"
-            To="1" />
+            Storyboard.TargetProperty='Opacity'
+            To='1' />
           <DoubleAnimation
-            Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
-            To="1" />
+            Storyboard.TargetProperty='(RenderTransform).(ScaleTransform.ScaleY)'
+            To='1' />
           <DoubleAnimation
-            Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
-            To="1" />
+            Storyboard.TargetProperty='(RenderTransform).(ScaleTransform.ScaleX)'
+            To='1' />
         </Storyboard>
       </BeginStoryboard>
     </EventTrigger>-->

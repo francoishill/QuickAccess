@@ -264,6 +264,17 @@ public partial class CommandUserControl : UserControl
 		}
 	}
 
+    private void parentUsercontrol_Drop(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop))
+        {
+            e.Handled = true;
+            string[] filesDropped = e.Data.GetData(System.Windows.DataFormats.FileDrop) as string[];
+            foreach (string filedropped in filesDropped)
+                UserMessages.ShowInfoMessage("File " + filedropped + " was dropped onto " + labelTitle.Content.ToString());
+        }
+    }
+
 	//private void storyboardFadein_Completed(object sender, EventArgs e)
 	//{
 

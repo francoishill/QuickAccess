@@ -578,4 +578,15 @@ public partial class OverlayWindow : Window
 		}
 		#endregion
 	}
+
+    private void overlayWindow_Drop(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop))
+        {
+            e.Handled = true;
+            string[] filesDropped = e.Data.GetData(System.Windows.DataFormats.FileDrop) as string[];
+            foreach (string filedropped in filesDropped)
+                UserMessages.ShowInfoMessage("File " + filedropped + " was dropped onto OverlayWindow");
+        }
+    }
 }

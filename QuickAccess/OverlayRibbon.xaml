@@ -18,7 +18,9 @@
     Topmost="True"
     LocationChanged="mainWindow_LocationChanged"
     ResizeMode="NoResize"
-    MouseLeftButtonDown="mainWindow_MouseLeftButtonDown">
+    MouseLeftButtonDown="mainWindow_MouseLeftButtonDown"
+    DragEnter='mainWindow_DragEnter'
+    AllowDrop='True'>
     <Border
         Name="mainBorder"
         UseLayoutRounding="True"
