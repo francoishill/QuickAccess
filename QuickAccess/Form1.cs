@@ -21,7 +21,7 @@ namespace QuickAccess
 
 		//Color LabelColorRequiredArgument = Color.Green;
 		//Color LabelColorOptionalArgument = SystemColors.WindowText;
-		System.Windows.Media.Color LabelColorRequiredArgument = System.Windows.Media.Colors.Green;
+		System.Windows.Media.Color LabelColorRequiredArgument = System.Windows.Media.Colors.White;
 		System.Windows.Media.Color LabelColorOptionalArgument = System.Windows.Media.Colors.Black;
 
 		public Form1()
@@ -119,14 +119,10 @@ namespace QuickAccess
 					}
 					else
 					{
-						//CommandForm tmpCommandForm = new CommandForm(key);
-						//CommandWindow tmpCommandWindow = new CommandWindow(key);
 						CommandUserControl tmpCommandUsercontrol = new CommandUserControl(key);
 						tmpCommandUsercontrol.labelShortcutKeyNumber.Content = (tmpcounter).ToString();
 
-						//InlineCommands.CommandList[key].commandForm = tmpCommandForm;
 						InlineCommands.CommandList[key].commandUsercontrol = tmpCommandUsercontrol;
-						//overlayForm.ListOfChildForms.Add(tmpCommandForm);
 						if (!overlayWindow.ListOfCommandUsercontrols.Contains(tmpCommandUsercontrol))
 							overlayWindow.ListOfCommandUsercontrols.Add(tmpCommandUsercontrol);
 
@@ -139,7 +135,6 @@ namespace QuickAccess
 								bool SetUsercontrolTagAsFirstTextbox = false;//Set the tag of the CommandUserControl as the first textbox to easily set focus to it
 								foreach (InlineCommands.CommandDetails.CommandArgumentClass arg in commandDetails.commandArguments)
 								{
-									//TextBox textBox = new TextBox()
 									System.Windows.Controls.TextBox textBox = new System.Windows.Controls.TextBox()
 									{
 										//ForeColor = arg.Required ? Color.Red : Color.Green,
@@ -148,6 +143,8 @@ namespace QuickAccess
 										Margin = new System.Windows.Thickness(5),
 										VerticalAlignment = System.Windows.VerticalAlignment.Top,
 										UseLayoutRounding = true,
+										IsUndoEnabled = true,
+										IsReadOnlyCaretVisible = true,
 										IsReadOnly = false
 									};
 
@@ -160,6 +157,8 @@ namespace QuickAccess
 										//  textBox.AutoCompleteCustomSource.Add(s.Substring(s.IndexOf(' ') + 1));
 									}
 
+									textBox.GotFocus += (send, evtargs) => { (send as System.Windows.Controls.TextBox).Background = System.Windows.Media.Brushes.LightBlue; };
+									textBox.LostFocus += (send, evtargs) => { (send as System.Windows.Controls.TextBox).Background = System.Windows.Media.Brushes.White; };
 									textBox.KeyDown += (txtbox, evt) =>
 									{
 										//if (evt.KeyCode == Keys.Enter)
@@ -207,19 +206,6 @@ namespace QuickAccess
 							{
 								foreach (string item in commandDetails.commandPredefinedArguments)
 								{
-									//System.Windows.Controls.TextBlock textBlock = new System.Windows.Controls.TextBlock() { Text = item.Substring(item.IndexOf(' ') + 1) };
-									//System.Windows.Controls.Image image = new System.Windows.Controls.Image();
-									//using (MemoryStream iconStream = new MemoryStream())
-									//{
-									//  this.Icon.Save(iconStream);
-									//  iconStream.Seek(0, SeekOrigin.Begin);
-
-									//  image.Source = System.Windows.Media.Imaging.BitmapFrame.Create(iconStream);
-									//}
-									//System.Windows.Controls.StackPanel stackPanel = new System.Windows.Controls.StackPanel() { Orientation = System.Windows.Controls.Orientation.Horizontal };
-									//stackPanel.Children.Add(image);
-									//stackPanel.Children.Add(textBlock);
-
 									System.Windows.Controls.TreeViewItem treeviewItem = new System.Windows.Controls.TreeViewItem()
 									{
 										Header = item.Substring(item.IndexOf(' ') + 1),//stackPanel,
@@ -241,7 +227,6 @@ namespace QuickAccess
 										if (overlayWindow != null)// && !overlayWindow.IsDisposed)
 											overlayWindow.Close();
 										PerformCommandNow(predefinedArg, false, false);
-										//UserMessages.ShowMessage(((send as System.Windows.Controls.TreeViewItem).Tag as InlineCommands.CommandDetails).commandName);
 									};
 									treeviewItem.MouseRightButtonUp += (send, evtargs) =>
 									{
@@ -271,6 +256,13 @@ namespace QuickAccess
 				if (JustCreateDoNotShow) overlayWindow.Close();
 				overlayWindow.SetupAllChildWindows();
 				overlayWindow.AddEventsToAllChildUsercontrols();
+				if (overlayWindow.currentActiveUsercontrol != null)
+				{
+					//overlayWindow.SetFocusToNewUsercontrol(overlayWindow.currentActiveUsercontrol);
+					//overlayWindow.currentActiveUsercontrol.ActivateControl();
+					overlayWindow.currentActiveUsercontrol.currentFocusedElement.Focus();
+				}
+				else overlayWindow.SetFocusToNewUsercontrol(overlayWindow.ListOfCommandUsercontrols[0]);
 			}
 		}
 
