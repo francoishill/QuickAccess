@@ -52,7 +52,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -217,6 +217,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\StartupbatInterop.cs">
       <Link>StartupbatInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\StylingInterop.cs">
+      <Link>StylingInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\SvnInterop.cs">
       <Link>SvnInterop.cs</Link>

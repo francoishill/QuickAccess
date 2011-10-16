@@ -14,9 +14,9 @@ using System.Windows.Shapes;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
 
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
 public partial class OverlayRibbon : Window
 {
 	public event EventHandler MouseClickedRequestToOpenOverlayWindow;
@@ -39,16 +39,27 @@ public partial class OverlayRibbon : Window
 	private void mainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 	{
 		if (QuickAccess.Form1.IsControlDown()) this.DragMove();
-        else CallEvent_MouseClickedRequestToOpenOverlayWindow();
+		else CallEvent_MouseClickedRequestToOpenOverlayWindow();
+	}
+	
+	private void CallEvent_MouseClickedRequestToOpenOverlayWindow()
+	{
+		if (MouseClickedRequestToOpenOverlayWindow != null) MouseClickedRequestToOpenOverlayWindow(this, new EventArgs());
 	}
 
-    private void CallEvent_MouseClickedRequestToOpenOverlayWindow()
-    {
-        if (MouseClickedRequestToOpenOverlayWindow != null) MouseClickedRequestToOpenOverlayWindow(this, new EventArgs());
-    }
+	private void mainWindow_DragEnter(object sender, DragEventArgs e)
+	{
+		CallEvent_MouseClickedRequestToOpenOverlayWindow();
+	}
 
-    private void mainWindow_DragEnter(object sender, DragEventArgs e)
-    {
-        CallEvent_MouseClickedRequestToOpenOverlayWindow();
-    }
+	//TODO: Read up a bit more on MeasureOverride and ArrangeOverride, see following line for website
+	//http://www.dotnetfunda.com/articles/article900-wpf-tutorial--layoutpanelscontainers--layout-transformation-2-.aspx
+	//protected override Size MeasureOverride(Size availableSize)
+	//{
+	//  return base.MeasureOverride(availableSize);
+	//}
+	//protected override Size ArrangeOverride(Size arrangeBounds)
+	//{
+	//  return base.ArrangeOverride(arrangeBounds);
+	//}
 }

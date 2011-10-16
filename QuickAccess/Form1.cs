@@ -128,11 +128,16 @@ namespace QuickAccess
 
 						InlineCommands.CommandDetails commandDetails = InlineCommands.CommandList[key];
 
+						tmpCommandUsercontrol.RemoveAndHideControls();
+
+						if (commandDetails.CommandHasPredefinedArguments()) tmpCommandUsercontrol.ExpandTreeviewInput();
+						else if (commandDetails.CommandHasArguments()) tmpCommandUsercontrol.ExpandCustomInputs();
+
+						bool SetUsercontrolTagAsFirstTextbox = false;//Set the tag of the CommandUserControl as the first textbox to easily set focus to it
 						if (commandDetails.CommandHasArguments() || commandDetails.CommandHasPredefinedArguments())
 						{
 							if (commandDetails.CommandHasArguments())
 							{
-								bool SetUsercontrolTagAsFirstTextbox = false;//Set the tag of the CommandUserControl as the first textbox to easily set focus to it
 								foreach (InlineCommands.CommandDetails.CommandArgumentClass arg in commandDetails.commandArguments)
 								{
 									System.Windows.Controls.TextBox textBox = new System.Windows.Controls.TextBox()
@@ -193,7 +198,7 @@ namespace QuickAccess
 
 									tmpCommandUsercontrol.AddControl(arg.ArgumentName, textBox, arg.Required ? LabelColorOptionalArgument : LabelColorRequiredArgument);
 
-									if (!SetUsercontrolTagAsFirstTextbox)
+									if (!SetUsercontrolTagAsFirstTextbox && !commandDetails.CommandHasPredefinedArguments())
 									{
 										tmpCommandUsercontrol.Tag = new OverlayWindow.OverlayChildManager(true, false, false, textBox);
 										tmpCommandUsercontrol.currentFocusedElement = textBox;
@@ -209,7 +214,8 @@ namespace QuickAccess
 									System.Windows.Controls.TreeViewItem treeviewItem = new System.Windows.Controls.TreeViewItem()
 									{
 										Header = item.Substring(item.IndexOf(' ') + 1),//stackPanel,
-										Tag = new object[] { item, commandDetails }//predefined string, commandDetails
+										Tag = new object[] { item, commandDetails },//predefined string, commandDetails
+										Margin = new System.Windows.Thickness(0,0,20,0)
 									};
 									treeviewItem.KeyDown += (send, evtargs) =>
 									{
@@ -234,10 +240,20 @@ namespace QuickAccess
 										string thisPredefinedArguments = ((send as System.Windows.Controls.TreeViewItem).Tag as object[])[0].ToString();
 										//TODO: Something not working right here (see the MAIL command), does not concat the arguments into one string.
 										//foreach (string s in thisPredefinedArguments.Substring(thisCommandDetails.commandName.Length + 1).Split(InlineCommands.CommandDetails.ArgumentSeparator))
-										//  MessageBox.Show(s);
+										//  MessageBox.Show(s;)
 									};
+									//treeviewItem.PreviewDragEnter += (snder, evtargs) => { evtargs.Handled = true; };
+									//treeviewItem.PreviewDragOver += (snder, evtargs) => { evtargs.Handled = true; };
+									//treeviewItem.PreviewDrop += (snder, evtargs) => { evtargs.Handled = true; };
 
 									tmpCommandUsercontrol.AddTreeviewItem(treeviewItem);
+
+									if (!SetUsercontrolTagAsFirstTextbox)
+									{
+										tmpCommandUsercontrol.Tag = new OverlayWindow.OverlayChildManager(true, false, false, treeviewItem);
+										tmpCommandUsercontrol.currentFocusedElement = treeviewItem;
+										SetUsercontrolTagAsFirstTextbox = true;
+									}
 								}
 							}
 						}
@@ -260,9 +276,16 @@ namespace QuickAccess
 				{
 					//overlayWindow.SetFocusToNewUsercontrol(overlayWindow.currentActiveUsercontrol);
 					//overlayWindow.currentActiveUsercontrol.ActivateControl();
+					//overlayWindow.currentActiveUsercontrol.currentFocusedElement.Focus();
+					overlayWindow.SetFocusToNewUsercontrol(overlayWindow.currentActiveUsercontrol);
 					overlayWindow.currentActiveUsercontrol.currentFocusedElement.Focus();
+					Console.WriteLine("overlayWindow.currentActiveUsercontrol != null");
 				}
-				else overlayWindow.SetFocusToNewUsercontrol(overlayWindow.ListOfCommandUsercontrols[0]);
+				else
+				{
+					overlayWindow.SetFocusToNewUsercontrol(overlayWindow.ListOfCommandUsercontrols[0]);
+					//Console.WriteLine("overlayWindow.currentActiveUsercontrol == null");
+				}
 			}
 		}
 

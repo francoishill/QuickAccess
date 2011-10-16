@@ -8,7 +8,7 @@
     WindowStartupLocation="Manual"
     UseLayoutRounding="True"
     Background="Transparent"
-    Opacity="0.3"
+    Opacity="0.2"
     mc:Ignorable="d"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -29,7 +29,7 @@
         HorizontalAlignment="Stretch"
         Cursor="Hand"
         Height="50"        
-        Width="20">
+        Width="10">
         <Border.Triggers>
             <EventTrigger
                 RoutedEvent='MouseEnter'>
