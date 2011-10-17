@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace QuickAccess
 {
+	//TODO: In C# press Ctrl + K, Ctrl + H to add an item to the Task List (choose Shorcuts from the dropdown options).
 	public partial class Form1 : Form
 	{
 		//private static string ThisAppName = "QuickAccess";
@@ -209,12 +210,12 @@ namespace QuickAccess
 
 							if (commandDetails.CommandHasPredefinedArguments())
 							{
-								foreach (string item in commandDetails.commandPredefinedArguments)
+								foreach (string predefinedCommands in commandDetails.commandPredefinedArguments)
 								{
 									System.Windows.Controls.TreeViewItem treeviewItem = new System.Windows.Controls.TreeViewItem()
 									{
-										Header = item.Substring(item.IndexOf(' ') + 1),//stackPanel,
-										Tag = new object[] { item, commandDetails },//predefined string, commandDetails
+										Header = predefinedCommands.Substring(predefinedCommands.IndexOf(' ') + 1),//stackPanel,
+										Tag = new object[] { predefinedCommands, commandDetails },//predefined string, commandDetails
 										Margin = new System.Windows.Thickness(0,0,20,0)
 									};
 									treeviewItem.KeyDown += (send, evtargs) =>
