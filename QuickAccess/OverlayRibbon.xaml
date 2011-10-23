@@ -20,7 +20,8 @@
     ResizeMode="NoResize"
     MouseLeftButtonDown="mainWindow_MouseLeftButtonDown"
     DragEnter='mainWindow_DragEnter'
-    AllowDrop='True'>
+    AllowDrop='True'
+	Focusable='False'>
     <Border
         Name="mainBorder"
         UseLayoutRounding="True"
