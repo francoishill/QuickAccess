@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Windows.Forms;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace QuickAccess
 {
@@ -24,6 +26,10 @@ namespace QuickAccess
 		//Color LabelColorOptionalArgument = SystemColors.WindowText;
 		System.Windows.Media.Color LabelColorRequiredArgument = System.Windows.Media.Colors.White;
 		System.Windows.Media.Color LabelColorOptionalArgument = System.Windows.Media.Colors.Black;
+
+		Socket listeningSocket;
+		NetworkInterop.TextFeedbackEventHandler textFeedback;
+		NetworkInterop.ProgressChangedEventHandler progressChanged;
 
 		public Form1()
 		{
@@ -86,8 +92,76 @@ namespace QuickAccess
 			};
 			ShowOverlayCommandWindows(true);
 
+			textFeedback += (snder, evtargs) => { Logging.appendLogTextbox_OfPassedTextbox(textBox_Messages, evtargs.FeedbackText); };
+			progressChanged += (snder, evtargs) => { UpdateProgress(evtargs.CurrentValue, evtargs.MaximumValue, evtargs.BytesPerSecond); };
+
 			//TODO: Check out this command SvnInterop.CheckStatusAllVisualStudio2010Projects()
 			//SvnInterop.CheckStatusAllVisualStudio2010Projects();
+		}
+
+		private void Form1_Shown(object sender, EventArgs e)
+		{
+			this.ShowInTaskbar = true;
+			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_CONTROL, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Q");
+			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey2, Win32Api.MOD_CONTROL + Win32Api.MOD_SHIFT, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Shift + Q");
+			label1.Text = InlineCommands.AvailableActionList;
+			SetAutocompleteActionList();
+			//InitializeHooks(false, true);
+			this.Hide();
+			this.Opacity = origOpacity;
+
+			if (Environment.CommandLine.ToLower().Contains(@"documents\visual studio 2010\")) buttonTestCrash.Visible = true;
+
+			ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+			{
+				//TODO: There is some issue with the second time a file is sent (on the server side).
+				NetworkInterop.StartServer_FileStream(
+					out listeningSocket,
+					this,
+					TextFeedbackEvent: textFeedback,
+					ProgressChangedEvent: progressChanged);
+			}, false);
+		}
+
+		private Point MousePositionBeforePopup = new Point(-1, -1);
+		protected override void WndProc(ref Message m)
+		{
+			if (m.Msg == Win32Api.WM_HOTKEY)
+			{
+				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
+					ToggleWindowActivation();
+				if (m.WParam == new IntPtr(Win32Api.Hotkey2))
+					ShowOverlayCommandWindows();
+			}
+			base.WndProc(ref m);
+		}
+
+		private void UpdateProgress(int currentValue, int maximumValue, double bytesPerSecond = -1)
+		{
+			ThreadingInterop.UpdateGuiFromThread(this, delegate
+			{
+				if (this.Visible)
+				{
+					//if (currentValue > maximumValue) return;
+					if (currentValue < 0 || maximumValue < 0) return;
+					if (progressBar1.Maximum != maximumValue) progressBar1.Maximum = maximumValue;
+					if (progressBar1.Value != currentValue) progressBar1.Value = currentValue;
+					//if (bytesPerSecond != -1 && labelBytesPerSecond.Text != Math.Round(bytesPerSecond, 0).ToString()) labelBytesPerSecond.Text = Math.Round(bytesPerSecond, 0).ToString();
+					if (currentValue == 0 && maximumValue == 100)
+						progressBar1.Visible = false;
+					else if (!progressBar1.Visible)
+						progressBar1.Visible = true;
+					if (TaskbarManager.IsPlatformSupported)
+					{
+						TaskbarManager.Instance.SetProgressValue(currentValue, maximumValue);
+						if (currentValue == 0 && maximumValue == 100)
+							TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
+						else
+							TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
+					}
+					Application.DoEvents();
+				}
+			});
 		}
 
 		private bool IsApplicationArestartedInstance()
@@ -291,33 +365,6 @@ namespace QuickAccess
 					//Console.WriteLine("overlayWindow.currentActiveUsercontrol == null");
 				}
 			}
-		}
-
-		private void Form1_Shown(object sender, EventArgs e)
-		{
-			this.ShowInTaskbar = true;
-			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_CONTROL, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Q");
-			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey2, Win32Api.MOD_CONTROL + Win32Api.MOD_SHIFT, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Shift + Q");
-			label1.Text = InlineCommands.AvailableActionList;
-			SetAutocompleteActionList();
-			//InitializeHooks(false, true);
-			this.Hide();
-			this.Opacity = origOpacity;
-
-			if (Environment.CommandLine.ToLower().Contains(@"documents\visual studio 2010\")) buttonTestCrash.Visible = true;
-		}
-
-		private Point MousePositionBeforePopup = new Point(-1, -1);
-		protected override void WndProc(ref Message m)
-		{
-			if (m.Msg == Win32Api.WM_HOTKEY)
-			{
-				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
-					ToggleWindowActivation();
-				if (m.WParam == new IntPtr(Win32Api.Hotkey2))
-					ShowOverlayCommandWindows();
-			}
-			base.WndProc(ref m);
 		}
 
 		private bool IsAltDown()
