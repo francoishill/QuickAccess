@@ -25,7 +25,7 @@ public partial class CommandWindow : Window
 		//TODO: Make these windows appear on different Threads
 		System.Windows.Forms.Application.EnableVisualStyles();
 		System.Windows.Forms.Integration.ElementHost.EnableModelessKeyboardInterop(this);
-		//TODO: Rather use one large window instead of 20 child windows
+		//DONE TODO: Rather use one large window instead of 20 child windows
 
 		this.Title = WindowTitle;
 		labelTitle.Content = WindowTitle.ToUpper();
