@@ -85,6 +85,9 @@ namespace QuickAccess
 				else overlayRibbon.Show();
 			};
 			ShowOverlayCommandWindows(true);
+
+			//TODO: Check out this command SvnInterop.CheckStatusAllVisualStudio2010Projects()
+			//SvnInterop.CheckStatusAllVisualStudio2010Projects();
 		}
 
 		private bool IsApplicationArestartedInstance()
