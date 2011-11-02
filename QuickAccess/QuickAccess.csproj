@@ -11,7 +11,8 @@
     <RootNamespace>QuickAccess</RootNamespace>
     <AssemblyName>QuickAccess</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <PublishUrl>ftp://fjh.dyndns.org/francois/websites/firepuma/ownapplications/quickaccess/</PublishUrl>
@@ -30,7 +31,7 @@
     <SuiteName>Own applications</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>application.html</WebPage>
-    <ApplicationRevision>90</ApplicationRevision>
+    <ApplicationRevision>92</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
@@ -159,6 +160,7 @@
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -189,9 +191,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\InlineCommands.cs">
       <Link>InlineCommands.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\Logging.cs">
-      <Link>Logging.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\MicrosoftOfficeInterop.cs">
       <Link>MicrosoftOfficeInterop.cs</Link>
@@ -285,6 +284,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
