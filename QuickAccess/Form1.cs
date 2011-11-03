@@ -28,8 +28,8 @@ namespace QuickAccess
 		System.Windows.Media.Color LabelColorOptionalArgument = System.Windows.Media.Colors.Black;
 
 		Socket listeningSocket;
-		NetworkInterop.TextFeedbackEventHandler textFeedback;
-		NetworkInterop.ProgressChangedEventHandler progressChanged;
+		TextFeedbackEventHandler textFeedback;
+		ProgressChangedEventHandler progressChanged;
 
 		public Form1()
 		{
@@ -566,7 +566,7 @@ namespace QuickAccess
 				appendLogTextbox("Performing command: " + text);
 				(comboboxCommand.Tag as List<string>).Add(text);
 				Logging.staticNotifyIcon = notifyIcon1;
-				command.PerformCommand(text, this.comboboxCommand, this.textBox_Messages);
+				command.PerformCommand(text, this.comboboxCommand, textFeedback);
 				if (ClearCommandTextboxOnSuccess) comboboxCommand.Text = "";
 				if (HideAfterSuccess) this.Hide();
 			}
