@@ -97,6 +97,8 @@ namespace QuickAccess
 
 			//TODO: Check out this command SvnInterop.CheckStatusAllVisualStudio2010Projects()
 			//SvnInterop.CheckStatusAllVisualStudio2010Projects();
+
+			SharedClassesSettings.EnsureAllSharedClassesSettingsNotNullCreateDefault();
 		}
 
 		private void Form1_Shown(object sender, EventArgs e)
