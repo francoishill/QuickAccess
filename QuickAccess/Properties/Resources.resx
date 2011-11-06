@@ -121,7 +121,7 @@
   <data name="DotNetChecker" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DotNetChecker.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="VisualStudioInteropPublishHtmlPage.html" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="VisualStudioInteropPublishHtmlPage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\VisualStudioInterop (publish page).html;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

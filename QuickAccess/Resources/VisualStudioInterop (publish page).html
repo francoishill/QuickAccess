@@ -1,0 +1,52 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <title></title>
+    <style>
+        body
+        {
+            font-size: 24px;
+        }
+
+        .headingvaluepair
+        {
+            text-align: center;
+        }
+
+        .heading
+        {
+            color: blue;
+        }
+
+        .value
+        {
+            color: gray;
+        }
+
+        .downloadlink
+        {
+            color: orange;
+        }
+    </style>
+</head>
+<body>
+    <div class='headingvaluepair'>
+        <label class='heading'>
+            Project:
+        </label>
+        <label class='value'>
+            {ProjectName}</label>
+    </div>
+    <div class='headingvaluepair'>
+        <label class='heading'>
+            Version:
+        </label>
+        <label class='value'>
+            {ProjectVersion}</label>
+    </div>
+    <br />
+    <div class='headingvaluepair'>
+        <a href='{SetupFilename}' class='downloadlink'>Download</a>
+    </div>
+</body>
+</html>
