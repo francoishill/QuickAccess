@@ -10,7 +10,6 @@
 
         .headingvaluepair
         {
-            text-align: center;
         }
 
         .heading
@@ -21,6 +20,12 @@
         .value
         {
             color: gray;
+        }
+
+        .description
+        {
+            font-size: 12px;
+            text-indent: 24px;
         }
 
         .downloadlink
@@ -44,6 +49,10 @@
         <label class='value'>
             {ProjectVersion}</label>
     </div>
+    <br />
+    <p class='description'>
+        {Description}
+    </p>
     <br />
     <div class='headingvaluepair'>
         <a href='{SetupFilename}' class='downloadlink'>Download</a>
