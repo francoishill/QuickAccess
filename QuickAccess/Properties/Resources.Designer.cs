@@ -66,5 +66,12 @@ namespace QuickAccess.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        public static byte[] VisualStudioInteropPublishHtmlPage_html {
+            get {
+                object obj = ResourceManager.GetObject("VisualStudioInteropPublishHtmlPage.html", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

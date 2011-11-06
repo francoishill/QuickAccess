@@ -312,6 +312,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.ico" />
+    <EmbeddedResource Include="Resources\VisualStudioInterop %28publish page%29.html" />
     <EmbeddedResource Include="Resources\DotNetChecker.dll" />
   </ItemGroup>
   <ItemGroup>

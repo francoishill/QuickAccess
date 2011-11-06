@@ -76,7 +76,7 @@
 			this.textBox_Messages.Multiline = true;
 			this.textBox_Messages.Name = "textBox_Messages";
 			this.textBox_Messages.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.textBox_Messages.Size = new System.Drawing.Size(458, 96);
+			this.textBox_Messages.Size = new System.Drawing.Size(652, 69);
 			this.textBox_Messages.TabIndex = 1;
 			this.textBox_Messages.WordWrap = false;
 			this.textBox_Messages.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
@@ -87,7 +87,7 @@
 			this.label2.AutoSize = true;
 			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label2.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-			this.label2.Location = new System.Drawing.Point(359, 185);
+			this.label2.Location = new System.Drawing.Point(553, 158);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(132, 13);
 			this.label2.TabIndex = 3;
@@ -138,9 +138,9 @@
             "Edit2",
             "Edit3",
             "Francois"});
-			this.comboboxCommand.Location = new System.Drawing.Point(12, 156);
+			this.comboboxCommand.Location = new System.Drawing.Point(12, 129);
 			this.comboboxCommand.Name = "comboboxCommand";
-			this.comboboxCommand.Size = new System.Drawing.Size(314, 32);
+			this.comboboxCommand.Size = new System.Drawing.Size(508, 32);
 			this.comboboxCommand.TabIndex = 4;
 			this.comboboxCommand.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
 			this.comboboxCommand.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
@@ -150,7 +150,7 @@
 			// 
 			this.buttonTestCrash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonTestCrash.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.buttonTestCrash.Location = new System.Drawing.Point(395, 10);
+			this.buttonTestCrash.Location = new System.Drawing.Point(589, 10);
 			this.buttonTestCrash.Name = "buttonTestCrash";
 			this.buttonTestCrash.Size = new System.Drawing.Size(75, 23);
 			this.buttonTestCrash.TabIndex = 5;
@@ -165,7 +165,7 @@
 			this.labelRecoveryAndRestartSafe.AutoSize = true;
 			this.labelRecoveryAndRestartSafe.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelRecoveryAndRestartSafe.ForeColor = System.Drawing.Color.Green;
-			this.labelRecoveryAndRestartSafe.Location = new System.Drawing.Point(359, 171);
+			this.labelRecoveryAndRestartSafe.Location = new System.Drawing.Point(553, 144);
 			this.labelRecoveryAndRestartSafe.Name = "labelRecoveryAndRestartSafe";
 			this.labelRecoveryAndRestartSafe.Size = new System.Drawing.Size(133, 13);
 			this.labelRecoveryAndRestartSafe.TabIndex = 6;
@@ -175,7 +175,7 @@
 			// progressBar1
 			// 
 			this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.progressBar1.Location = new System.Drawing.Point(362, 153);
+			this.progressBar1.Location = new System.Drawing.Point(556, 126);
 			this.progressBar1.Name = "progressBar1";
 			this.progressBar1.Size = new System.Drawing.Size(118, 15);
 			this.progressBar1.TabIndex = 7;
@@ -186,7 +186,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(51)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(492, 200);
+			this.ClientSize = new System.Drawing.Size(686, 173);
 			this.ControlBox = false;
 			this.Controls.Add(this.progressBar1);
 			this.Controls.Add(this.labelRecoveryAndRestartSafe);
