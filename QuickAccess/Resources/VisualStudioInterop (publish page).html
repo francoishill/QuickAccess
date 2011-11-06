@@ -3,8 +3,16 @@
 <head>
     <title></title>
     <style>
+        html, body
+        {
+            height: 100%;
+        }
+
         body
         {
+            background-color: #111;
+            /*background-image: -webkit-gradient(linear, 0% 100%, 0% 0%, from(#111), to(#333));
+		    background-image: -moz-linear-gradient(bottom, #111, 50%, #333);*/
             font-size: 24px;
         }
 
@@ -14,23 +22,41 @@
 
         .heading
         {
-            color: blue;
+            color: #777;
         }
 
         .value
         {
-            color: gray;
+            color: #ddd;
         }
 
         .description
         {
-            font-size: 12px;
-            text-indent: 24px;
+            font-size: 20px;
+            text-indent: 120px;
+        }
+
+        .bugsfixedlist
+        {
+            color: #f00;
+        }
+
+        .improvementslist
+        {
+            color: #0af;
+            
+        }
+
+        .newfeatureslist
+        {
+            color: #3f0;
+            
         }
 
         .downloadlink
         {
-            color: orange;
+            font-size: 36px;
+            color: #f51;
         }
     </style>
 </head>
@@ -50,9 +76,17 @@
             {ProjectVersion}</label>
     </div>
     <br />
-    <p class='description'>
-        {Description}
-    </p>
+    <div class='description'>
+        <ol class='bugsfixedlist'>
+            {BugsFixedList}
+        </ol>
+        <ol class='improvementslist'>
+            {ImprovementList}
+        </ol>
+        <ol class='newfeatureslist'>
+            {NewFeaturesList}
+        </ol>
+    </div>
     <br />
     <div class='headingvaluepair'>
         <a href='{SetupFilename}' class='downloadlink'>Download</a>
