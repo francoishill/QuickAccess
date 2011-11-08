@@ -123,6 +123,8 @@ namespace QuickAccess
 					TextFeedbackEvent: textFeedback,
 					ProgressChangedEvent: progressChanged);
 			}, false);
+
+			XmlRpcInterop.SampleServer();
 		}
 
 		private Point MousePositionBeforePopup = new Point(-1, -1);
@@ -568,7 +570,7 @@ namespace QuickAccess
 				appendLogTextbox("Performing command: " + text);
 				(comboboxCommand.Tag as List<string>).Add(text);
 				Logging.staticNotifyIcon = notifyIcon1;
-				command.PerformCommand(text, this.comboboxCommand, textFeedback);
+				command.PerformCommand(text, this.comboboxCommand, textFeedback, progressChanged);
 				if (ClearCommandTextboxOnSuccess) comboboxCommand.Text = "";
 				if (HideAfterSuccess) this.Hide();
 			}
