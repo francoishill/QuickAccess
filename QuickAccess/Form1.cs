@@ -189,7 +189,6 @@ namespace QuickAccess
 			//if (overlayWindow == null) overlayWindow = new OverlayWindow();
 			if (overlayWindow.Visibility != System.Windows.Visibility.Visible)
 			{
-				//foreach (string s in s.s)
 				int tmpcounter = 0;
 				foreach (string key in InlineCommands.CommandList.Keys)
 				{
