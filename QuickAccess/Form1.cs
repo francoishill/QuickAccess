@@ -151,14 +151,14 @@ namespace QuickAccess
 					if (progressBar1.Maximum != maximumValue) progressBar1.Maximum = maximumValue;
 					if (progressBar1.Value != currentValue) progressBar1.Value = currentValue;
 					//if (bytesPerSecond != -1 && labelBytesPerSecond.Text != Math.Round(bytesPerSecond, 0).ToString()) labelBytesPerSecond.Text = Math.Round(bytesPerSecond, 0).ToString();
-					if (currentValue == 0 && maximumValue == 100)
+					if ((currentValue == 0 || currentValue == 100) && maximumValue == 100)
 						progressBar1.Visible = false;
 					else if (!progressBar1.Visible)
 						progressBar1.Visible = true;
 					if (TaskbarManager.IsPlatformSupported)
 					{
 						TaskbarManager.Instance.SetProgressValue(currentValue, maximumValue);
-						if (currentValue == 0 && maximumValue == 100)
+						if ((currentValue == 0 || currentValue == 100) && maximumValue == 100)
 							TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
 						else
 							TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
