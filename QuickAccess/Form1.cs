@@ -124,7 +124,8 @@ namespace QuickAccess
 					ProgressChangedEvent: progressChanged);
 			}, false);
 
-			XmlRpcInterop.SampleServer();
+			//XmlRpcInterop.SampleServer();
+			XmlRpcInterop.StartDynamicCodeInvokingServer_XmlRpc();
 		}
 
 		private Point MousePositionBeforePopup = new Point(-1, -1);
