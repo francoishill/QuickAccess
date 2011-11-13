@@ -99,6 +99,8 @@ namespace QuickAccess
 			//SvnInterop.CheckStatusAllVisualStudio2010Projects();
 
 			SharedClassesSettings.EnsureAllSharedClassesSettingsNotNullCreateDefault();
+
+			UserMessages.iconForMessages = this.Icon;
 		}
 
 		private void Form1_Shown(object sender, EventArgs e)
