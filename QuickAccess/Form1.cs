@@ -8,6 +8,8 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Taskbar;
+using InlineCommands;
+using System.Windows.Forms.Integration;
 
 namespace QuickAccess
 {
@@ -62,7 +64,7 @@ namespace QuickAccess
 
 			//textBoxCommand.Tag = new List<string>();
 			comboboxCommand.Tag = new List<string>();
-			InlineCommands.PopulateCommandList();
+			InlineCommands.InlineCommands.PopulateCommandList();
 
 			origOpacity = this.Opacity;
 			this.Opacity = 0;
@@ -108,7 +110,7 @@ namespace QuickAccess
 			this.ShowInTaskbar = true;
 			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_CONTROL, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Q");
 			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey2, Win32Api.MOD_CONTROL + Win32Api.MOD_SHIFT, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Shift + Q");
-			label1.Text = InlineCommands.AvailableActionList;
+			label1.Text = InlineCommands.InlineCommands.AvailableActionList;
 			SetAutocompleteActionList();
 			//InitializeHooks(false, true);
 			this.Hide();
@@ -193,24 +195,24 @@ namespace QuickAccess
 			if (overlayWindow.Visibility != System.Windows.Visibility.Visible)
 			{
 				int tmpcounter = 0;
-				foreach (string key in InlineCommands.CommandList.Keys)
+				foreach (string key in InlineCommands.InlineCommands.CommandList.Keys)
 				{
 					tmpcounter++;
-					if (InlineCommands.CommandList[key].commandUsercontrol != null)//.commandForm != null)
+					if (InlineCommands.InlineCommands.CommandList[key].commandUsercontrol != null)//.commandForm != null)
 					{
-						if (!overlayWindow.ListOfCommandUsercontrols.Contains(InlineCommands.CommandList[key].commandUsercontrol))
-							overlayWindow.ListOfCommandUsercontrols.Add(InlineCommands.CommandList[key].commandUsercontrol);
+						if (!overlayWindow.ListOfCommandUsercontrols.Contains(InlineCommands.InlineCommands.CommandList[key].commandUsercontrol))
+							overlayWindow.ListOfCommandUsercontrols.Add(InlineCommands.InlineCommands.CommandList[key].commandUsercontrol);
 					}
 					else
 					{
 						CommandUserControl tmpCommandUsercontrol = new CommandUserControl(key);
 						tmpCommandUsercontrol.labelShortcutKeyNumber.Content = (tmpcounter).ToString();
 
-						InlineCommands.CommandList[key].commandUsercontrol = tmpCommandUsercontrol;
+						InlineCommands.InlineCommands.CommandList[key].commandUsercontrol = tmpCommandUsercontrol;
 						if (!overlayWindow.ListOfCommandUsercontrols.Contains(tmpCommandUsercontrol))
 							overlayWindow.ListOfCommandUsercontrols.Add(tmpCommandUsercontrol);
 
-						InlineCommands.CommandDetails commandDetails = InlineCommands.CommandList[key];
+						InlineCommands.InlineCommands.CommandDetails commandDetails = InlineCommands.InlineCommands.CommandList[key];
 
 						tmpCommandUsercontrol.RemoveAndHideControls();
 
@@ -222,7 +224,7 @@ namespace QuickAccess
 						{
 							if (commandDetails.CommandHasArguments())
 							{
-								foreach (InlineCommands.CommandDetails.CommandArgumentClass arg in commandDetails.commandArguments)
+								foreach (InlineCommands.InlineCommands.CommandDetails.CommandArgumentClass arg in commandDetails.commandArguments)
 								{
 									System.Windows.Controls.TextBox textBox = new System.Windows.Controls.TextBox()
 									{
@@ -254,8 +256,8 @@ namespace QuickAccess
 										if (evt.Key == System.Windows.Input.Key.Enter)
 										{
 											bool EmptyRequiredArguments = false;
-											InlineCommands.CommandDetails thisCommandDetails = (txtbox as System.Windows.Controls.TextBox).Tag as InlineCommands.CommandDetails;
-											foreach (InlineCommands.CommandDetails.CommandArgumentClass argument in (thisCommandDetails).commandArguments)
+											InlineCommands.InlineCommands.CommandDetails thisCommandDetails = (txtbox as System.Windows.Controls.TextBox).Tag as InlineCommands.InlineCommands.CommandDetails;
+											foreach (InlineCommands.InlineCommands.CommandDetails.CommandArgumentClass argument in (thisCommandDetails).commandArguments)
 											{
 												if (argument.Required && argument.textBox.Text.Trim().Length == 0)
 												{
@@ -267,7 +269,7 @@ namespace QuickAccess
 											if (!EmptyRequiredArguments)
 											{
 												string concatString = "";
-												foreach (InlineCommands.CommandDetails.CommandArgumentClass argument in thisCommandDetails.commandArguments)
+												foreach (InlineCommands.InlineCommands.CommandDetails.CommandArgumentClass argument in thisCommandDetails.commandArguments)
 													concatString += (concatString.Length > 0 ? ";" : "") + argument.textBox.Text;
 												//UserMessages.ShowInfoMessage(commandDetails.commandName + " " + concatString);
 												overlayWindow.Close();
@@ -320,10 +322,10 @@ namespace QuickAccess
 									};
 									treeviewItem.MouseRightButtonUp += (send, evtargs) =>
 									{
-										InlineCommands.CommandDetails thisCommandDetails = ((send as System.Windows.Controls.TreeViewItem).Tag as object[])[1] as InlineCommands.CommandDetails;
+										InlineCommands.InlineCommands.CommandDetails thisCommandDetails = ((send as System.Windows.Controls.TreeViewItem).Tag as object[])[1] as InlineCommands.InlineCommands.CommandDetails;
 										string thisPredefinedArguments = ((send as System.Windows.Controls.TreeViewItem).Tag as object[])[0].ToString();
 										//TODO: Something not working right here (see the MAIL command), does not concat the arguments into one string.
-										//foreach (string s in thisPredefinedArguments.Substring(thisCommandDetails.commandName.Length + 1).Split(InlineCommands.CommandDetails.ArgumentSeparator))
+										//foreach (string s in thisPredefinedArguments.Substring(thisCommandDetails.commandName.Length + 1).Split(InlineCommands.InlineCommands.CommandDetails.ArgumentSeparator))
 										//  MessageBox.Show(s;)
 									};
 									//treeviewItem.PreviewDragEnter += (snder, evtargs) => { evtargs.Handled = true; };
@@ -475,26 +477,29 @@ namespace QuickAccess
 				this.Location = new Point(this.Location.X, Screen.GetWorkingArea(this.Location).Bottom - this.Height);
 		}
 
+		private InlineCommandsWindowWPF inlineCommandsWindowWPF = new InlineCommandsWindowWPF();
 		private void ToggleWindowActivation()
 		{
 			if (Win32Api.GetForegroundWindow() != this.Handle)
 			{
-				WindowsInterop.ShowAndActivateForm(this);
+				//WindowsInterop.ShowAndActivateForm(this);
+				ElementHost.EnableModelessKeyboardInterop(inlineCommandsWindowWPF);
+				WindowsInterop.ShowAndActivateWindow(inlineCommandsWindowWPF);
 			}
 			else this.Hide();
 		}
 
 		void SetAutocompleteActionList()
 		{
-			if (comboboxCommand.AutoCompleteCustomSource != InlineCommands.AutoCompleteAllactionList)
+			if (comboboxCommand.AutoCompleteCustomSource != InlineCommands.InlineCommands.AutoCompleteAllactionList)
 			{
-				comboboxCommand.AutoCompleteCustomSource = InlineCommands.AutoCompleteAllactionList;
+				comboboxCommand.AutoCompleteCustomSource = InlineCommands.InlineCommands.AutoCompleteAllactionList;
 			}
 		}
 
 		void SetAutoCompleteForAction(string action)
 		{
-			InlineCommands.CommandDetails commDetails = InlineCommands.CommandList[action];
+			InlineCommands.InlineCommands.CommandDetails commDetails = InlineCommands.InlineCommands.CommandList[action];
 			if (comboboxCommand.AutoCompleteCustomSource != commDetails.commandPredefinedArguments && action.Length > 2)
 			{
 				comboboxCommand.AutoCompleteCustomSource = commDetails.commandPredefinedArguments;
@@ -548,7 +553,7 @@ namespace QuickAccess
 		{
 			//TODO: Need to add comma separated values to textbox also working with autocomplete for each i.e. svnupdate MonitorSystem,QuickAccess,SharedClasses
 			string errorMsg;
-			InlineCommands.CommandDetails command = InlineCommands.GetCommandDetailsFromTextboxText(text);
+			InlineCommands.InlineCommands.CommandDetails command = InlineCommands.InlineCommands.GetCommandDetailsFromTextboxText(text);
 			if (command == null)
 			{
 				appendLogTextbox("Command not recognized: " + text);
@@ -644,35 +649,35 @@ namespace QuickAccess
 			string tmpkey = null;
 			if (comboboxCommand.Text.ToLower().IndexOf(' ') != -1)
 				tmpkey = comboboxCommand.Text.ToLower().Substring(0, comboboxCommand.Text.ToLower().IndexOf(' '));
-			if (tmpkey != null && InlineCommands.CommandList != null && InlineCommands.CommandList.ContainsKey(tmpkey))
+			if (tmpkey != null && InlineCommands.InlineCommands.CommandList != null && InlineCommands.InlineCommands.CommandList.ContainsKey(tmpkey))
 			{
-				label1.Text = InlineCommands.CommandList[tmpkey].UserLabel;
+				label1.Text = InlineCommands.InlineCommands.CommandList[tmpkey].UserLabel;
 
 				string textboxArgsString =  comboboxCommand.Text.Length >= comboboxCommand.Text.IndexOf(' ') + 2 ? comboboxCommand.Text.Substring(comboboxCommand.Text.IndexOf(' ') + 1) : "";
 
-				string[] textBoxArgsSplitted = textboxArgsString.Split(InlineCommands.CommandDetails.ArgumentSeparator);
+				string[] textBoxArgsSplitted = textboxArgsString.Split(InlineCommands.InlineCommands.CommandDetails.ArgumentSeparator);
 				string lastetextboxArg = textBoxArgsSplitted.Length > 0 ? textBoxArgsSplitted[textBoxArgsSplitted.Length - 1] : "";
 				if (textboxArgsString.EndsWith(@"\") && lastetextboxArg.Contains(@":\"))
 				{
 					if (Directory.Exists(lastetextboxArg))
 					{
 						//appendLogTextbox("Dir");
-						InlineCommands.CommandDetails commDetails = InlineCommands.CommandList[tmpkey];
+						InlineCommands.InlineCommands.CommandDetails commDetails = InlineCommands.InlineCommands.CommandList[tmpkey];
 						if (commDetails.commandArguments != null && commDetails.commandArguments.Count > textBoxArgsSplitted.Length - 1)
-							if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Both
-								|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Directories
-								|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Files)
+							if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.InlineCommands.CommandDetails.PathAutocompleteEnum.Both
+								|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.InlineCommands.CommandDetails.PathAutocompleteEnum.Directories
+								|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.InlineCommands.CommandDetails.PathAutocompleteEnum.Files)
 							{
 								string textboxText = comboboxCommand.Text;
 								string argswithoutlast = textboxArgsString.Substring(0, textboxArgsString.Length - lastetextboxArg.Length);
-								if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Directories
-									|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Both)
+								if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.InlineCommands.CommandDetails.PathAutocompleteEnum.Directories
+									|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.InlineCommands.CommandDetails.PathAutocompleteEnum.Both)
 									foreach (string dir in Directory.GetDirectories(lastetextboxArg))
 										if (!comboboxCommand.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + dir))
 											comboboxCommand.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + dir);
 
-								if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Files
-									|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.CommandDetails.PathAutocompleteEnum.Both)
+								if (commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.InlineCommands.CommandDetails.PathAutocompleteEnum.Files
+									|| commDetails.commandArguments[textBoxArgsSplitted.Length - 1].PathAutocomplete == InlineCommands.InlineCommands.CommandDetails.PathAutocompleteEnum.Both)
 									foreach (string file in Directory.GetFiles(lastetextboxArg))
 										if (!comboboxCommand.AutoCompleteCustomSource.Contains(tmpkey + " " + argswithoutlast + file))
 											comboboxCommand.AutoCompleteCustomSource.Add(tmpkey + " " + argswithoutlast + file);
@@ -720,7 +725,7 @@ namespace QuickAccess
 			}
 			else
 			{
-				label1.Text = InlineCommands.AvailableActionList;
+				label1.Text = InlineCommands.InlineCommands.AvailableActionList;
 				if (comboboxCommand.Text.Length == 0) SetAutocompleteActionList();
 			}
 		}
@@ -777,10 +782,10 @@ namespace QuickAccess
 			//ToolStripDropDownDirection defaultDropDirection = ToolStripDropDownDirection.Right;//Left;
 			//menuItem_Commands.MenuItems.Clear();//.DropDownItems.Clear();
 			//contextMenu_TrayIcon.DropDownDirection = defaultDropDirection;
-			if (menuItem_Commands.MenuItems.Count == 0 && InlineCommands.CommandList != null)
-				foreach (string key in InlineCommands.CommandList.Keys)
+			if (menuItem_Commands.MenuItems.Count == 0 && InlineCommands.InlineCommands.CommandList != null)
+				foreach (string key in InlineCommands.InlineCommands.CommandList.Keys)
 				{
-					InlineCommands.CommandDetails commandDetails = InlineCommands.CommandList[key];
+					InlineCommands.InlineCommands.CommandDetails commandDetails = InlineCommands.InlineCommands.CommandList[key];
 
 					MenuItem commanditem = new MenuItem(key) { Tag = commandDetails };
 
@@ -799,7 +804,7 @@ namespace QuickAccess
 						//commanditem.MenuItems.Add(customArguments);//.DropDownItems.Add(customArguments);
 
 						if (commandDetails.CommandHasPredefinedArguments())
-							foreach (string predefinedArguments in InlineCommands.CommandList[key].commandPredefinedArguments)
+							foreach (string predefinedArguments in InlineCommands.InlineCommands.CommandList[key].commandPredefinedArguments)
 							{
 								MenuItem subcommanditem = new MenuItem(predefinedArguments.Substring(key.Length + 1)) { Tag = predefinedArguments };
 								//subcommanditem.AutoSize = true;

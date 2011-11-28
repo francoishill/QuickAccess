@@ -171,6 +171,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Controls.Input.Toolkit">
+      <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\System.Windows.Controls.Input.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -184,6 +187,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WPFToolkit">
+      <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\WPFToolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\SharedClasses\CommandUsercontrol.xaml.cs">
@@ -254,6 +260,12 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\WPFinterop.cs">
       <Link>WPFinterop.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\francois\Documents\Visual Studio 2010\Projects\SharedClasses\InlineCommandsUserControlWPF.xaml.cs">
+      <Link>InlineCommandsUserControlWPF.xaml.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\francois\Documents\Visual Studio 2010\Projects\SharedClasses\InlineCommandsWindowWPF.xaml.cs">
+      <Link>InlineCommandsWindowWPF.xaml.cs</Link>
     </Compile>
     <Compile Include="CommandArgumentsWindow.xaml.cs">
       <DependentUpon>CommandArgumentsWindow.xaml</DependentUpon>
@@ -373,6 +385,14 @@
       <Link>OverlayWindow.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="C:\Users\francois\Documents\Visual Studio 2010\Projects\SharedClasses\InlineCommandsUserControlWPF.xaml">
+      <Link>InlineCommandsUserControlWPF.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="C:\Users\francois\Documents\Visual Studio 2010\Projects\SharedClasses\InlineCommandsWindowWPF.xaml">
+      <Link>InlineCommandsWindowWPF.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CommandArgumentsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
