@@ -16,6 +16,8 @@ namespace QuickAccess
 	//TODO: In C# press Ctrl + K, Ctrl + H to add an item to the Task List (choose Shorcuts from the dropdown options).
 	public partial class Form1 : Form
 	{
+		private InlineCommandsWindowWPF inlineCommandsWindowWPF;
+
 		//private static string ThisAppName = "QuickAccess";
 		private double origOpacity;
 		private bool ScrollTextHistoryOnUpDownKeys = false;
@@ -103,6 +105,9 @@ namespace QuickAccess
 			SharedClassesSettings.EnsureAllSharedClassesSettingsNotNullCreateDefault();
 
 			UserMessages.iconForMessages = this.Icon;
+
+			inlineCommandsWindowWPF = new InlineCommandsWindowWPF();
+			inlineCommandsWindowWPF.Closed += delegate { this.Close(); };
 		}
 
 		private void Form1_Shown(object sender, EventArgs e)
@@ -477,7 +482,6 @@ namespace QuickAccess
 				this.Location = new Point(this.Location.X, Screen.GetWorkingArea(this.Location).Bottom - this.Height);
 		}
 
-		private InlineCommandsWindowWPF inlineCommandsWindowWPF = new InlineCommandsWindowWPF();
 		private void ToggleWindowActivation()
 		{
 			if (Win32Api.GetForegroundWindow() != this.Handle)
