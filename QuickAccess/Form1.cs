@@ -778,7 +778,8 @@ namespace QuickAccess
 		private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
-				WindowsInterop.ShowAndActivateForm(this);
+				WindowsInterop.ShowAndActivateWindow(inlineCommandsWindowWPF);
+				//WindowsInterop.ShowAndActivateForm(this);
 		}
 
 		private void PopulateCommandsMenuItem()
