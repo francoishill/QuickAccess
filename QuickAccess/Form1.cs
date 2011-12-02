@@ -487,7 +487,7 @@ namespace QuickAccess
 			if (Win32Api.GetForegroundWindow() != this.Handle)
 			{
 				//WindowsInterop.ShowAndActivateForm(this);
-				ElementHost.EnableModelessKeyboardInterop(inlineCommandsWindowWPF);
+				//ElementHost.EnableModelessKeyboardInterop(inlineCommandsWindowWPF);
 				WindowsInterop.ShowAndActivateWindow(inlineCommandsWindowWPF);
 			}
 			else this.Hide();
