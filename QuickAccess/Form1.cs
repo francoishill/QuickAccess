@@ -17,6 +17,7 @@ namespace QuickAccess
 	public partial class Form1 : Form
 	{
 		private InlineCommandsWindowWPF inlineCommandsWindowWPF;
+		//private tmpCommandsWindow tmpCommandsWindow1;
 
 		//private static string ThisAppName = "QuickAccess";
 		private double origOpacity;
@@ -108,6 +109,8 @@ namespace QuickAccess
 
 			inlineCommandsWindowWPF = new InlineCommandsWindowWPF();
 			inlineCommandsWindowWPF.Closed += delegate { this.Close(); };
+			//tmpCommandsWindow1 = new tmpCommandsWindow();
+			//tmpCommandsWindow1.Closed += delegate { this.Close(); };
 		}
 
 		private void Form1_Shown(object sender, EventArgs e)
@@ -484,13 +487,17 @@ namespace QuickAccess
 
 		private void ToggleWindowActivation()
 		{
-			if (Win32Api.GetForegroundWindow() != this.Handle)
-			{
-				//WindowsInterop.ShowAndActivateForm(this);
-				//ElementHost.EnableModelessKeyboardInterop(inlineCommandsWindowWPF);
+			//if (Win32Api.GetForegroundWindow() != this.Handle)
+			//	WindowsInterop.ShowAndActivateForm(this);
+			//else this.Hide();
+			if (Win32Api.GetForegroundWindow() != (new System.Windows.Interop.WindowInteropHelper(inlineCommandsWindowWPF)).Handle)
 				WindowsInterop.ShowAndActivateWindow(inlineCommandsWindowWPF);
-			}
-			else this.Hide();
+			else
+				inlineCommandsWindowWPF.Hide();
+			//if (Win32Api.GetForegroundWindow() != (new System.Windows.Interop.WindowInteropHelper(tmpCommandsWindow1)).Handle)
+			//	WindowsInterop.ShowAndActivateWindow(tmpCommandsWindow1);
+			//else
+			//	tmpCommandsWindow1.Hide();
 		}
 
 		void SetAutocompleteActionList()
@@ -779,6 +786,7 @@ namespace QuickAccess
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
 				WindowsInterop.ShowAndActivateWindow(inlineCommandsWindowWPF);
+				//WindowsInterop.ShowAndActivateWindow(tmpCommandsWindow1);
 				//WindowsInterop.ShowAndActivateForm(this);
 		}
 
