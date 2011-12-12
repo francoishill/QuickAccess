@@ -193,7 +193,11 @@ namespace QuickAccess
 			overlayRibbon.Top = workingArea.Top + (workingArea.Height - overlayRibbon.ActualHeight) / 2 + 100;
 			overlayRibbon.Left = 0;
 			//MessageBox.Show(overlayRibbon.Left + ", " + overlayRibbon.Top);
-			overlayRibbon.MouseClickedRequestToOpenOverlayWindow += delegate { ShowOverlayCommandWindows(); };
+			overlayRibbon.MouseClickedRequestToOpenOverlayWindow += delegate
+			{
+				//ShowOverlayCommandWindows();
+				ShowAndActivateMainWindow();
+			};
 			overlayRibbon.Show();
 		}
 
@@ -485,15 +489,25 @@ namespace QuickAccess
 				this.Location = new Point(this.Location.X, Screen.GetWorkingArea(this.Location).Bottom - this.Height);
 		}
 
+		System.Windows.Window MainWindow
+		{
+			get
+			{
+				return
+					inlineCommandsWindowWPF;
+					//tmpCommandsWindow1;
+					//this;
+			}
+		}
 		private void ToggleWindowActivation()
 		{
 			//if (Win32Api.GetForegroundWindow() != this.Handle)
 			//	WindowsInterop.ShowAndActivateForm(this);
 			//else this.Hide();
-			if (Win32Api.GetForegroundWindow() != (new System.Windows.Interop.WindowInteropHelper(inlineCommandsWindowWPF)).Handle)
-				WindowsInterop.ShowAndActivateWindow(inlineCommandsWindowWPF);
+			if (Win32Api.GetForegroundWindow() != (new System.Windows.Interop.WindowInteropHelper(MainWindow)).Handle)
+				ShowAndActivateMainWindow();
 			else
-				inlineCommandsWindowWPF.Hide();
+				MainWindow.Hide();
 			//if (Win32Api.GetForegroundWindow() != (new System.Windows.Interop.WindowInteropHelper(tmpCommandsWindow1)).Handle)
 			//	WindowsInterop.ShowAndActivateWindow(tmpCommandsWindow1);
 			//else
@@ -782,12 +796,14 @@ namespace QuickAccess
 			if (e.Button == System.Windows.Forms.MouseButtons.Right) this.Hide();
 		}
 
+		private void ShowAndActivateMainWindow()
+		{
+			WindowsInterop.ShowAndActivateWindow(MainWindow);
+		}
 		private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
-				WindowsInterop.ShowAndActivateWindow(inlineCommandsWindowWPF);
-				//WindowsInterop.ShowAndActivateWindow(tmpCommandsWindow1);
-				//WindowsInterop.ShowAndActivateForm(this);
+				ShowAndActivateMainWindow();
 		}
 
 		private void PopulateCommandsMenuItem()
@@ -846,7 +862,8 @@ namespace QuickAccess
 
 		private void notifyIcon1_BalloonTipClicked(object sender, EventArgs e)
 		{
-			WindowsInterop.ShowAndActivateForm(this);
+			//WindowsInterop.ShowAndActivateForm(this);
+			ShowAndActivateMainWindow();
 		}
 
 		private void menuItem_Exit_Click(object sender, EventArgs e)
