@@ -25,7 +25,7 @@ namespace QuickAccess
 
 		//MouseHooks.MouseHook mouseHook;
 		//OverlayForm overlayForm = new OverlayForm();
-		OverlayWindow overlayWindow = new OverlayWindow();
+		//OverlayWindow overlayWindow = new OverlayWindow();
 
 		//Color LabelColorRequiredArgument = Color.Green;
 		//Color LabelColorOptionalArgument = SystemColors.WindowText;
@@ -67,7 +67,7 @@ namespace QuickAccess
 
 			//textBoxCommand.Tag = new List<string>();
 			comboboxCommand.Tag = new List<string>();
-			InlineCommands.InlineCommands.PopulateCommandList();
+			//InlineCommands.InlineCommands.PopulateCommandList();
 
 			origOpacity = this.Opacity;
 			this.Opacity = 0;
@@ -90,12 +90,12 @@ namespace QuickAccess
 			//  notifyIcon1.ShowBalloonTip(3000, "Mousehook", "Mousehook not started due to debugging mode", ToolTipIcon.Info);
 			ShowOverlayRibbon();
 
-			overlayWindow.IsVisibleChanged += delegate
-			{
-				if (overlayWindow.IsVisible) overlayRibbon.Hide();
-				else overlayRibbon.Show();
-			};
-			ShowOverlayCommandWindows(true);
+			//overlayWindow.IsVisibleChanged += delegate
+			//{
+			//	if (overlayWindow.IsVisible) overlayRibbon.Hide();
+			//	else overlayRibbon.Show();
+			//};
+			//ShowOverlayCommandWindows(true);
 
 			textFeedback += (snder, evtargs) => { Logging.appendLogTextbox_OfPassedTextbox(textBox_Messages, evtargs.FeedbackText); };
 			progressChanged += (snder, evtargs) => { UpdateProgress(evtargs.CurrentValue, evtargs.MaximumValue, evtargs.BytesPerSecond); };
@@ -117,9 +117,9 @@ namespace QuickAccess
 		{
 			this.ShowInTaskbar = true;
 			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_CONTROL, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Q");
-			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey2, Win32Api.MOD_CONTROL + Win32Api.MOD_SHIFT, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Shift + Q");
-			label1.Text = InlineCommands.InlineCommands.AvailableActionList;
-			SetAutocompleteActionList();
+			//if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey2, Win32Api.MOD_CONTROL + Win32Api.MOD_SHIFT, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Shift + Q");
+			//label1.Text = InlineCommands.InlineCommands.AvailableActionList;
+			//SetAutocompleteActionList();
 			//InitializeHooks(false, true);
 			this.Hide();
 			this.Opacity = origOpacity;
@@ -147,8 +147,8 @@ namespace QuickAccess
 			{
 				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
 					ToggleWindowActivation();
-				if (m.WParam == new IntPtr(Win32Api.Hotkey2))
-					ShowOverlayCommandWindows();
+				//if (m.WParam == new IntPtr(Win32Api.Hotkey2))
+				//	ShowOverlayCommandWindows();
 			}
 			base.WndProc(ref m);
 		}
@@ -201,7 +201,7 @@ namespace QuickAccess
 			overlayRibbon.Show();
 		}
 
-		private void ShowOverlayCommandWindows(bool JustCreateDoNotShow = false)
+		/*private void ShowOverlayCommandWindows(bool JustCreateDoNotShow = false)
 		{
 			//if (overlayWindow == null) overlayWindow = new OverlayWindow();
 			if (overlayWindow.Visibility != System.Windows.Visibility.Visible)
@@ -385,7 +385,7 @@ namespace QuickAccess
 					//Console.WriteLine("overlayWindow.currentActiveUsercontrol == null");
 				}
 			}
-		}
+		}*/
 
 		private bool IsAltDown()
 		{
@@ -514,22 +514,22 @@ namespace QuickAccess
 			//	tmpCommandsWindow1.Hide();
 		}
 
-		void SetAutocompleteActionList()
-		{
-			if (comboboxCommand.AutoCompleteCustomSource != InlineCommands.InlineCommands.AutoCompleteAllactionList)
-			{
-				comboboxCommand.AutoCompleteCustomSource = InlineCommands.InlineCommands.AutoCompleteAllactionList;
-			}
-		}
+		//void SetAutocompleteActionList()
+		//{
+		//	if (comboboxCommand.AutoCompleteCustomSource != InlineCommands.InlineCommands.AutoCompleteAllactionList)
+		//	{
+		//		comboboxCommand.AutoCompleteCustomSource = InlineCommands.InlineCommands.AutoCompleteAllactionList;
+		//	}
+		//}
 
-		void SetAutoCompleteForAction(string action)
-		{
-			InlineCommands.InlineCommands.CommandDetails commDetails = InlineCommands.InlineCommands.CommandList[action];
-			if (comboboxCommand.AutoCompleteCustomSource != commDetails.commandPredefinedArguments && action.Length > 2)
-			{
-				comboboxCommand.AutoCompleteCustomSource = commDetails.commandPredefinedArguments;
-			}
-		}
+		//void SetAutoCompleteForAction(string action)
+		//{
+		//	InlineCommands.InlineCommands.CommandDetails commDetails = InlineCommands.InlineCommands.CommandList[action];
+		//	if (comboboxCommand.AutoCompleteCustomSource != commDetails.commandPredefinedArguments && action.Length > 2)
+		//	{
+		//		comboboxCommand.AutoCompleteCustomSource = commDetails.commandPredefinedArguments;
+		//	}
+		//}
 
 		private int ScrollLinesCtrlUpDown = 1;
 		private void textBox1_KeyDown(object sender, KeyEventArgs e)
@@ -577,7 +577,7 @@ namespace QuickAccess
 		private void PerformCommandNow(string text, bool ClearCommandTextboxOnSuccess = true, bool HideAfterSuccess = false)
 		{
 			//TODO: Need to add comma separated values to textbox also working with autocomplete for each i.e. svnupdate MonitorSystem,QuickAccess,SharedClasses
-			string errorMsg;
+			/*string errorMsg;
 			InlineCommands.InlineCommands.CommandDetails command = InlineCommands.InlineCommands.GetCommandDetailsFromTextboxText(text);
 			if (command == null)
 			{
@@ -605,7 +605,7 @@ namespace QuickAccess
 				command.PerformCommand(text, this.comboboxCommand, textFeedback, progressChanged);
 				if (ClearCommandTextboxOnSuccess) comboboxCommand.Text = "";
 				if (HideAfterSuccess) this.Hide();
-			}
+			}*/
 		}
 
 		UserActivityHook actHook;
@@ -671,7 +671,7 @@ namespace QuickAccess
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
 			//TODO: Should check out the debugging tools for Windows, Run the "Global Flags" and in the "Kernel Flags" tab enable items "Enable heap tail checking", "Enable heap free checking", "Enable page heap"
-			string tmpkey = null;
+			/*string tmpkey = null;
 			if (comboboxCommand.Text.ToLower().IndexOf(' ') != -1)
 				tmpkey = comboboxCommand.Text.ToLower().Substring(0, comboboxCommand.Text.ToLower().IndexOf(' '));
 			if (tmpkey != null && InlineCommands.InlineCommands.CommandList != null && InlineCommands.InlineCommands.CommandList.ContainsKey(tmpkey))
@@ -752,7 +752,7 @@ namespace QuickAccess
 			{
 				label1.Text = InlineCommands.InlineCommands.AvailableActionList;
 				if (comboboxCommand.Text.Length == 0) SetAutocompleteActionList();
-			}
+			}*/
 		}
 
 		/*public void ClearTextboxAutocomplete()
@@ -781,8 +781,8 @@ namespace QuickAccess
 		{
 			ApplicationRecoveryAndRestart.UnregisterApplicationRecoveryAndRestart();
 			Win32Api.UnregisterHotKey(this.Handle, Win32Api.Hotkey1);
-			overlayWindow.PreventClosing = false;
-			overlayWindow.Close();
+			//overlayWindow.PreventClosing = false;
+			//overlayWindow.Close();
 		}
 
 		private void Form1_VisibleChanged(object sender, EventArgs e)
@@ -811,7 +811,7 @@ namespace QuickAccess
 			//ToolStripDropDownDirection defaultDropDirection = ToolStripDropDownDirection.Right;//Left;
 			//menuItem_Commands.MenuItems.Clear();//.DropDownItems.Clear();
 			//contextMenu_TrayIcon.DropDownDirection = defaultDropDirection;
-			if (menuItem_Commands.MenuItems.Count == 0 && InlineCommands.InlineCommands.CommandList != null)
+			/*if (menuItem_Commands.MenuItems.Count == 0 && InlineCommands.InlineCommands.CommandList != null)
 				foreach (string key in InlineCommands.InlineCommands.CommandList.Keys)
 				{
 					InlineCommands.InlineCommands.CommandDetails commandDetails = InlineCommands.InlineCommands.CommandList[key];
@@ -842,10 +842,10 @@ namespace QuickAccess
 								{
 									PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
 								};
-								/*subcommanditem.DropDownOpened += delegate
-								{
-									PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
-								};*/
+								//subcommanditem.DropDownOpened += delegate
+								//{
+								//	PerformCommandNow(subcommanditem.Tag.ToString(), false, true);
+								//};
 								commanditem.MenuItems.Add(subcommanditem);//.DropDownItems.Add(subcommanditem);
 							}
 					}
@@ -857,7 +857,7 @@ namespace QuickAccess
 						};
 					}
 					menuItem_Commands.MenuItems.Add(commanditem);//.DropDownItems.Add(commanditem);
-				}
+				}*/
 		}
 
 		private void notifyIcon1_BalloonTipClicked(object sender, EventArgs e)

@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using InlineCommands;
-using ICommandWithHandler = InlineCommands.TempNewCommandsManagerClass.ICommandWithHandler;
+using ICommandWithHandler = InlineCommands.CommandsManagerClass.ICommandWithHandler;
 
 namespace QuickAccess
 {
@@ -43,7 +43,7 @@ namespace QuickAccess
 			//ActiveCommand.DataContext = TempNewCommandsManagerClass.ListOfInitializedCommandInterfaces[0];
 			//customAutocompleteTextbox1.DataContext = TempNewCommandsManagerClass.ListOfInitializedCommandInterfaces[0];
 			//customAutocompleteTextbox1.UpdateLayout();
-			customAutocompleteTextbox1.ItemsSource = TempNewCommandsManagerClass.ListOfInitializedCommandInterfaces;
+			customAutocompleteTextbox1.ItemsSource = CommandsManagerClass.ListOfInitializedCommandInterfaces;
 			//SetActiveCommand(new TempNewCommandsManagerClass.RunCommand());//TempNewCommandsManagerClass.ListOfInitializedCommandInterfaces[12]);
 		}
 
@@ -75,7 +75,7 @@ namespace QuickAccess
 		{
 			if (e.Key == Key.Tab && ActiveCommand == null)
 			{
-				foreach (ICommandWithHandler tmpcomm in TempNewCommandsManagerClass.ListOfInitializedCommandInterfaces)
+				foreach (ICommandWithHandler tmpcomm in CommandsManagerClass.ListOfInitializedCommandInterfaces)
 					if (tmpcomm.CommandName.ToLower() == customAutocompleteTextbox1.Text.ToLower() || tmpcomm.DisplayName.ToLower() == customAutocompleteTextbox1.Text.ToLower())
 					{
 						ActiveCommand = tmpcomm;
