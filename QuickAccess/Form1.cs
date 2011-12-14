@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using InlineCommands;
 using System.Windows.Forms.Integration;
+using System.Threading;
+using UnhandledExceptions;
 
 namespace QuickAccess
 {
@@ -111,6 +113,19 @@ namespace QuickAccess
 			inlineCommandsWindowWPF.Closed += delegate { this.Close(); };
 			//tmpCommandsWindow1 = new tmpCommandsWindow();
 			//tmpCommandsWindow1.Closed += delegate { this.Close(); };
+
+			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+			//int a = 1;
+			//double i = 1 / (1 - a);
+		}
+
+		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			if (!(e.ExceptionObject is Exception)) return;
+			//UserMessages.ShowErrorMessage("An error unhandled by the application has occurred, application shutting down: " + exc.Message + Environment.NewLine + exc.StackTrace);
+			//UnhandledExceptionsWindow uew = new UnhandledExceptionsWindow(e.ExceptionObject as Exception);
+			UnhandledExceptionsWindow.ShowUnHandledException(e.ExceptionObject as Exception);
+			this.Close();
 		}
 
 		private void Form1_Shown(object sender, EventArgs e)
