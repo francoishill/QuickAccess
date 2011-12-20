@@ -105,7 +105,13 @@ namespace QuickAccess
 			//TODO: Check out this command SvnInterop.CheckStatusAllVisualStudio2010Projects()
 			//SvnInterop.CheckStatusAllVisualStudio2010Projects();
 
-			SharedClassesSettings.EnsureAllSharedClassesSettingsNotNullCreateDefault();
+			//SharedClassesSettings.EnsureAllSharedClassesSettingsNotNullCreateDefault();
+
+			//VisualStudioInteropSettings.UriProtocol? up = VisualStudioInteropSettings.Instance.UriProtocolForVsPublishing;
+			//string s = VisualStudioInteropSettings.Instance.BaseUri;
+			VisualStudioInteropSettings.Instance.BaseUri = "sdfsd";
+			//VisualStudioInteropSettings.Instance.OnPropertySet
+			//VisualStudioInteropSettings.UriProtocol? up = VisualStudioInteropSettings.Instance.UriProtocolForVsPublishing;
 
 			UserMessages.iconForMessages = this.Icon;
 
