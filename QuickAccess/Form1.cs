@@ -114,6 +114,9 @@ namespace QuickAccess
 			//tmpCommandsWindow1 = new tmpCommandsWindow();
 			//tmpCommandsWindow1.Closed += delegate { this.Close(); };
 
+			//TODO: Check uit AppDomain.MonitoringIsEnabled
+			//MessageBox.Show(AppDomain.MonitoringIsEnabled.ToString());
+
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 			//int a = 1;
 			//double i = 1 / (1 - a);
