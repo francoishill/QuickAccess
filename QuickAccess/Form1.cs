@@ -12,6 +12,7 @@ using InlineCommands;
 using System.Windows.Forms.Integration;
 using System.Threading;
 using UnhandledExceptions;
+using PropertyInterceptor;
 
 namespace QuickAccess
 {
@@ -118,21 +119,6 @@ namespace QuickAccess
 			//string f = VisualStudioInteropSettings.Instance.FtpUsername;
 			//VisualStudioInteropSettings.UriProtocol? up = VisualStudioInteropSettings.Instance.UriProtocolForVsPublishing;
 
-			foreach (Type type in typeof(GlobalSettings).GetNestedTypes(BindingFlags.Public))
-				if (!type.IsAbstract && type.BaseType == typeof(GenericSettings))
-				{
-					PropertyInfo[] staticProperties = type.GetProperties(BindingFlags.Static | BindingFlags.Public);
-					foreach (PropertyInfo spi in staticProperties)
-						if (type == spi.PropertyType)
-						{
-							//MessageBox.Show("Static = " + spi.Name + ", of type = " + spi.PropertyType.Name);
-							PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
-							foreach (PropertyInfo pi in properties)
-								pi.GetValue(spi.GetValue(null));
-								//MessageBox.Show(pi.Name + " = " + pi.GetValue(spi.GetValue(null)).ToString());
-						}
-				}
-
 			//MessageBox.Show("FtpPassword = " + GlobalSettings.VisualStudioInteropSettings.Instance.FtpPassword);
 
 			UserMessages.iconForMessages = this.Icon;
@@ -148,6 +134,29 @@ namespace QuickAccess
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 			//int a = 1;
 			//double i = 1 / (1 - a);
+
+			//StaticPropertyInterceptor.RunMethodAndBypassUserPromptForGetMethods(
+			//	delegate
+			//	{
+			foreach (Type type in typeof(GlobalSettings).GetNestedTypes(BindingFlags.Public))
+				if (!type.IsAbstract && type.BaseType == typeof(GenericSettings))
+				{
+					PropertyInfo[] staticProperties = type.GetProperties(BindingFlags.Static | BindingFlags.Public);
+					foreach (PropertyInfo spi in staticProperties)
+						if (type == spi.PropertyType)
+						{
+							//MessageBox.Show("Static = " + spi.Name + ", of type = " + spi.PropertyType.Name);
+							PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
+							foreach (PropertyInfo pi in properties)
+								pi.GetValue(spi.GetValue(null));
+							//MessageBox.Show(pi.Name + " = " + pi.GetValue(spi.GetValue(null)).ToString());
+						}
+				}
+			//});
+
+			//string s = InputBoxWPF.Prompt("Hallo");
+			//string p = InputBoxWPF.Prompt("Please enter password", IsPassword: true);
+			//MessageBox.Show("Password was = " + p);
 		}
 
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
