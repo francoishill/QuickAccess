@@ -109,9 +109,31 @@ namespace QuickAccess
 
 			//VisualStudioInteropSettings.UriProtocol? up = VisualStudioInteropSettings.Instance.UriProtocolForVsPublishing;
 			//string s = VisualStudioInteropSettings.Instance.BaseUri;
-			VisualStudioInteropSettings.Instance.BaseUri = "sdfsd";
+			//VisualStudioInteropSettings.Instance.BaseUri = "sdfsd";
+			//int? i = NetworkInteropSettings.Instance.ServerSocket_ReceiveBufferSize;
+			//bool? b = NetworkInteropSettings.Instance.ServerSocket_NoDelay;
 			//VisualStudioInteropSettings.Instance.OnPropertySet
+			//string p = VisualStudioInteropSettings.Instance.FtpPassword;
+			//p = VisualStudioInteropSettings.Instance.FtpPassword;
+			//string f = VisualStudioInteropSettings.Instance.FtpUsername;
 			//VisualStudioInteropSettings.UriProtocol? up = VisualStudioInteropSettings.Instance.UriProtocolForVsPublishing;
+
+			foreach (Type type in typeof(GlobalSettings).GetNestedTypes(BindingFlags.Public))
+				if (!type.IsAbstract && type.BaseType == typeof(GenericSettings))
+				{
+					PropertyInfo[] staticProperties = type.GetProperties(BindingFlags.Static | BindingFlags.Public);
+					foreach (PropertyInfo spi in staticProperties)
+						if (type == spi.PropertyType)
+						{
+							//MessageBox.Show("Static = " + spi.Name + ", of type = " + spi.PropertyType.Name);
+							PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
+							foreach (PropertyInfo pi in properties)
+								pi.GetValue(spi.GetValue(null));
+								//MessageBox.Show(pi.Name + " = " + pi.GetValue(spi.GetValue(null)).ToString());
+						}
+				}
+
+			//MessageBox.Show("FtpPassword = " + GlobalSettings.VisualStudioInteropSettings.Instance.FtpPassword);
 
 			UserMessages.iconForMessages = this.Icon;
 
@@ -519,8 +541,8 @@ namespace QuickAccess
 			{
 				return
 					inlineCommandsWindowWPF;
-					//tmpCommandsWindow1;
-					//this;
+				//tmpCommandsWindow1;
+				//this;
 			}
 		}
 		private void ToggleWindowActivation()
