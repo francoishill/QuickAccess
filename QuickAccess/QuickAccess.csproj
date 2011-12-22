@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -202,6 +202,9 @@
       <Link>CustomBalloonTip.designer.cs</Link>
       <DependentUpon>CustomBalloonTip.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\..\SharedClasses\DynamicDLLsInterop.cs">
+      <Link>DynamicDLLsInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\InlineCommands.cs">
       <Link>InlineCommands.cs</Link>
     </Compile>
@@ -259,9 +262,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
       <Link>WindowsInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\WPFdraggableCanvas.cs">
-      <Link>WPFdraggableCanvas.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\WPFinterop.cs">
       <Link>WPFinterop.cs</Link>

@@ -13,6 +13,7 @@ using System.Windows.Forms.Integration;
 using System.Threading;
 using UnhandledExceptions;
 using PropertyInterceptor;
+using DynamicDLLsInterop;
 
 namespace QuickAccess
 {
@@ -41,7 +42,14 @@ namespace QuickAccess
 
 		public Form1()
 		{
+			////DynamicDLLs.InvokeDllMethodGetReturnObject(@"D:\Francois\Dev\VSprojects\TestDynamicDllLoadingInQuickAccess\TestDynamicDllLoadingInQuickAccess\bin\Debug\TestDynamicDllLoadingInQuickAccess.dll", "TestClass", "ShowMessage", null);
+			//object obj = DynamicDLLs.InvokeDllMethodGetReturnObject(@"D:\Francois\Dev\VSprojects\TestDynamicDllLoadingInQuickAccess\TestDynamicDllLoadingInQuickAccess\bin\Debug\TestDynamicDllLoadingInQuickAccess.dll", "TestClass", "ShowMessage", null);
+			//if (obj == null) UserMessages.ShowWarningMessage("NULL object returned from dynamic dll");
+			//else UserMessages.ShowInfoMessage("Object returned from dynamic dll is of type = " + obj.GetType().ToString() + Environment.NewLine +
+			//	(obj is Color ? "Color = " + ((Color)obj).ToKnownColor().ToString() : ""));
+
 			InitializeComponent();
+
 			if (IsApplicationArestartedInstance())
 			{
 				//MessageBox.Show("Application successfully restarted from crash. No functionality incorporated yet.", "Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -138,20 +146,8 @@ namespace QuickAccess
 			//StaticPropertyInterceptor.RunMethodAndBypassUserPromptForGetMethods(
 			//	delegate
 			//	{
-			foreach (Type type in typeof(GlobalSettings).GetNestedTypes(BindingFlags.Public))
-				if (!type.IsAbstract && type.BaseType == typeof(GenericSettings))
-				{
-					PropertyInfo[] staticProperties = type.GetProperties(BindingFlags.Static | BindingFlags.Public);
-					foreach (PropertyInfo spi in staticProperties)
-						if (type == spi.PropertyType)
-						{
-							//MessageBox.Show("Static = " + spi.Name + ", of type = " + spi.PropertyType.Name);
-							PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
-							foreach (PropertyInfo pi in properties)
-								pi.GetValue(spi.GetValue(null));
-							//MessageBox.Show(pi.Name + " = " + pi.GetValue(spi.GetValue(null)).ToString());
-						}
-				}
+			//EnsureAllSettingsAreNotNull();
+			GenericSettings.EnsureAllSettingsAreInitialized();
 			//});
 
 			//string s = InputBoxWPF.Prompt("Hallo");
