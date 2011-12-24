@@ -14,6 +14,7 @@ using System.Threading;
 using UnhandledExceptions;
 using PropertyInterceptor;
 using DynamicDLLsInterop;
+using InterfaceForQuickAccessPlugin;
 
 namespace QuickAccess
 {
@@ -153,6 +154,12 @@ namespace QuickAccess
 			//string s = InputBoxWPF.Prompt("Hallo");
 			//string p = InputBoxWPF.Prompt("Please enter password", IsPassword: true);
 			//MessageBox.Show("Password was = " + p);
+
+			DynamicDLLsInterop.DynamicDLLs.LoadPluginsInDirectory(@"C:\Francois\Dev\VSprojects\QuickAccessPlugins\ShowMessagePlugin\bin\Debug");
+			DynamicDLLsInterop.DynamicDLLs.LoadPluginsInDirectory(@"D:\Francois\Dev\VSprojects\QuickAccessPlugins\ShowNotificationPlugin\bin\Debug");
+
+			foreach (IQuickAccessPluginInterface plugin in DynamicDLLsInterop.DynamicDLLs.PluginList)
+				plugin.Rundefault();
 		}
 
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

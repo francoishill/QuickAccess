@@ -432,6 +432,10 @@
       <Project>{7b476aa3-570a-48fd-80ec-53395e170080}</Project>
       <Name>NetworkInteropSerializedClasses</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\francois\Documents\Visual Studio 2010\Projects\QuickAccessPlugins\InterfaceForQuickAccessPlugin\InterfaceForQuickAccessPlugin.csproj">
+      <Project>{41c40712-1592-4f20-8e14-05f2d3e9a85a}</Project>
+      <Name>InterfaceForQuickAccessPlugin</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!--<Import Project="Customized.targets" />
