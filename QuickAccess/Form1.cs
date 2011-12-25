@@ -15,6 +15,8 @@ using UnhandledExceptions;
 using PropertyInterceptor;
 using DynamicDLLsInterop;
 using InterfaceForQuickAccessPlugin;
+using ICommandWithHandler = InlineCommandToolkit.InlineCommands.ICommandWithHandler;//InlineCommands.CommandsManagerClass.ICommandWithHandler;
+using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
 
 namespace QuickAccess
 {
@@ -141,6 +143,7 @@ namespace QuickAccess
 			//MessageBox.Show(AppDomain.MonitoringIsEnabled.ToString());
 
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+			
 			//int a = 1;
 			//double i = 1 / (1 - a);
 
@@ -148,18 +151,31 @@ namespace QuickAccess
 			//	delegate
 			//	{
 			//EnsureAllSettingsAreNotNull();
+			
 			GenericSettings.EnsureAllSettingsAreInitialized();
+			
 			//});
 
 			//string s = InputBoxWPF.Prompt("Hallo");
 			//string p = InputBoxWPF.Prompt("Please enter password", IsPassword: true);
 			//MessageBox.Show("Password was = " + p);
 
-			DynamicDLLsInterop.DynamicDLLs.LoadPluginsInDirectory(@"C:\Francois\Dev\VSprojects\QuickAccessPlugins\ShowMessagePlugin\bin\Debug");
-			DynamicDLLsInterop.DynamicDLLs.LoadPluginsInDirectory(@"D:\Francois\Dev\VSprojects\QuickAccessPlugins\ShowNotificationPlugin\bin\Debug");
+			//DynamicDLLsInterop.DynamicDLLs.LoadPluginsInDirectory(@"D:\Francois\Dev\VSprojects\QuickAccessPlugins\ShowMessagePlugin\bin\Debug");
+			//DynamicDLLsInterop.DynamicDLLs.LoadPluginsInDirectory(@"D:\Francois\Dev\VSprojects\QuickAccessPlugins\ShowNotificationPlugin\bin\Debug");
+			//DynamicDLLsInterop.DynamicDLLs.LoadPluginsInDirectory(@"D:\Francois\Dev\VSprojects\QuickAccessPlugins\RunCommandPlugin\bin\Debug");
+			//DynamicDLLsInterop.DynamicDLLs.LoadPluginsInDirectory(@"D:\Francois\Dev\VSprojects\QuickAccessPlugins\GoogleSearchCommandPlugin\bin\Debug");
+			//DynamicDLLsInterop.DynamicDLLs.LoadPluginsInDirectory(@"D:\Francois\Dev\VSprojects\QuickAccessPlugins\bin\Debug", 5000);
 
-			foreach (IQuickAccessPluginInterface plugin in DynamicDLLsInterop.DynamicDLLs.PluginList)
-				plugin.Rundefault();
+			//foreach (IQuickAccessPluginInterface qai in DynamicDLLs.PluginList)
+			//	if (qai.GetType().GetInterface(typeof(ICommandWithHandler).Name) != null)
+			//	{
+			//		OverrideToStringClass comm = (OverrideToStringClass)qai.GetType().GetConstructor(new Type[0]).Invoke(new object[0]);
+			//		MessageBox.Show(comm.DisplayName);
+			//	}
+					//MessageBox.Show((qai as ICommandWithHandler).CommandName);
+
+			//foreach (IQuickAccessPluginInterface plugin in DynamicDLLsInterop.DynamicDLLs.PluginList)
+			//	plugin.Rundefault();
 		}
 
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

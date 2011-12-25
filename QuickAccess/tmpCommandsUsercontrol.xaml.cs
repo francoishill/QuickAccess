@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using InlineCommands;
-using ICommandWithHandler = InlineCommands.CommandsManagerClass.ICommandWithHandler;
+using ICommandWithHandler = InlineCommandToolkit.InlineCommands.ICommandWithHandler;//InlineCommands.CommandsManagerClass.ICommandWithHandler;
 
 namespace QuickAccess
 {
