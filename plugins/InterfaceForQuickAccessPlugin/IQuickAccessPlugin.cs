@@ -8,6 +8,6 @@ namespace InterfaceForQuickAccessPlugin
 {
 	public interface IQuickAccessPluginInterface
 	{
-		void Rundefault();
+		//void Rundefault();
 	}
 }

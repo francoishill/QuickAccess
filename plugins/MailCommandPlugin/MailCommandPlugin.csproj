@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E44E8270-E564-4BFD-9E68-8E92D66A1538}</ProjectGuid>
+    <ProjectGuid>{AAB46ACA-FDC5-4CFA-B53A-FD6CC07CC1F2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ShowMessagePlugin</RootNamespace>
-    <AssemblyName>ShowMessagePlugin</AssemblyName>
+    <RootNamespace>MailCommandPlugin</RootNamespace>
+    <AssemblyName>MailCommandPlugin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,14 +39,53 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ShowMessageClass.cs" />
+    <Compile Include="..\..\SharedClasses\MicrosoftOfficeInterop.cs">
+      <Link>MicrosoftOfficeInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\ThreadingInterop.cs">
+      <Link>ThreadingInterop.cs</Link>
+    </Compile>
+    <Compile Include="MailCommandPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\InlineCommandToolkit\InlineCommandToolkit.csproj">
+      <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
+      <Name>InlineCommandToolkit</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InterfaceForQuickAccessPlugin\InterfaceForQuickAccessPlugin.csproj">
       <Project>{41c40712-1592-4f20-8e14-05f2d3e9a85a}</Project>
       <Name>InterfaceForQuickAccessPlugin</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>5</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Outlook">
+      <Guid>{00062FFF-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>9</VersionMajor>
+      <VersionMinor>4</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

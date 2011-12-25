@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{41C40712-1592-4F20-8E14-05F2D3E9A85A}</ProjectGuid>
+    <ProjectGuid>{DF0B35E0-F88F-4782-A1BF-D7C3B85C0FB3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InterfaceForQuickAccessPlugin</RootNamespace>
-    <AssemblyName>InterfaceForQuickAccessPlugin</AssemblyName>
+    <RootNamespace>RunCommandPlugin</RootNamespace>
+    <AssemblyName>RunCommand</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -15,12 +15,10 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug\</OutputPath>
+    <OutputPath>D:\Francois\Dev\VSprojects\QuickAccessPlugins\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,8 +38,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IQuickAccessPlugin.cs" />
+    <Compile Include="RunCommandPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\francois\dev\vsprojects\QuickAccessPlugins\InlineCommandToolkit\InlineCommandToolkit.csproj">
+      <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
+      <Name>InlineCommandToolkit</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\francois\dev\vsprojects\QuickAccessPlugins\InterfaceForQuickAccessPlugin\InterfaceForQuickAccessPlugin.csproj">
+      <Project>{41c40712-1592-4f20-8e14-05f2d3e9a85a}</Project>
+      <Name>InterfaceForQuickAccessPlugin</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

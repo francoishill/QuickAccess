@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{41C40712-1592-4F20-8E14-05F2D3E9A85A}</ProjectGuid>
+    <ProjectGuid>{0587D984-CB12-4F56-AA1F-C9F613346548}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InterfaceForQuickAccessPlugin</RootNamespace>
-    <AssemblyName>InterfaceForQuickAccessPlugin</AssemblyName>
+    <RootNamespace>CmdCommandPlugin</RootNamespace>
+    <AssemblyName>CmdCommandPlugin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -19,8 +19,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,17 +29,36 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IQuickAccessPlugin.cs" />
+    <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
+      <Link>WindowsInterop.cs</Link>
+    </Compile>
+    <Compile Include="CmdCommandPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InlineCommandToolkit\InlineCommandToolkit.csproj">
+      <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
+      <Name>InlineCommandToolkit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InterfaceForQuickAccessPlugin\InterfaceForQuickAccessPlugin.csproj">
+      <Project>{41c40712-1592-4f20-8e14-05f2d3e9a85a}</Project>
+      <Name>InterfaceForQuickAccessPlugin</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
