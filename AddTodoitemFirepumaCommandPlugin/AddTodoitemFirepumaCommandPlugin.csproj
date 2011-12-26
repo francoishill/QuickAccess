@@ -15,7 +15,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\QuickAccess\QuickAccess\bin\Debug\Plugins\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -23,7 +23,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\QuickAccess\QuickAccess\bin\Release\Plugins\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -53,7 +53,7 @@
       <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
       <Name>InlineCommandToolkit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\InterfaceForQuickAccessPlugin\InterfaceForQuickAccessPlugin.csproj">
+    <ProjectReference Include="..\InterfaceForQuickAccessPlugins\InterfaceForQuickAccessPlugins.csproj">
       <Project>{41c40712-1592-4f20-8e14-05f2d3e9a85a}</Project>
       <Name>InterfaceForQuickAccessPlugin</Name>
     </ProjectReference>
