@@ -12,6 +12,7 @@ namespace GoogleSearchCommandPlugin
 {
 	public class GoogleSearchCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
+		//TODO: Think about populating the autocompletebox with dynamic (obtained from web) google suggestions
 		public override string CommandName { get { return "google"; } }
 		public override string DisplayName { get { return "Google Search"; } }
 		public override string Description { get { return "Google search a word/phrase"; } }
