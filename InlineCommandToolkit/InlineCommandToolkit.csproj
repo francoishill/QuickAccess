@@ -75,9 +75,13 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Controls.Input.Toolkit">
+      <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\System.Windows.Controls.Input.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -86,10 +90,30 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="WPFToolkit">
+      <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\WPFToolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\SharedClasses\DynamicDLLsInterop.cs">
+      <Link>DynamicDLLsInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\EventHandlers.cs">
       <Link>EventHandlers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\FileSystemInterop.cs">
+      <Link>FileSystemInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\InlineCommands.cs">
+      <Link>InlineCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\InlineCommandsUserControlWPF.xaml.cs">
+      <Link>InlineCommandsUserControlWPF.xaml.cs</Link>
+      <DependentUpon>InlineCommandsUserControlWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\InlineCommandsWindowWPF.xaml.cs">
+      <Link>InlineCommandsWindowWPF.xaml.cs</Link>
+      <DependentUpon>InlineCommandsWindowWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\InputBoxWPF.xaml.cs">
       <Link>InputBoxWPF.xaml.cs</Link>
@@ -103,16 +127,36 @@
       <Link>PickItemForm.designer.cs</Link>
       <DependentUpon>PickItemForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\..\SharedClasses\PropertyInterceptor.cs">
+      <Link>PropertyInterceptor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\SettingsInterop.cs">
+      <Link>SettingsInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\SharedClassesSettings.cs">
+      <Link>SharedClassesSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\ThreadingInterop.cs">
+      <Link>ThreadingInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\UserMessages.cs">
       <Link>UserMessages.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\WPFdraggableCanvas.cs">
       <Link>WPFdraggableCanvas.cs</Link>
     </Compile>
-    <Compile Include="InlineCommands.cs" />
+    <Compile Include="IQuickAccessPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="..\..\SharedClasses\InlineCommandsUserControlWPF.xaml">
+      <Link>InlineCommandsUserControlWPF.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\..\SharedClasses\InlineCommandsWindowWPF.xaml">
+      <Link>InlineCommandsWindowWPF.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="..\..\SharedClasses\InputBoxWPF.xaml">
       <Link>InputBoxWPF.xaml</Link>
       <Generator>MSBuild:Compile</Generator>

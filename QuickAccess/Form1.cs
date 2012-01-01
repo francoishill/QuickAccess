@@ -143,7 +143,7 @@ namespace QuickAccess
 			//MessageBox.Show(AppDomain.MonitoringIsEnabled.ToString());
 
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-			
+
 			//int a = 1;
 			//double i = 1 / (1 - a);
 
@@ -176,6 +176,7 @@ namespace QuickAccess
 
 			//foreach (IQuickAccessPluginInterface plugin in DynamicDLLsInterop.DynamicDLLs.PluginList)
 			//	plugin.Rundefault();
+			//SharedClasses.DebugInterop.Assert(1 != 1, "1==1");
 		}
 
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

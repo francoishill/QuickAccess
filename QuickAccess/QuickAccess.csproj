@@ -202,15 +202,8 @@
       <Link>CustomBalloonTip.designer.cs</Link>
       <DependentUpon>CustomBalloonTip.cs</DependentUpon>
     </Compile>
-    <Compile Include="..\..\SharedClasses\DynamicDLLsInterop.cs">
-      <Link>DynamicDLLsInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\InlineCommands.cs">
-      <Link>InlineCommands.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\InlineCommandsWindowWPF.xaml.cs">
-      <Link>InlineCommandsWindowWPF.xaml.cs</Link>
-      <DependentUpon>InlineCommandsWindowWPF.xaml</DependentUpon>
+    <Compile Include="..\..\SharedClasses\DebugInterop.cs">
+      <Link>DebugInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\MicrosoftOfficeInterop.cs">
       <Link>MicrosoftOfficeInterop.cs</Link>
@@ -265,10 +258,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\WPFinterop.cs">
       <Link>WPFinterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\InlineCommandsUserControlWPF.xaml.cs">
-      <Link>InlineCommandsUserControlWPF.xaml.cs</Link>
-      <DependentUpon>InlineCommandsUserControlWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="CommandArgumentsWindow.xaml.cs">
       <DependentUpon>CommandArgumentsWindow.xaml</DependentUpon>
@@ -390,16 +379,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="..\..\SharedClasses\InlineCommandsWindowWPF.xaml">
-      <Link>InlineCommandsWindowWPF.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\..\SharedClasses\InlineCommandsUserControlWPF.xaml">
-      <Link>InlineCommandsUserControlWPF.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="..\..\SharedClasses\UnhandledExceptionsWindow.xaml">
       <Link>UnhandledExceptionsWindow.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -435,10 +414,6 @@
     <ProjectReference Include="..\InlineCommandToolkit\InlineCommandToolkit.csproj">
       <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
       <Name>InlineCommandToolkit</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\InterfaceForQuickAccessPlugins\InterfaceForQuickAccessPlugins.csproj">
-      <Project>{41c40712-1592-4f20-8e14-05f2d3e9a85a}</Project>
-      <Name>InterfaceForQuickAccessPlugins</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

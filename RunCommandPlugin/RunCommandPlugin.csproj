@@ -68,10 +68,6 @@
       <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
       <Name>InlineCommandToolkit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\InterfaceForQuickAccessPlugins\InterfaceForQuickAccessPlugins.csproj">
-      <Project>{41c40712-1592-4f20-8e14-05f2d3e9a85a}</Project>
-      <Name>InterfaceForQuickAccessPlugin</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

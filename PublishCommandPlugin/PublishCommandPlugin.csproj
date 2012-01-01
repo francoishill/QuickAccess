@@ -77,9 +77,6 @@
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
       <Link>ApplicationRecoveryAndRestart.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\FileSystemInterop.cs">
-      <Link>FileSystemInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\NetworkInterop.cs">
       <Link>NetworkInterop.cs</Link>
     </Compile>
@@ -89,20 +86,8 @@
     <Compile Include="..\..\SharedClasses\NsisInterop.cs">
       <Link>NsisInterop.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\PropertyInterceptor.cs">
-      <Link>PropertyInterceptor.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\SerializationInterop.cs">
       <Link>SerializationInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\SettingsInterop.cs">
-      <Link>SettingsInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\SharedClassesSettings.cs">
-      <Link>SharedClassesSettings.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ThreadingInterop.cs">
-      <Link>ThreadingInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\VisualStudioInterop.cs">
       <Link>VisualStudioInterop.cs</Link>
@@ -117,10 +102,6 @@
     <ProjectReference Include="..\InlineCommandToolkit\InlineCommandToolkit.csproj">
       <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
       <Name>InlineCommandToolkit</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\InterfaceForQuickAccessPlugins\InterfaceForQuickAccessPlugins.csproj">
-      <Project>{41c40712-1592-4f20-8e14-05f2d3e9a85a}</Project>
-      <Name>InterfaceForQuickAccessPlugin</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
