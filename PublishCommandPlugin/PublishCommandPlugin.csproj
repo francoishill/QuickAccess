@@ -89,6 +89,9 @@
     <Compile Include="..\..\SharedClasses\SerializationInterop.cs">
       <Link>SerializationInterop.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\TracXmlRpcInterop.cs">
+      <Link>TracXmlRpcInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\VisualStudioInterop.cs">
       <Link>VisualStudioInterop.cs</Link>
     </Compile>
