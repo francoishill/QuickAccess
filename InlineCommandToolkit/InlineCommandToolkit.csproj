@@ -73,12 +73,21 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CookComputing.XmlRpcV2">
+      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\XmlRpc\CookComputing.XmlRpcV2.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Windows API\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Controls.Input.Toolkit">
       <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\System.Windows.Controls.Input.Toolkit.dll</HintPath>
     </Reference>
@@ -95,6 +104,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
+      <Link>ApplicationRecoveryAndRestart.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\DictionaryPropertyGridAdapter.cs">
+      <Link>DictionaryPropertyGridAdapter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\DynamicCodeInvoking.cs">
+      <Link>DynamicCodeInvoking.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\DynamicDLLsInterop.cs">
       <Link>DynamicDLLsInterop.cs</Link>
     </Compile>
@@ -119,6 +137,12 @@
       <Link>InputBoxWPF.xaml.cs</Link>
       <DependentUpon>InputBoxWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="..\..\SharedClasses\NetworkInterop.cs">
+      <Link>NetworkInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\NetworkInteropSerializedClasses\InfoTransferred.cs">
+      <Link>InfoTransferred.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\PickItemForm.cs">
       <Link>PickItemForm.cs</Link>
       <SubType>Form</SubType>
@@ -129,6 +153,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\PropertyInterceptor.cs">
       <Link>PropertyInterceptor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\SerializationInterop.cs">
+      <Link>SerializationInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\SettingsInterop.cs">
       <Link>SettingsInterop.cs</Link>
@@ -144,6 +171,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\WPFdraggableCanvas.cs">
       <Link>WPFdraggableCanvas.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\XmlRpcInterop.cs">
+      <Link>XmlRpcInterop.cs</Link>
     </Compile>
     <Compile Include="IQuickAccessPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

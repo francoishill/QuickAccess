@@ -39,10 +39,6 @@ namespace QuickAccess
 		System.Windows.Media.Color LabelColorRequiredArgument = System.Windows.Media.Colors.White;
 		System.Windows.Media.Color LabelColorOptionalArgument = System.Windows.Media.Colors.Black;
 
-		Socket listeningSocket;
-		TextFeedbackEventHandler textFeedback;
-		ProgressChangedEventHandler progressChanged;
-
 		public Form1()
 		{
 			////DynamicDLLs.InvokeDllMethodGetReturnObject(@"D:\Francois\Dev\VSprojects\TestDynamicDllLoadingInQuickAccess\TestDynamicDllLoadingInQuickAccess\bin\Debug\TestDynamicDllLoadingInQuickAccess.dll", "TestClass", "ShowMessage", null);
@@ -111,8 +107,8 @@ namespace QuickAccess
 			//};
 			//ShowOverlayCommandWindows(true);
 
-			textFeedback += (snder, evtargs) => { Logging.appendLogTextbox_OfPassedTextbox(textBox_Messages, evtargs.FeedbackText); };
-			progressChanged += (snder, evtargs) => { UpdateProgress(evtargs.CurrentValue, evtargs.MaximumValue, evtargs.BytesPerSecond); };
+			//textFeedback += (snder, evtargs) => { Logging.appendLogTextbox_OfPassedTextbox(textBox_Messages, evtargs.FeedbackText); };
+			//progressChanged += (snder, evtargs) => { UpdateProgress(evtargs.CurrentValue, evtargs.MaximumValue, evtargs.BytesPerSecond); };
 
 			//TODO: Check out this command SvnInterop.CheckStatusAllVisualStudio2010Projects()
 			//SvnInterop.CheckStatusAllVisualStudio2010Projects();
@@ -134,7 +130,7 @@ namespace QuickAccess
 
 			UserMessages.iconForMessages = this.Icon;
 
-			inlineCommandsWindowWPF = new InlineCommandsWindowWPF();
+			inlineCommandsWindowWPF = new InlineCommandsWindowWPF(this);
 			inlineCommandsWindowWPF.Closed += delegate { this.Close(); };
 			//tmpCommandsWindow1 = new tmpCommandsWindow();
 			//tmpCommandsWindow1.Closed += delegate { this.Close(); };
@@ -200,19 +196,6 @@ namespace QuickAccess
 			this.Opacity = origOpacity;
 
 			if (Environment.CommandLine.ToLower().Contains(@"documents\visual studio 2010\")) buttonTestCrash.Visible = true;
-
-			ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
-			{
-				//TODO: There is some issue with the second time a file is sent (on the server side).
-				NetworkInterop.StartServer_FileStream(
-					out listeningSocket,
-					this,
-					TextFeedbackEvent: textFeedback,
-					ProgressChangedEvent: progressChanged);
-			}, false);
-
-			//XmlRpcInterop.SampleServer();
-			XmlRpcInterop.StartDynamicCodeInvokingServer_XmlRpc();
 		}
 
 		private Point MousePositionBeforePopup = new Point(-1, -1);

@@ -59,19 +59,5 @@ namespace QuickAccess.Properties {
                 resourceCulture = value;
             }
         }
-        
-        public static byte[] DotNetChecker {
-            get {
-                object obj = ResourceManager.GetObject("DotNetChecker", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        public static byte[] VisualStudioInteropPublishHtmlPage {
-            get {
-                object obj = ResourceManager.GetObject("VisualStudioInteropPublishHtmlPage", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

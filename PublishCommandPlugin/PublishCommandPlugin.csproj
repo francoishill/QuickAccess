@@ -74,20 +74,8 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
-      <Link>ApplicationRecoveryAndRestart.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\NetworkInterop.cs">
-      <Link>NetworkInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\NetworkInteropSerializedClasses\InfoTransferred.cs">
-      <Link>InfoTransferred.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\NsisInterop.cs">
       <Link>NsisInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\SerializationInterop.cs">
-      <Link>SerializationInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\TracXmlRpcInterop.cs">
       <Link>TracXmlRpcInterop.cs</Link>
@@ -106,6 +94,12 @@
       <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
       <Name>InlineCommandToolkit</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\VisualStudioInterop %28publish page%29.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DotNetChecker.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

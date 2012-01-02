@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -32,7 +32,7 @@
     <SuiteName>Own applications</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>application.html</WebPage>
-    <ApplicationRevision>96</ApplicationRevision>
+    <ApplicationRevision>98</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
@@ -214,9 +214,6 @@
     <Compile Include="..\..\SharedClasses\MouseHooks.cs">
       <Link>MouseHooks.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\NsisInterop.cs">
-      <Link>NsisInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\OverlayForm.cs">
       <Link>OverlayForm.cs</Link>
       <SubType>Form</SubType>
@@ -246,9 +243,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
       <Link>UserActivityHook.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\VisualStudioInterop.cs">
-      <Link>VisualStudioInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\Win32Api.cs">
       <Link>Win32Api.cs</Link>
@@ -324,8 +318,6 @@
   <ItemGroup>
     <Content Include="app.ico" />
     <SplashScreen Include="Penguins.png" />
-    <EmbeddedResource Include="Resources\VisualStudioInterop %28publish page%29.html" />
-    <EmbeddedResource Include="Resources\DotNetChecker.dll" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
