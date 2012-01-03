@@ -43,6 +43,7 @@
 			this.buttonTestCrash = new System.Windows.Forms.Button();
 			this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
+			this.menuItem3 = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
 			// notifyIcon1
@@ -98,7 +99,8 @@
 			this.contextMenu_TrayIcon.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem_Exit,
             this.menuItem_Commands,
-            this.menuItem1});
+            this.menuItem1,
+            this.menuItem3});
 			this.contextMenu_TrayIcon.Popup += new System.EventHandler(this.contextMenu_TrayIcon_Popup);
 			// 
 			// menuItem_Exit
@@ -181,6 +183,12 @@
 			this.progressBar1.TabIndex = 7;
 			this.progressBar1.Visible = false;
 			// 
+			// menuItem3
+			// 
+			this.menuItem3.Index = 3;
+			this.menuItem3.Text = "&WebResults";
+			this.menuItem3.Click += new System.EventHandler(this.menuItem3_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -236,6 +244,7 @@
 				private System.Windows.Forms.Button buttonTestCrash;
 				private System.Windows.Forms.Label labelRecoveryAndRestartSafe;
 				private System.Windows.Forms.ProgressBar progressBar1;
+				private System.Windows.Forms.MenuItem menuItem3;
     }
 }
 

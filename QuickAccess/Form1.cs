@@ -17,6 +17,8 @@ using DynamicDLLsInterop;
 using InterfaceForQuickAccessPlugin;
 using ICommandWithHandler = InlineCommandToolkit.InlineCommands.ICommandWithHandler;//InlineCommands.CommandsManagerClass.ICommandWithHandler;
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
+using SharedClasses;
+using System.Collections.ObjectModel;
 
 namespace QuickAccess
 {
@@ -147,9 +149,9 @@ namespace QuickAccess
 			//	delegate
 			//	{
 			//EnsureAllSettingsAreNotNull();
-			
+
 			GenericSettings.EnsureAllSettingsAreInitialized();
-			
+
 			//});
 
 			//string s = InputBoxWPF.Prompt("Hallo");
@@ -168,7 +170,7 @@ namespace QuickAccess
 			//		OverrideToStringClass comm = (OverrideToStringClass)qai.GetType().GetConstructor(new Type[0]).Invoke(new object[0]);
 			//		MessageBox.Show(comm.DisplayName);
 			//	}
-					//MessageBox.Show((qai as ICommandWithHandler).CommandName);
+			//MessageBox.Show((qai as ICommandWithHandler).CommandName);
 
 			//foreach (IQuickAccessPluginInterface plugin in DynamicDLLsInterop.DynamicDLLs.PluginList)
 			//	plugin.Rundefault();
@@ -950,6 +952,17 @@ namespace QuickAccess
 		private void button1_Click(object sender, EventArgs e)
 		{
 			ApplicationRecoveryAndRestart.TestCrash(true);
+		}
+
+		private WebResultsWindow webResultsWindow;
+		private void menuItem3_Click(object sender, EventArgs e)
+		{
+			//MessageBox.Show("Loading wind results for strand");
+			//string html = ParseHtmlInterop.GetHtmlFromUrl("http://www.goodwind.co.za/mobile/station?station=Strand", new System.Net.NetworkCredential("francoishill11@gmail.com", "bokbokkie"));
+			//MessageBox.Show(html);
+
+			if (webResultsWindow == null) webResultsWindow = new WebResultsWindow();
+			webResultsWindow.ShowDialog();
 		}
 	}
 }
