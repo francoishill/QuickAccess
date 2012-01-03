@@ -18,7 +18,7 @@ namespace TracXmlRpcPlugin
 		public override string Description { get { return "Get information about Trac projects"; } }
 		public override string ArgumentsExample { get { return @"QuickAccess"; } }
 
-		private enum SubCommandsEnum { GetFieldLabels, GetTicketIDs, GetListOfMethods, ChangeLogs, GetFieldValuesOfTicket, GetAllTicketDescriptions }
+		private enum SubCommandsEnum { GetFieldLabels, GetTicketIDs, GetListOfMethods, ChangeLogs, GetFieldValuesOfTicket, GetAllTicketDescriptionsAndTypes }
 
 		private static List<string> subCommandList;
 		private static List<string> SubCommandList { get { if (subCommandList == null) subCommandList = EnumsInterop.GetStringListOfEnumNames(typeof(SubCommandsEnum)); return subCommandList; } }
@@ -146,15 +146,15 @@ namespace TracXmlRpcPlugin
 								TextFeedbackType.Noteworthy);
 					}
 				}
-				else if (string.Equals(arguments[0], SubCommandsEnum.GetAllTicketDescriptions.ToString(), StringComparison.InvariantCultureIgnoreCase))
+				else if (string.Equals(arguments[0], SubCommandsEnum.GetAllTicketDescriptionsAndTypes.ToString(), StringComparison.InvariantCultureIgnoreCase))
 				{
-					Dictionary<int, string> ticketDescriptions = TracXmlRpcInterop.GetAllTicketDescriptions(VisualStudioInterop.GetTracXmlRpcHttpPathFromProjectName(arguments[1]));
+					Dictionary<int, TracXmlRpcInterop.DescriptionAndTicketType> ticketDescriptionsAndTypes = TracXmlRpcInterop.GetAllTicketDescriptionsAndTypes(VisualStudioInterop.GetTracXmlRpcHttpPathFromProjectName(arguments[1]));
 					int tmpcounter = 1;
-					foreach (int i in ticketDescriptions.Keys)
+					foreach (int i in ticketDescriptionsAndTypes.Keys)
 						TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(
 							this,
 							textFeedbackEvent,
-							"getallticketdescriptions " + tmpcounter++ + ", #" + i + ": " + ticketDescriptions[i],
+							"getallticketdescriptions " + tmpcounter++ + ", #" + i + " (" + ticketDescriptionsAndTypes[i].TicketType.ToString() + "): " + ticketDescriptionsAndTypes[i].Description,
 							TextFeedbackType.Noteworthy);
 				}
 				else
