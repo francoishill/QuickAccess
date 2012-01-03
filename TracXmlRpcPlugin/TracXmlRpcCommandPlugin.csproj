@@ -49,6 +49,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\SharedClasses\EnumsInterop.cs">
+      <Link>EnumsInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\NsisInterop.cs">
       <Link>NsisInterop.cs</Link>
     </Compile>
