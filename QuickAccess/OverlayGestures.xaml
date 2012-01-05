@@ -1,0 +1,13 @@
+﻿<Window x:Class="QuickAccess.OverlayGestures"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				Title="OverlayGestures"
+				Height="300"
+				Width="300"
+				WindowStyle='None'
+				AllowsTransparency='True'
+				WindowState='Maximized'
+				Opacity='0.3'
+				Topmost='True'>
+	<Grid></Grid>
+</Window>

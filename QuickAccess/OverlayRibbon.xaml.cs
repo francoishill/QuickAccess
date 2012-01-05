@@ -23,8 +23,10 @@ public partial class OverlayRibbon : Window
 	public class RequestToOpenWindowEventArgs : EventArgs
 	{
 		public double ScalingFactor;
-		public RequestToOpenWindowEventArgs(double ScalingFactor = 1)
+		public bool WasRightClick;
+		public RequestToOpenWindowEventArgs(bool WasRightClick, double ScalingFactor = 1)
 		{
+			this.WasRightClick = WasRightClick;
 			this.ScalingFactor = ScalingFactor;
 		}
 	}
@@ -49,17 +51,22 @@ public partial class OverlayRibbon : Window
 	private void mainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 	{
 		if (QuickAccess.Form1.IsControlDown()) this.DragMove();
-		else CallEvent_MouseClickedRequestToOpenOverlayWindow();
+		else CallEvent_MouseClickedRequestToOpenOverlayWindow(false);
+	}
+
+	private void mainWindow_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+	{
+		CallEvent_MouseClickedRequestToOpenOverlayWindow(true);
 	}
 	
-	private void CallEvent_MouseClickedRequestToOpenOverlayWindow()
+	private void CallEvent_MouseClickedRequestToOpenOverlayWindow(bool WasRightButton)
 	{
-		if (MouseClickedRequestToOpenOverlayWindow != null) MouseClickedRequestToOpenOverlayWindow(this, new RequestToOpenWindowEventArgs(2.5));
+		if (MouseClickedRequestToOpenOverlayWindow != null) MouseClickedRequestToOpenOverlayWindow(this, new RequestToOpenWindowEventArgs(WasRightButton, 2.5));
 	}
 
 	private void mainWindow_DragEnter(object sender, DragEventArgs e)
 	{
-		CallEvent_MouseClickedRequestToOpenOverlayWindow();
+		CallEvent_MouseClickedRequestToOpenOverlayWindow(false);
 	}
 
 	//TODO: Read up a bit more on MeasureOverride and ArrangeOverride, see following line for website

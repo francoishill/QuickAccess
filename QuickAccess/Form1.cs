@@ -102,7 +102,7 @@ namespace QuickAccess
 			//  mouseHook.Start();
 			//else
 			//  notifyIcon1.ShowBalloonTip(3000, "Mousehook", "Mousehook not started due to debugging mode", ToolTipIcon.Info);
-			ShowOverlayRibbon();
+			ShowOverlayRibbonMain();
 
 			//overlayWindow.IsVisibleChanged += delegate
 			//{
@@ -177,6 +177,9 @@ namespace QuickAccess
 			//foreach (IQuickAccessPluginInterface plugin in DynamicDLLsInterop.DynamicDLLs.PluginList)
 			//	plugin.Rundefault();
 			//SharedClasses.DebugInterop.Assert(1 != 1, "1==1");
+
+			//OverlayGestures og = new OverlayGestures();
+			//og.ShowDialog();
 		}
 
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -250,19 +253,30 @@ namespace QuickAccess
 
 		private double? OriginalWidthOfMainWindow = null;
 		private double? OriginalHeightOfMainWindow = null;
-		OverlayRibbon overlayRibbon = new OverlayRibbon();
-		private void ShowOverlayRibbon()
+		OverlayRibbon overlayRibbonMain = new OverlayRibbon();
+		OverlayGestures overlayGestures;// = new OverlayGestures();
+		private void ShowOverlayRibbonMain()
 		{
 			Rectangle workingArea = Screen.FromPoint(new Point(0, 0)).WorkingArea;
-			overlayRibbon.Top = workingArea.Top + (workingArea.Height - overlayRibbon.ActualHeight) / 2 + 100;
-			overlayRibbon.Left = 0;
+			overlayRibbonMain.Top = workingArea.Top + (workingArea.Height - overlayRibbonMain.ActualHeight) / 2 + 100;
+			overlayRibbonMain.Left = 0;
 			//MessageBox.Show(overlayRibbon.Left + ", " + overlayRibbon.Top);
-			overlayRibbon.MouseClickedRequestToOpenOverlayWindow += (sndr, evtargs) =>
+			overlayRibbonMain.MouseClickedRequestToOpenOverlayWindow += (sndr, evtargs) =>
 			{
-				ShowAndActivateMainWindow(evtargs.ScalingFactor);
+				if (!evtargs.WasRightClick)
+					ShowAndActivateMainWindow(evtargs.ScalingFactor);
+				else
+				{
+					overlayGestures = new OverlayGestures();
+					overlayGestures.Closed += delegate { overlayGestures = null; };
+					overlayGestures.ShowDialog();
+					//WindowsInterop.ShowAndActivateWindow(overlayGestures);
+				}
 			};
-			overlayRibbon.Show();
+			overlayRibbonMain.Show();
 		}
+
+		//OverlayRibbon overlayRibbonMain = new OverlayRibbon();
 
 		/*private void ShowOverlayCommandWindows(bool JustCreateDoNotShow = false)
 		{
