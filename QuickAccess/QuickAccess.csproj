@@ -249,9 +249,6 @@
     <Compile Include="..\..\SharedClasses\StartupbatInterop.cs">
       <Link>StartupbatInterop.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\StylingInterop.cs">
-      <Link>StylingInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\SvnInterop.cs">
       <Link>SvnInterop.cs</Link>
     </Compile>
@@ -261,9 +258,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
       <Link>UserActivityHook.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\Win32Api.cs">
-      <Link>Win32Api.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
       <Link>WindowsInterop.cs</Link>

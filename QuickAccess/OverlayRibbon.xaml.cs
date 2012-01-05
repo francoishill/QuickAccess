@@ -56,7 +56,8 @@ public partial class OverlayRibbon : Window
 
 	private void mainWindow_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
 	{
-		CallEvent_MouseClickedRequestToOpenOverlayWindow(true);
+		e.Handled = true;
+		CallEvent_MouseClickedRequestToOpenOverlayWindow(true);		
 	}
 	
 	private void CallEvent_MouseClickedRequestToOpenOverlayWindow(bool WasRightButton)

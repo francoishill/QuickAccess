@@ -18,7 +18,7 @@
 				LocationChanged="mainWindow_LocationChanged"
 				ResizeMode="NoResize"
 				MouseLeftButtonDown="mainWindow_MouseLeftButtonDown"
-				PreviewMouseRightButtonUp='mainWindow_PreviewMouseRightButtonUp'
+				MouseRightButtonUp='mainWindow_PreviewMouseRightButtonUp'
 				DragEnter='mainWindow_DragEnter'
 				AllowDrop='True'
 				Focusable='False'>

@@ -251,6 +251,7 @@ namespace QuickAccess
 			return System.Environment.GetCommandLineArgs().Length > 1 && System.Environment.GetCommandLineArgs()[1] == "/restart";
 		}
 
+		private bool EventAddedMouseClickedRequestToOpenOverlayWindow = false;
 		private double? OriginalWidthOfMainWindow = null;
 		private double? OriginalHeightOfMainWindow = null;
 		OverlayRibbon overlayRibbonMain = new OverlayRibbon();
@@ -261,18 +262,31 @@ namespace QuickAccess
 			overlayRibbonMain.Top = workingArea.Top + (workingArea.Height - overlayRibbonMain.ActualHeight) / 2 + 100;
 			overlayRibbonMain.Left = 0;
 			//MessageBox.Show(overlayRibbon.Left + ", " + overlayRibbon.Top);
-			overlayRibbonMain.MouseClickedRequestToOpenOverlayWindow += (sndr, evtargs) =>
+			if (!EventAddedMouseClickedRequestToOpenOverlayWindow)
 			{
-				if (!evtargs.WasRightClick)
-					ShowAndActivateMainWindow(evtargs.ScalingFactor);
-				else
+				overlayRibbonMain.MouseClickedRequestToOpenOverlayWindow += (sndr, evtargs) =>
 				{
-					overlayGestures = new OverlayGestures();
-					overlayGestures.Closed += delegate { overlayGestures = null; };
-					overlayGestures.ShowDialog();
-					//WindowsInterop.ShowAndActivateWindow(overlayGestures);
-				}
-			};
+					if (!evtargs.WasRightClick)
+						ShowAndActivateMainWindow(evtargs.ScalingFactor);
+					else
+					{
+						overlayGestures = new OverlayGestures();
+						////overlayGestures.Closed += delegate { overlayGestures = null; };
+						overlayGestures.ShowDialog();
+						overlayGestures = null;
+						//WindowsInterop.ShowAndActivateWindow(overlayGestures);
+					}
+				};
+				//overlayRibbonMain.MouseRightButtonUp += (snder, evtargs) =>
+				//{
+				//	evtargs.Handled = true;
+				//	overlayGestures = new OverlayGestures();
+				//	//overlayGestures.Closed += delegate { overlayGestures = null; };
+				//	overlayGestures.ShowDialog();
+				//	overlayGestures = null;
+				//};
+				EventAddedMouseClickedRequestToOpenOverlayWindow = true;
+			}
 			overlayRibbonMain.Show();
 		}
 

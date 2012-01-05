@@ -163,17 +163,29 @@
     <Compile Include="..\..\SharedClasses\SharedClassesSettings.cs">
       <Link>SharedClassesSettings.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\StylingInterop.cs">
+      <Link>StylingInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\ThreadingInterop.cs">
       <Link>ThreadingInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\UserMessages.cs">
       <Link>UserMessages.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\Win32Api.cs">
+      <Link>Win32Api.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\WPFdraggableCanvas.cs">
       <Link>WPFdraggableCanvas.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\XmlRpcInterop.cs">
       <Link>XmlRpcInterop.cs</Link>
+    </Compile>
+    <Compile Include="EnterStringAndListOfEnumsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EnterStringAndListOfEnumsForm.Designer.cs">
+      <DependentUpon>EnterStringAndListOfEnumsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="IQuickAccessPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -196,6 +208,9 @@
     <EmbeddedResource Include="..\..\SharedClasses\PickItemForm.resx">
       <Link>PickItemForm.resx</Link>
       <DependentUpon>PickItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EnterStringAndListOfEnumsForm.resx">
+      <DependentUpon>EnterStringAndListOfEnumsForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
