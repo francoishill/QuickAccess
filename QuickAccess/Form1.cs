@@ -26,6 +26,7 @@ namespace QuickAccess
 	//TODO: In C# press Ctrl + K, Ctrl + H to add an item to the Task List (choose Shorcuts from the dropdown options).
 	public partial class Form1 : Form
 	{
+		//TODO: When program (QuickAccess) starts up it must check on a regular basis (every one minutes or 30 seconds) whether changes are picked up in any of the Subversion repos (only check LOCALLY), this check must not occur directly after the system booted, maybe have a delay of 10 or 20 minutes.
 		private InlineCommandsWindowWPF inlineCommandsWindowWPF;
 		//private tmpCommandsWindow tmpCommandsWindow1;
 
