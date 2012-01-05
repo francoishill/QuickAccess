@@ -19,6 +19,7 @@ using ICommandWithHandler = InlineCommandToolkit.InlineCommands.ICommandWithHand
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
 using SharedClasses;
 using System.Collections.ObjectModel;
+using System.Windows.Media;
 
 namespace QuickAccess
 {
@@ -246,6 +247,8 @@ namespace QuickAccess
 			return System.Environment.GetCommandLineArgs().Length > 1 && System.Environment.GetCommandLineArgs()[1] == "/restart";
 		}
 
+		private double? OriginalWidthOfMainWindow = null;
+		private double? OriginalHeightOfMainWindow = null;
 		OverlayRibbon overlayRibbon = new OverlayRibbon();
 		private void ShowOverlayRibbon()
 		{
@@ -253,10 +256,9 @@ namespace QuickAccess
 			overlayRibbon.Top = workingArea.Top + (workingArea.Height - overlayRibbon.ActualHeight) / 2 + 100;
 			overlayRibbon.Left = 0;
 			//MessageBox.Show(overlayRibbon.Left + ", " + overlayRibbon.Top);
-			overlayRibbon.MouseClickedRequestToOpenOverlayWindow += delegate
+			overlayRibbon.MouseClickedRequestToOpenOverlayWindow += (sndr, evtargs) =>
 			{
-				//ShowOverlayCommandWindows();
-				ShowAndActivateMainWindow();
+				ShowAndActivateMainWindow(evtargs.ScalingFactor);
 			};
 			overlayRibbon.Show();
 		}
@@ -565,7 +567,7 @@ namespace QuickAccess
 			//	WindowsInterop.ShowAndActivateForm(this);
 			//else this.Hide();
 			if (Win32Api.GetForegroundWindow() != (new System.Windows.Interop.WindowInteropHelper(MainWindow)).Handle)
-				ShowAndActivateMainWindow();
+				ShowAndActivateMainWindow(1);
 			else
 				MainWindow.Hide();
 			//if (Win32Api.GetForegroundWindow() != (new System.Windows.Interop.WindowInteropHelper(tmpCommandsWindow1)).Handle)
@@ -856,14 +858,38 @@ namespace QuickAccess
 			if (e.Button == System.Windows.Forms.MouseButtons.Right) this.Hide();
 		}
 
-		private void ShowAndActivateMainWindow()
+		private void ShowAndActivateMainWindow(double ScalingFactor = 1)
 		{
+			//ShowOverlayCommandWindows();
+			if (OriginalWidthOfMainWindow == null) OriginalWidthOfMainWindow = MainWindow.Width;//.ActualWidth;
+			if (OriginalHeightOfMainWindow == null) OriginalHeightOfMainWindow = MainWindow.Height;//.ActualHeight;
+			MainWindow.Width = (double)OriginalWidthOfMainWindow;
+			MainWindow.Height = (double)OriginalHeightOfMainWindow;
+			(MainWindow.Content as System.Windows.FrameworkElement).LayoutTransform
+				= new ScaleTransform(ScalingFactor, ScalingFactor);
+			MainWindow.Width *= ScalingFactor > 1.8 ? 1.8 : ScalingFactor;
+			MainWindow.Height *= ScalingFactor > 1.2 ? 1.2 : ScalingFactor;
+			
+			if (ScalingFactor <= 1)
+			{
+				MainWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+				Rectangle workingArea1 = Screen.GetWorkingArea(new Point((int)MainWindow.Left, (int)MainWindow.Top));
+				MainWindow.Left = workingArea1.Left + (workingArea1.Width - MainWindow.Width) / 2;
+				MainWindow.Top = workingArea1.Top + (workingArea1.Height - MainWindow.Height) / 2;
+			}
+			else
+			{
+				MainWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.Manual;
+				MainWindow.Left = 0;
+				MainWindow.Top = 0;
+			}
+
 			WindowsInterop.ShowAndActivateWindow(MainWindow);
 		}
 		private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
-				ShowAndActivateMainWindow();
+				ShowAndActivateMainWindow(1);
 		}
 
 		private void PopulateCommandsMenuItem()
@@ -923,7 +949,7 @@ namespace QuickAccess
 		private void notifyIcon1_BalloonTipClicked(object sender, EventArgs e)
 		{
 			//WindowsInterop.ShowAndActivateForm(this);
-			ShowAndActivateMainWindow();
+			ShowAndActivateMainWindow(1);
 		}
 
 		private void menuItem_Exit_Click(object sender, EventArgs e)

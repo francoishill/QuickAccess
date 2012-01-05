@@ -19,7 +19,17 @@ using System.Windows.Media.Animation;
 /// </summary>
 public partial class OverlayRibbon : Window
 {
-	public event EventHandler MouseClickedRequestToOpenOverlayWindow;
+	public delegate void RequestToOpenWindowEventHandler(object sender, RequestToOpenWindowEventArgs e);
+	public class RequestToOpenWindowEventArgs : EventArgs
+	{
+		public double ScalingFactor;
+		public RequestToOpenWindowEventArgs(double ScalingFactor = 1)
+		{
+			this.ScalingFactor = ScalingFactor;
+		}
+	}
+
+	public event RequestToOpenWindowEventHandler MouseClickedRequestToOpenOverlayWindow;
 
 	public OverlayRibbon()
 	{
@@ -44,7 +54,7 @@ public partial class OverlayRibbon : Window
 	
 	private void CallEvent_MouseClickedRequestToOpenOverlayWindow()
 	{
-		if (MouseClickedRequestToOpenOverlayWindow != null) MouseClickedRequestToOpenOverlayWindow(this, new EventArgs());
+		if (MouseClickedRequestToOpenOverlayWindow != null) MouseClickedRequestToOpenOverlayWindow(this, new RequestToOpenWindowEventArgs(2.5));
 	}
 
 	private void mainWindow_DragEnter(object sender, DragEventArgs e)
