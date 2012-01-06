@@ -81,7 +81,7 @@
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Windows API\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
     <Reference Include="MouseGestures">
-      <HintPath>C:\Francois\Dev\SVN\MouseGestures\MouseGestures\bin\Debug\MouseGestures.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\MouseGestures\MouseGestures.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
