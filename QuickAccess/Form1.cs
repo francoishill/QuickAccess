@@ -51,6 +51,8 @@ namespace QuickAccess
 			//else UserMessages.ShowInfoMessage("Object returned from dynamic dll is of type = " + obj.GetType().ToString() + Environment.NewLine +
 			//	(obj is Color ? "Color = " + ((Color)obj).ToKnownColor().ToString() : ""));
 
+			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
 			InitializeComponent();
 
 			if (IsApplicationArestartedInstance())
@@ -102,7 +104,6 @@ namespace QuickAccess
 			//  mouseHook.Start();
 			//else
 			//  notifyIcon1.ShowBalloonTip(3000, "Mousehook", "Mousehook not started due to debugging mode", ToolTipIcon.Info);
-			ShowOverlayRibbonMain();
 
 			//overlayWindow.IsVisibleChanged += delegate
 			//{
@@ -134,15 +135,18 @@ namespace QuickAccess
 
 			UserMessages.iconForMessages = this.Icon;
 
-			inlineCommandsWindowWPF = new InlineCommandsWindowWPF(this);
-			inlineCommandsWindowWPF.Closed += delegate { this.Close(); };
+			//if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "InlineCommandToolkit.dll"))
+			//	DynamicDLLs.LoadPlugin(AppDomain.CurrentDomain.BaseDirectory + "InlineCommandToolkit.dll");
+			//if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "System.Windows.Controls.Input.Toolkit.dll"))
+			//	DynamicDLLs.LoadPlugin(AppDomain.CurrentDomain.BaseDirectory + "System.Windows.Controls.Input.Toolkit.dll");
+
+			//inlineCommandsWindowWPF = new InlineCommandsWindowWPF(this);
+			//inlineCommandsWindowWPF.Closed += delegate { this.Close(); };
 			//tmpCommandsWindow1 = new tmpCommandsWindow();
 			//tmpCommandsWindow1.Closed += delegate { this.Close(); };
 
 			//TODO: Check uit AppDomain.MonitoringIsEnabled
 			//MessageBox.Show(AppDomain.MonitoringIsEnabled.ToString());
-
-			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
 			//int a = 1;
 			//double i = 1 / (1 - a);
@@ -180,6 +184,35 @@ namespace QuickAccess
 
 			//OverlayGestures og = new OverlayGestures();
 			//og.ShowDialog();
+
+			//TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(null, inlineCommandsWindowWPF.textFeedbackEvent, "Loading plugins...", TextFeedbackType.Subtle);
+			//System.Windows.Forms.Application.DoEvents();
+			//if (!AppDomain.CurrentDomain.BaseDirectory.ToLower().Contains(@"QuickAccess\QuickAccess\bin".ToLower()))
+			//	DynamicDLLs.LoadPluginsInDirectory(System.AppDomain.CurrentDomain.BaseDirectory + @"Plugins");
+			//else
+			//	foreach (string pluginProjectBaseDir in Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\\Visual Studio 2010\Projects\QuickAccess", "*Plugin"))
+			//		DynamicDLLs.LoadPluginsInDirectory(pluginProjectBaseDir + @"\bin\Release");
+			//TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(null, textFeedbackEvent, "Done loading plugins.", TextFeedbackType.Noteworthy);
+
+			//inlineCommandsWindowWPF.GetInlineCommandsUserControl().LoadPlugins();
+		}
+
+		private void Form1_Load(object sender, EventArgs e)
+		{
+			inlineCommandsWindowWPF = new InlineCommandsWindowWPF(this);
+			inlineCommandsWindowWPF.Show();
+			inlineCommandsWindowWPF.Hide();
+			inlineCommandsWindowWPF.Closed += delegate { this.Close(); };
+
+			ShowOverlayRibbonMain();
+
+			//System.Windows.Forms.Application.DoEvents();
+			//if (!AppDomain.CurrentDomain.BaseDirectory.ToLower().Contains(@"QuickAccess\QuickAccess\bin".ToLower()))
+			//	DynamicDLLs.LoadPluginsInDirectory(System.AppDomain.CurrentDomain.BaseDirectory + @"Plugins");
+			//else
+			//	foreach (string pluginProjectBaseDir in Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\\Visual Studio 2010\Projects\QuickAccess", "*Plugin"))
+			//		DynamicDLLs.LoadPluginsInDirectory(pluginProjectBaseDir + @"\bin\Release");
+			//inlineCommandsUserControlWPF1.LoadAllPlugins();
 		}
 
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

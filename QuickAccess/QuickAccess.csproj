@@ -188,9 +188,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Controls.Input.Toolkit">
-      <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\System.Windows.Controls.Input.Toolkit.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -204,9 +201,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="WPFToolkit">
-      <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\WPFToolkit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\SharedClasses\CustomBalloonTip.cs">
@@ -271,20 +265,11 @@
     <Compile Include="CommandWindow.xaml.cs">
       <DependentUpon>CommandWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomAutocompleteTextbox.xaml.cs">
-      <DependentUpon>CustomAutocompleteTextbox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OverlayGesturesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OverlayGesturesForm.Designer.cs">
-      <DependentUpon>OverlayGesturesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="OverlayRibbon.xaml.cs">
       <DependentUpon>OverlayRibbon.xaml</DependentUpon>
@@ -292,13 +277,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickAccessSettings.cs" />
-    <Compile Include="tmpCommandsUsercontrol.xaml.cs">
-      <DependentUpon>tmpCommandsUsercontrol.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="tmpCommandsWindow.xaml.cs">
-      <DependentUpon>tmpCommandsWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="WebResultsWindow.xaml.cs">
       <DependentUpon>WebResultsWindow.xaml</DependentUpon>
     </Compile>
@@ -312,9 +290,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OverlayGesturesForm.resx">
-      <DependentUpon>OverlayGesturesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -408,16 +383,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CustomAutocompleteTextbox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="OverlayRibbon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="tmpCommandsUsercontrol.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="tmpCommandsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WebResultsWindow.xaml">

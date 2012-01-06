@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCommandPlugin", "WebComm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TracXmlRpcCommandPlugin", "TracXmlRpcPlugin\TracXmlRpcCommandPlugin.csproj", "{7B2B7B20-4A25-40C0-9281-B47E58996530}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GesturesTempPlugin", "GesturesTempPlugin\GesturesTempPlugin.csproj", "{694FA581-3966-47DF-B0D4-82433F13FB66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +137,14 @@ Global
 		{5EE45055-27EF-4A94-B314-657940518072}.Release|x64.ActiveCfg = Release|Any CPU
 		{5EE45055-27EF-4A94-B314-657940518072}.Release|x86.ActiveCfg = Release|x86
 		{5EE45055-27EF-4A94-B314-657940518072}.Release|x86.Build.0 = Release|x86
+		{694FA581-3966-47DF-B0D4-82433F13FB66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{694FA581-3966-47DF-B0D4-82433F13FB66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{694FA581-3966-47DF-B0D4-82433F13FB66}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{694FA581-3966-47DF-B0D4-82433F13FB66}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{694FA581-3966-47DF-B0D4-82433F13FB66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{694FA581-3966-47DF-B0D4-82433F13FB66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{694FA581-3966-47DF-B0D4-82433F13FB66}.Release|x64.ActiveCfg = Release|Any CPU
+		{694FA581-3966-47DF-B0D4-82433F13FB66}.Release|x86.ActiveCfg = Release|Any CPU
 		{7B2B7B20-4A25-40C0-9281-B47E58996530}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B2B7B20-4A25-40C0-9281-B47E58996530}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B2B7B20-4A25-40C0-9281-B47E58996530}.Debug|x64.ActiveCfg = Debug|Any CPU

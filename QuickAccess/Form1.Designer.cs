@@ -39,11 +39,11 @@
 			this.menuItem_Commands = new System.Windows.Forms.MenuItem();
 			this.menuItem1 = new System.Windows.Forms.MenuItem();
 			this.menuItem2 = new System.Windows.Forms.MenuItem();
+			this.menuItem3 = new System.Windows.Forms.MenuItem();
 			this.comboboxCommand = new System.Windows.Forms.ComboBox();
 			this.buttonTestCrash = new System.Windows.Forms.Button();
 			this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
-			this.menuItem3 = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
 			// notifyIcon1
@@ -128,6 +128,12 @@
 			this.menuItem2.Text = "Test commandform";
 			this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
 			// 
+			// menuItem3
+			// 
+			this.menuItem3.Index = 3;
+			this.menuItem3.Text = "&WebResults";
+			this.menuItem3.Click += new System.EventHandler(this.menuItem3_Click);
+			// 
 			// comboboxCommand
 			// 
 			this.comboboxCommand.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -183,12 +189,6 @@
 			this.progressBar1.TabIndex = 7;
 			this.progressBar1.Visible = false;
 			// 
-			// menuItem3
-			// 
-			this.menuItem3.Index = 3;
-			this.menuItem3.Text = "&WebResults";
-			this.menuItem3.Click += new System.EventHandler(this.menuItem3_Click);
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -219,6 +219,7 @@
 			this.Text = "Quick Access";
 			this.TopMost = true;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+			this.Load += new System.EventHandler(this.Form1_Load);
 			this.Shown += new System.EventHandler(this.Form1_Shown);
 			this.VisibleChanged += new System.EventHandler(this.Form1_VisibleChanged);
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseClick);

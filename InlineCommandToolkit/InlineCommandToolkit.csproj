@@ -80,6 +80,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Windows API\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
+    <Reference Include="MouseGestures">
+      <HintPath>C:\Francois\Dev\SVN\MouseGestures\MouseGestures\bin\Debug\MouseGestures.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
@@ -143,6 +146,14 @@
     <Compile Include="..\..\SharedClasses\NetworkInteropSerializedClasses\InfoTransferred.cs">
       <Link>InfoTransferred.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\OverlayGesturesForm.cs">
+      <Link>OverlayGesturesForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\OverlayGesturesForm.designer.cs">
+      <Link>OverlayGesturesForm.designer.cs</Link>
+      <DependentUpon>OverlayGesturesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\PickItemForm.cs">
       <Link>PickItemForm.cs</Link>
       <SubType>Form</SubType>
@@ -188,6 +199,7 @@
       <DependentUpon>EnterStringAndListOfEnumsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="IQuickAccessPlugin.cs" />
+    <Compile Include="MouseGestures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +217,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\..\SharedClasses\OverlayGesturesForm.resx">
+      <Link>OverlayGesturesForm.resx</Link>
+      <DependentUpon>OverlayGesturesForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\..\SharedClasses\PickItemForm.resx">
       <Link>PickItemForm.resx</Link>
       <DependentUpon>PickItemForm.cs</DependentUpon>
