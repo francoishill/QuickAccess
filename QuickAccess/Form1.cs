@@ -255,7 +255,7 @@ namespace QuickAccess
 		private double? OriginalWidthOfMainWindow = null;
 		private double? OriginalHeightOfMainWindow = null;
 		OverlayRibbon overlayRibbonMain = new OverlayRibbon();
-		OverlayGestures overlayGestures;// = new OverlayGestures();
+		OverlayGesturesForm overlayGestures;// = new OverlayGestures();
 		private void ShowOverlayRibbonMain()
 		{
 			Rectangle workingArea = Screen.FromPoint(new Point(0, 0)).WorkingArea;
@@ -270,7 +270,7 @@ namespace QuickAccess
 						ShowAndActivateMainWindow(evtargs.ScalingFactor);
 					else
 					{
-						overlayGestures = new OverlayGestures();
+						overlayGestures = new OverlayGesturesForm();
 						////overlayGestures.Closed += delegate { overlayGestures = null; };
 						overlayGestures.ShowDialog();
 						overlayGestures = null;

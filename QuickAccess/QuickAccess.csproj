@@ -280,8 +280,11 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="OverlayGestures.xaml.cs">
-      <DependentUpon>OverlayGestures.xaml</DependentUpon>
+    <Compile Include="OverlayGesturesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OverlayGesturesForm.Designer.cs">
+      <DependentUpon>OverlayGesturesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="OverlayRibbon.xaml.cs">
       <DependentUpon>OverlayRibbon.xaml</DependentUpon>
@@ -309,6 +312,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OverlayGesturesForm.resx">
+      <DependentUpon>OverlayGesturesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -403,9 +409,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomAutocompleteTextbox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="OverlayGestures.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="OverlayRibbon.xaml">
