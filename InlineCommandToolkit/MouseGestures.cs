@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MouseGesturePlugins
 {
-	public interface IMouseGestures
+	public interface IMouseGesture
 	{
 		string GestureString { get; }
 		string ThisCommandName { get; }
