@@ -63,9 +63,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\SharedClasses\SvnInterop.cs">
-      <Link>SvnInterop.cs</Link>
-    </Compile>
     <Compile Include="SvnCommandPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
