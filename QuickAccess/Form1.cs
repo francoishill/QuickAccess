@@ -303,10 +303,22 @@ namespace QuickAccess
 						ShowAndActivateMainWindow(evtargs.ScalingFactor);
 					else
 					{
-						overlayGestures = new OverlayGesturesForm();
+						if (overlayGestures != null && overlayGestures.IsDisposed)
+							overlayGestures = null;
+						if (overlayGestures == null)
+						{
+							overlayGestures = new OverlayGesturesForm();
+							overlayGestures.FormClosed += (snder, ea) =>
+							{
+								Form thisForm = snder as Form;
+								if (!thisForm.IsDisposed)
+									thisForm.Dispose();
+								thisForm = null;
+							};
+						}
 						////overlayGestures.Closed += delegate { overlayGestures = null; };
 						overlayGestures.ShowDialog();
-						overlayGestures = null;
+						//overlayGestures = null;
 						//WindowsInterop.ShowAndActivateWindow(overlayGestures);
 					}
 				};

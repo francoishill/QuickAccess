@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -32,7 +32,7 @@
     <SuiteName>Own applications</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>application.html</WebPage>
-    <ApplicationRevision>103</ApplicationRevision>
+    <ApplicationRevision>104</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
@@ -242,9 +242,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\StartupbatInterop.cs">
       <Link>StartupbatInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\SvnInterop.cs">
-      <Link>SvnInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\UnhandledExceptionsWindow.xaml.cs">
       <Link>UnhandledExceptionsWindow.xaml.cs</Link>

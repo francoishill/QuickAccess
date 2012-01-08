@@ -177,6 +177,9 @@
     <Compile Include="..\..\SharedClasses\StylingInterop.cs">
       <Link>StylingInterop.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\SvnInterop.cs">
+      <Link>SvnInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\ThreadingInterop.cs">
       <Link>ThreadingInterop.cs</Link>
     </Compile>
