@@ -14,7 +14,7 @@ namespace CmdCommandPlugin
 	public class CmdCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "cmd"; } }
-		public override string DisplayName { get { return "Cmd"; } }
+		public override string DisplayName { get { return "Command Prompt"; } }
 		public override string Description { get { return "Open a folder in Command Prompt"; } }
 		public override string ArgumentsExample { get { return @"c:\windows\system32"; } }
 

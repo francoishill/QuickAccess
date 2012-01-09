@@ -14,7 +14,7 @@ namespace KillCommandPlugin
 	public class KillCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "kill"; } }
-		public override string DisplayName { get { return "Kill"; } }
+		public override string DisplayName { get { return "Kill a Process"; } }
 		public override string Description { get { return "Kills a process"; } }
 		public override string ArgumentsExample { get { return "notepad"; } }
 

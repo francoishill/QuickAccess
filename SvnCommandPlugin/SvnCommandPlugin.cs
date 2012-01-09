@@ -12,8 +12,8 @@ namespace SvnCommandPlugin
 {
 	public class SvnCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
-		public override string CommandName { get { return "svn"; } }
-		public override string DisplayName { get { return "Svn"; } }
+		public override string CommandName { get { return "subversion"; } }
+		public override string DisplayName { get { return "Subversion"; } }
 		public override string Description { get { return "Perform svn command(s) on a folder"; } }
 		public override string ArgumentsExample { get { return @"commit c:\dev86\myproject1;Bug fixed where it automatically..."; } }
 

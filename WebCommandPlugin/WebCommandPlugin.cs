@@ -13,7 +13,7 @@ namespace WebCommandPlugin
 	public class WebCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "web"; } }
-		public override string DisplayName { get { return "Web"; } }
+		public override string DisplayName { get { return "Open Web URL"; } }
 		public override string Description { get { return "Open a web URL"; } }
 		public override string ArgumentsExample { get { return "google.com"; } }
 

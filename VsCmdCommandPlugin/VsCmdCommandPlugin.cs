@@ -14,7 +14,7 @@ namespace VsCmdCommandPlugin
 	public class VsCmdCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "vscmd"; } }
-		public override string DisplayName { get { return "VsCmd"; } }
+		public override string DisplayName { get { return "VS Command Prompt"; } }
 		public override string Description { get { return "Open a folder in Visual Command Prompt"; } }
 		public override string ArgumentsExample { get { return @"c:\windows\system32"; } }
 

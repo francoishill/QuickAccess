@@ -14,7 +14,7 @@ namespace TracXmlRpcPlugin
 	public class TracXmlRpcCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "tracxmlrpc"; } }
-		public override string DisplayName { get { return "TracXmlRpc"; } }
+		public override string DisplayName { get { return "Trac Xml Rpc"; } }
 		public override string Description { get { return "Get information about Trac projects"; } }
 		public override string ArgumentsExample { get { return @"QuickAccess"; } }
 
@@ -23,6 +23,7 @@ namespace TracXmlRpcPlugin
 		private static List<string> subCommandList;
 		private static List<string> SubCommandList { get { if (subCommandList == null) subCommandList = EnumsInterop.GetStringListOfEnumNames(typeof(SubCommandsEnum)); return subCommandList; } }
 		private readonly static string[] projectNameList = new string[] { "QuickAccess", "MonitorSystem", "SharedClasses" };
+		private readonly static string[] TicketIds = new string[] { "1" };//TODO: This should not always be only 1, might be nothing or even many more
 
 		private readonly ObservableCollection<string>[] predefinedArgumentsList =
 		{
@@ -176,7 +177,7 @@ namespace TracXmlRpcPlugin
 			{
 				new CommandArgument("", "sub-command", new ObservableCollection<string>(SubCommandList)),
 				new CommandArgument("", "project name", new ObservableCollection<string>(projectNameList)),
-				new CommandArgument("", "ticket id", new ObservableCollection<string>())
+				new CommandArgument("", "ticket id", new ObservableCollection<string>(TicketIds))
 			};
 		public override CommandArgument[] AvailableArguments { get { return availableArguments; } set { availableArguments = value; } }
 

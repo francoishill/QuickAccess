@@ -94,6 +94,9 @@
     <Reference Include="System.Windows.Controls.Input.Toolkit">
       <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\System.Windows.Controls.Input.Toolkit.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Controls.WpfPropertyGrid">
+      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\WPF Property Grid\System.Windows.Controls.WpfPropertyGrid.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -109,6 +112,14 @@
   <ItemGroup>
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
       <Link>ApplicationRecoveryAndRestart.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\CommandsUsercontrol.xaml.cs">
+      <Link>CommandsUsercontrol.xaml.cs</Link>
+      <DependentUpon>CommandsUsercontrol.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\CommandsWindow.xaml.cs">
+      <Link>CommandsWindow.xaml.cs</Link>
+      <DependentUpon>CommandsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\DictionaryPropertyGridAdapter.cs">
       <Link>DictionaryPropertyGridAdapter.cs</Link>
@@ -127,14 +138,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\InlineCommands.cs">
       <Link>InlineCommands.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\InlineCommandsUserControlWPF.xaml.cs">
-      <Link>InlineCommandsUserControlWPF.xaml.cs</Link>
-      <DependentUpon>InlineCommandsUserControlWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\InlineCommandsWindowWPF.xaml.cs">
-      <Link>InlineCommandsWindowWPF.xaml.cs</Link>
-      <DependentUpon>InlineCommandsWindowWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\InputBoxWPF.xaml.cs">
       <Link>InputBoxWPF.xaml.cs</Link>
@@ -161,6 +164,10 @@
     <Compile Include="..\..\SharedClasses\PickItemForm.designer.cs">
       <Link>PickItemForm.designer.cs</Link>
       <DependentUpon>PickItemForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\PropertiesEditor.xaml.cs">
+      <Link>PropertiesEditor.xaml.cs</Link>
+      <DependentUpon>PropertiesEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\PropertyInterceptor.cs">
       <Link>PropertyInterceptor.cs</Link>
@@ -206,16 +213,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="..\..\SharedClasses\InlineCommandsUserControlWPF.xaml">
-      <Link>InlineCommandsUserControlWPF.xaml</Link>
+    <Page Include="..\..\SharedClasses\CommandsUsercontrol.xaml">
+      <Link>CommandsUsercontrol.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="..\..\SharedClasses\InlineCommandsWindowWPF.xaml">
-      <Link>InlineCommandsWindowWPF.xaml</Link>
+    <Page Include="..\..\SharedClasses\CommandsWindow.xaml">
+      <Link>CommandsWindow.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="..\..\SharedClasses\InputBoxWPF.xaml">
       <Link>InputBoxWPF.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\..\SharedClasses\PropertiesEditor.xaml">
+      <Link>PropertiesEditor.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

@@ -13,7 +13,7 @@ namespace MailCommandPlugin
 	public class MailCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "mail"; } }
-		public override string DisplayName { get { return "Mail"; } }
+		public override string DisplayName { get { return "Send an Email"; } }
 		public override string Description { get { return "Send an email"; } }
 		public override string ArgumentsExample { get { return "billgates@microsoft.com;My subject;Hi Bill.\nHow have you been?"; } }
 

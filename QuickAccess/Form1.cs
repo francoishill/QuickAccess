@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Taskbar;
-using InlineCommands;
 using System.Windows.Forms.Integration;
 using System.Threading;
 using UnhandledExceptions;
@@ -27,7 +26,7 @@ namespace QuickAccess
 	public partial class Form1 : Form
 	{
 		//TODO: When program (QuickAccess) starts up it must check on a regular basis (every one minutes or 30 seconds) whether changes are picked up in any of the Subversion repos (only check LOCALLY), this check must not occur directly after the system booted, maybe have a delay of 10 or 20 minutes.
-		private InlineCommandsWindowWPF inlineCommandsWindowWPF;
+		private CommandsWindow commandsWindow;
 		//private tmpCommandsWindow tmpCommandsWindow1;
 
 		//private static string ThisAppName = "QuickAccess";
@@ -158,6 +157,10 @@ namespace QuickAccess
 
 			GenericSettings.EnsureAllSettingsAreInitialized();
 
+			GenericSettings.ShowAllSettingNames();
+
+			//TODO: Have "Add Window" option in VS Project menu: put the following in an empty <ProjectGroup> : <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+
 			//});
 
 			//string s = InputBoxWPF.Prompt("Hallo");
@@ -199,10 +202,10 @@ namespace QuickAccess
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			inlineCommandsWindowWPF = new InlineCommandsWindowWPF(this);
-			inlineCommandsWindowWPF.Show();
-			inlineCommandsWindowWPF.Hide();
-			inlineCommandsWindowWPF.Closed += delegate { this.Close(); };
+			commandsWindow = new CommandsWindow(this);
+			commandsWindow.Show();
+			commandsWindow.Hide();
+			commandsWindow.Closed += delegate { this.Close(); };
 
 			ShowOverlayRibbonMain();
 
@@ -212,7 +215,7 @@ namespace QuickAccess
 			//else
 			//	foreach (string pluginProjectBaseDir in Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\\Visual Studio 2010\Projects\QuickAccess", "*Plugin"))
 			//		DynamicDLLs.LoadPluginsInDirectory(pluginProjectBaseDir + @"\bin\Release");
-			//inlineCommandsUserControlWPF1.LoadAllPlugins();
+			//CommandsUsercontrol.LoadAllPlugins();
 		}
 
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -630,7 +633,7 @@ namespace QuickAccess
 			get
 			{
 				return
-					inlineCommandsWindowWPF;
+					commandsWindow;
 				//tmpCommandsWindow1;
 				//this;
 			}

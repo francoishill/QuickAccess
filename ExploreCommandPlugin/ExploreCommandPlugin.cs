@@ -14,7 +14,7 @@ namespace ExploreCommandPlugin
 	public class ExploreCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "explore"; } }
-		public override string DisplayName { get { return "Explore"; } }
+		public override string DisplayName { get { return "Explore a Folder"; } }
 		public override string Description { get { return "Explore a folder"; } }
 		public override string ArgumentsExample { get { return @"c:\windows"; } }
 

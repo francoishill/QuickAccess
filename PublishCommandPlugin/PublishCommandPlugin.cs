@@ -13,7 +13,7 @@ namespace PublishCommandPlugin
 	public class PublishCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "publish"; } }
-		public override string DisplayName { get { return "Publish"; } }
+		public override string DisplayName { get { return "Publish VS Project"; } }
 		public override string Description { get { return "Perform publish command(s) on a folder"; } }
 		public override string ArgumentsExample { get { return @"localvs c:\dev86\myproject1"; } }
 

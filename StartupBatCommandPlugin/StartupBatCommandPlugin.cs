@@ -13,7 +13,7 @@ namespace StartupBatCommandPlugin
 	public class StartubBatCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "startupbat"; } }
-		public override string DisplayName { get { return "Startup bat"; } }
+		public override string DisplayName { get { return "Startup Batch File"; } }
 		public override string Description { get { return "Startup batch file"; } }
 		public override string ArgumentsExample { get { return "getline outlook.exe"; } }
 

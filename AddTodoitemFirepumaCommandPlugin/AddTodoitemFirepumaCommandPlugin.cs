@@ -13,7 +13,7 @@ namespace AddTodoitemFirepumaCommandPlugin
 	public class AddTodoitemFirepumaCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "addtodo"; } }
-		public override string DisplayName { get { return "Add todo"; } }
+		public override string DisplayName { get { return "Add Todo Item"; } }
 		public override string Description { get { return "Add todo item to firepuma"; } }
 		public override string ArgumentsExample { get { return "13;30;Reminder;Buy milk => (MinutesFromNow, Autosnooze, Name, Description)"; } }
 

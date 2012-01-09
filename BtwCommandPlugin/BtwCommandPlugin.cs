@@ -13,7 +13,7 @@ namespace BtwCommandPlugin
 	public class BtwCommand : OverrideToStringClass, IQuickAccessPluginInterface
 	{
 		public override string CommandName { get { return "btw"; } }
-		public override string DisplayName { get { return "Btwtodo"; } }
+		public override string DisplayName { get { return "By The Way Item"; } }
 		public override string Description { get { return "Add btw (by the way) item on firepuma"; } }
 		public override string ArgumentsExample { get { return "Steve Jobs was friends with Bill Gates"; } }
 
