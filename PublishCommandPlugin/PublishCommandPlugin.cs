@@ -67,22 +67,24 @@ namespace PublishCommandPlugin
 				{
 					string tmpNoUseVersionStr;
 					VisualStudioInterop.PerformPublish(
-						this,
-						arguments[1],
-						out tmpNoUseVersionStr,
-						UserMessages.Confirm("Does the application have plugins (in a Plugins subfolder of the binaries)?"),
-						UserMessages.Confirm("Update the revision also?"),
+						textfeedbackSenderObject: this,
+						projName: arguments[1],
+						versionString: out tmpNoUseVersionStr,
+						HasPlugins: UserMessages.Confirm("Does the application have plugins (in a Plugins subfolder of the binaries)?"),
+						AutomaticallyUpdateRevision: UserMessages.Confirm("Update the revision also?"),
+						WriteIntoRegistryForWindowsAutostartup: UserMessages.Confirm("Auto startup with windows (written into registry)?"),
 						textFeedbackEvent: textFeedbackEvent);
 				}
 				else if (arguments[0] == "onlinevs")
 				{
 					VisualStudioInterop.PerformPublishOnline(
-							 this,
-							 arguments[1],
-							 UserMessages.Confirm("Does the application have plugins (in a Plugins subfolder of the binaries)?"),
-							 UserMessages.Confirm("Update the revision also?"),
-							 textFeedbackEvent,
-							 progressChangedEvent);
+							 textfeedbackSenderObject: this,
+							 projName: arguments[1],
+							 HasPlugins: UserMessages.Confirm("Does the application have plugins (in a Plugins subfolder of the binaries)?"),
+							 AutomaticallyUpdateRevision: UserMessages.Confirm("Update the revision also?"),
+							 WriteIntoRegistryForWindowsAutostartup: UserMessages.Confirm("Auto startup with windows (written into registry)?"),
+							 textFeedbackEvent: textFeedbackEvent,
+							 progressChanged: progressChangedEvent);
 				}
 				else
 				{
