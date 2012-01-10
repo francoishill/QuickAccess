@@ -157,7 +157,8 @@ namespace QuickAccess
 
 			GenericSettings.EnsureAllSettingsAreInitialized();
 
-			GenericSettings.ShowAllSettingNames();
+			//GenericSettings.ShowAndEditAllSettings();
+			//GenericSettings.ShowAndEditAllSettings();
 
 			//TODO: Have "Add Window" option in VS Project menu: put the following in an empty <ProjectGroup> : <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
 
