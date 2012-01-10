@@ -203,6 +203,8 @@ namespace QuickAccess
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
+			AddAllCurrentDomainAssembliesToLoadedList();
+
 			commandsWindow = new CommandsWindow(this);
 			commandsWindow.Show();
 			commandsWindow.Hide();
@@ -217,6 +219,24 @@ namespace QuickAccess
 			//	foreach (string pluginProjectBaseDir in Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\\Visual Studio 2010\Projects\QuickAccess", "*Plugin"))
 			//		DynamicDLLs.LoadPluginsInDirectory(pluginProjectBaseDir + @"\bin\Release");
 			//CommandsUsercontrol.LoadAllPlugins();
+		}
+
+		private static void AddAllCurrentDomainAssembliesToLoadedList()
+		{
+			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+			for (int i = 0; i < assemblies.Length; i++)
+			{
+				try
+				{
+					string assemblyLocation = assemblies[i].Location;
+					DynamicDLLs.AllSuccessfullyLoadedDllFiles.Add(assemblyLocation);
+				}
+				catch (NotSupportedException nse) { }
+				catch (Exception exc)
+				{
+					UserMessages.ShowErrorMessage("Unable to find assembly location: " + exc.Message);
+				}
+			}
 		}
 
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

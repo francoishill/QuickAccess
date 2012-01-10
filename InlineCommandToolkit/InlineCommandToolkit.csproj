@@ -96,6 +96,7 @@
     </Reference>
     <Reference Include="System.Windows.Controls.WpfPropertyGrid">
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\WPF Property Grid\System.Windows.Controls.WpfPropertyGrid.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />

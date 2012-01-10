@@ -32,7 +32,7 @@
     <SuiteName>Own applications</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>application.html</WebPage>
-    <ApplicationRevision>106</ApplicationRevision>
+    <ApplicationRevision>107</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
