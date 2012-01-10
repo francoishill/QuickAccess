@@ -70,9 +70,9 @@ namespace PublishCommandPlugin
 						textfeedbackSenderObject: this,
 						projName: arguments[1],
 						versionString: out tmpNoUseVersionStr,
-						HasPlugins: UserMessages.Confirm("Does the application have plugins (in a Plugins subfolder of the binaries)?"),
+						HasPlugins: UserMessages.Confirm("Does the application have plugins (in a Plugins subfolder of the binaries)?", DefaultYesButton: true),
 						AutomaticallyUpdateRevision: UserMessages.Confirm("Update the revision also?"),
-						WriteIntoRegistryForWindowsAutostartup: UserMessages.Confirm("Auto startup with windows (written into registry)?"),
+						WriteIntoRegistryForWindowsAutostartup: UserMessages.Confirm("Auto startup with windows (written into registry)?", DefaultYesButton: true),
 						textFeedbackEvent: textFeedbackEvent);
 				}
 				else if (arguments[0] == "onlinevs")
@@ -80,9 +80,9 @@ namespace PublishCommandPlugin
 					VisualStudioInterop.PerformPublishOnline(
 							 textfeedbackSenderObject: this,
 							 projName: arguments[1],
-							 HasPlugins: UserMessages.Confirm("Does the application have plugins (in a Plugins subfolder of the binaries)?"),
+							 HasPlugins: UserMessages.Confirm("Does the application have plugins (in a Plugins subfolder of the binaries)?", DefaultYesButton: true),
 							 AutomaticallyUpdateRevision: UserMessages.Confirm("Update the revision also?"),
-							 WriteIntoRegistryForWindowsAutostartup: UserMessages.Confirm("Auto startup with windows (written into registry)?"),
+							 WriteIntoRegistryForWindowsAutostartup: UserMessages.Confirm("Auto startup with windows (written into registry)?", DefaultYesButton: true),
 							 textFeedbackEvent: textFeedbackEvent,
 							 progressChanged: progressChangedEvent);
 				}

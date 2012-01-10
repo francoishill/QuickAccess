@@ -114,8 +114,8 @@ namespace QuickAccess
 			//textFeedback += (snder, evtargs) => { Logging.appendLogTextbox_OfPassedTextbox(textBox_Messages, evtargs.FeedbackText); };
 			//progressChanged += (snder, evtargs) => { UpdateProgress(evtargs.CurrentValue, evtargs.MaximumValue, evtargs.BytesPerSecond); };
 
-			//TODO: Check out this command SvnInterop.CheckStatusAllVisualStudio2010Projects()
-			//SvnInterop.CheckStatusAllVisualStudio2010Projects();
+			//TODO: Check out this command SubversionInterop.CheckStatusAllVisualStudio2010Projects()
+			//SubversionInterop.CheckStatusAllVisualStudio2010Projects();
 
 			//SharedClassesSettings.EnsureAllSharedClassesSettingsNotNullCreateDefault();
 
