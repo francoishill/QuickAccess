@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using InlineCommandToolkit;
 using InterfaceForQuickAccessPlugin;
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
+using DisplayType = TextFeedbackSection.DisplayTypeEnum;
 
 namespace ExploreCommandPlugin
 {
@@ -57,6 +58,16 @@ namespace ExploreCommandPlugin
 
 		public override bool PerformCommand(out string errorMessage, TextFeedbackEventHandler textFeedbackEvent = null, ProgressChangedEventHandler progressChangedEvent = null, params string[] arguments)
 		{
+			//TextFeedbackEventArgs_MultiObjects.RaiseTextFeedbackEvent_Ifnotnull(
+			//	this,
+			//	textFeedbackEvent,
+			//	new List<TextFeedbackSection>()
+			//	{
+			//		new TextFeedbackSection("This"),// DisplayType.LargerSize),
+			//		new TextFeedbackSection("is"),//, DisplayType.Bold),
+			//		new TextFeedbackSection("you", delegate { UserMessages.ShowInfoMessage("'You' word double-clicked"); },DisplayType.MakeButton)
+			//	},
+			//	TextFeedbackType.Error);
 			//if (!ValidateArguments(out errorMessage, arguments)) return false;
 			try
 			{

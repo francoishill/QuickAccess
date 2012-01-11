@@ -111,8 +111,8 @@ namespace QuickAccess
 			//};
 			//ShowOverlayCommandWindows(true);
 
-			//textFeedback += (snder, evtargs) => { Logging.appendLogTextbox_OfPassedTextbox(textBox_Messages, evtargs.FeedbackText); };
-			//progressChanged += (snder, evtargs) => { UpdateProgress(evtargs.CurrentValue, evtargs.MaximumValue, evtargs.BytesPerSecond); };
+			//textFeedback += (tag, evtargs) => { Logging.appendLogTextbox_OfPassedTextbox(textBox_Messages, evtargs.FeedbackText); };
+			//progressChanged += (tag, evtargs) => { UpdateProgress(evtargs.CurrentValue, evtargs.MaximumValue, evtargs.BytesPerSecond); };
 
 			//TODO: Check out this command SubversionInterop.CheckStatusAllVisualStudio2010Projects()
 			//SubversionInterop.CheckStatusAllVisualStudio2010Projects();
@@ -231,7 +231,7 @@ namespace QuickAccess
 					string assemblyLocation = assemblies[i].Location;
 					DynamicDLLs.AllSuccessfullyLoadedDllFiles.Add(assemblyLocation);
 				}
-				catch (NotSupportedException nse) { }
+				catch (NotSupportedException) { }
 				catch (Exception exc)
 				{
 					UserMessages.ShowErrorMessage("Unable to find assembly location: " + exc.Message);
@@ -346,7 +346,7 @@ namespace QuickAccess
 						//WindowsInterop.ShowAndActivateWindow(overlayGestures);
 					}
 				};
-				//overlayRibbonMain.MouseRightButtonUp += (snder, evtargs) =>
+				//overlayRibbonMain.MouseRightButtonUp += (tag, evtargs) =>
 				//{
 				//	evtargs.Handled = true;
 				//	overlayGestures = new OverlayGestures();
@@ -500,9 +500,9 @@ namespace QuickAccess
 										//foreach (string s in thisPredefinedArguments.Substring(thisCommandDetails.commandName.Length + 1).Split(InlineCommands.InlineCommands.CommandDetails.ArgumentSeparator))
 										//  MessageBox.Show(s;)
 									};
-									//treeviewItem.PreviewDragEnter += (snder, evtargs) => { evtargs.Handled = true; };
-									//treeviewItem.PreviewDragOver += (snder, evtargs) => { evtargs.Handled = true; };
-									//treeviewItem.PreviewDrop += (snder, evtargs) => { evtargs.Handled = true; };
+									//treeviewItem.PreviewDragEnter += (tag, evtargs) => { evtargs.Handled = true; };
+									//treeviewItem.PreviewDragOver += (tag, evtargs) => { evtargs.Handled = true; };
+									//treeviewItem.PreviewDrop += (tag, evtargs) => { evtargs.Handled = true; };
 
 									tmpCommandUsercontrol.AddTreeviewItem(treeviewItem);
 
