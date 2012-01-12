@@ -210,6 +210,8 @@ namespace QuickAccess
 			commandsWindow.Hide();
 			commandsWindow.Closed += delegate { this.Close(); };
 
+			bool MustStillAddOverlayToTRAYICON;
+
 			ShowOverlayRibbonMain();
 
 			//System.Windows.Forms.Application.DoEvents();
