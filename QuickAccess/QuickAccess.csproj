@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -214,6 +214,9 @@
     <Compile Include="..\..\SharedClasses\DebugInterop.cs">
       <Link>DebugInterop.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\IconsInterop.cs">
+      <Link>IconsInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\MicrosoftOfficeInterop.cs">
       <Link>MicrosoftOfficeInterop.cs</Link>
     </Compile>
@@ -255,12 +258,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\WPFinterop.cs">
       <Link>WPFinterop.cs</Link>
-    </Compile>
-    <Compile Include="CommandArgumentsWindow.xaml.cs">
-      <DependentUpon>CommandArgumentsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CommandWindow.xaml.cs">
-      <DependentUpon>CommandWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -369,14 +366,6 @@
   <ItemGroup>
     <Page Include="..\..\SharedClasses\UnhandledExceptionsWindow.xaml">
       <Link>UnhandledExceptionsWindow.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CommandArgumentsWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CommandWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

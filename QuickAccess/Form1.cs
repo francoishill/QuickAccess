@@ -42,6 +42,8 @@ namespace QuickAccess
 		System.Windows.Media.Color LabelColorRequiredArgument = System.Windows.Media.Colors.White;
 		System.Windows.Media.Color LabelColorOptionalArgument = System.Windows.Media.Colors.Black;
 
+		Icon originalTrayIcon = null;
+
 		public Form1()
 		{
 			////DynamicDLLs.InvokeDllMethodGetReturnObject(@"D:\Francois\Dev\VSprojects\TestDynamicDllLoadingInQuickAccess\TestDynamicDllLoadingInQuickAccess\bin\Debug\TestDynamicDllLoadingInQuickAccess.dll", "TestClass", "ShowMessage", null);
@@ -53,6 +55,8 @@ namespace QuickAccess
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
 			InitializeComponent();
+
+			originalTrayIcon = notifyIcon1.Icon;
 
 			if (IsApplicationArestartedInstance())
 			{
@@ -209,8 +213,8 @@ namespace QuickAccess
 			commandsWindow.Show();
 			commandsWindow.Hide();
 			commandsWindow.Closed += delegate { this.Close(); };
-
-			bool MustStillAddOverlayToTRAYICON;
+			commandsWindow.GetCommandsUsercontrol().CommandPropertyChangedEvent += new System.ComponentModel.PropertyChangedEventHandler(CommandsUsercontrol_OnCommandPropertyChanged);
+			//bool MustStillAddOverlayToTRAYICON;
 
 			ShowOverlayRibbonMain();
 
@@ -221,6 +225,14 @@ namespace QuickAccess
 			//	foreach (string pluginProjectBaseDir in Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\\Visual Studio 2010\Projects\QuickAccess", "*Plugin"))
 			//		DynamicDLLs.LoadPluginsInDirectory(pluginProjectBaseDir + @"\bin\Release");
 			//CommandsUsercontrol.LoadAllPlugins();
+		}
+
+		void CommandsUsercontrol_OnCommandPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (string.Compare(e.PropertyName, "NumberUnreadMessages", true) == 0)
+			{
+				notifyIcon1.Icon = CommandsUsercontrol.HasUnreadMessages ? IconsInterop.OverlayIconWithCircle(notifyIcon1.Icon, System.Drawing.Brushes.Red, new Point(0, 0), 17) : originalTrayIcon;
+			}
 		}
 
 		private static void AddAllCurrentDomainAssembliesToLoadedList()
@@ -969,7 +981,7 @@ namespace QuickAccess
 				= new ScaleTransform(ScalingFactor, ScalingFactor);
 			MainWindow.Width *= ScalingFactor > 1.8 ? 1.8 : ScalingFactor;
 			MainWindow.Height *= ScalingFactor > 1.2 ? 1.2 : ScalingFactor;
-			
+
 			if (ScalingFactor <= 1)
 			{
 				MainWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
@@ -1067,12 +1079,12 @@ namespace QuickAccess
 
 		private void menuItem2_Click(object sender, EventArgs e)
 		{
-			CommandWindow mw = new CommandWindow("tmp123");
-			mw.AddControl("tmp1", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Black);
-			mw.AddControl("tmp2", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Red);
-			mw.AddControl("tmp3", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Green);
-			mw.AddControl("tmp4", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Blue);
-			mw.Show();
+			//CommandWindow mw = new CommandWindow("tmp123");
+			//mw.AddControl("tmp1", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Black);
+			//mw.AddControl("tmp2", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Red);
+			//mw.AddControl("tmp3", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Green);
+			//mw.AddControl("tmp4", new System.Windows.Controls.TextBox(), System.Windows.Media.Colors.Blue);
+			//mw.Show();
 		}
 
 		private void button1_Click(object sender, EventArgs e)
