@@ -108,10 +108,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Thriple">
-      <HintPath>C:\Francois\Other\DLLs\Thirple\Thriple.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WPFToolkit">
       <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\WPFToolkit.dll</HintPath>
