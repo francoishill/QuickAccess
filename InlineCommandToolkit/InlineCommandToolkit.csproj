@@ -83,6 +83,9 @@
     <Reference Include="MouseGestures">
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\MouseGestures\MouseGestures.dll</HintPath>
     </Reference>
+    <Reference Include="planerator">
+      <HintPath>c:\francois\other\dlls\planerator\planerator.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
