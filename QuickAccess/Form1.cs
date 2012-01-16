@@ -957,6 +957,10 @@ namespace QuickAccess
 			Win32Api.UnregisterHotKey(this.Handle, Win32Api.Hotkey1);
 			//overlayWindow.PreventClosing = false;
 			//overlayWindow.Close();
+
+			CustomBalloonTipwpf.AllowToClose = true;
+			if (CustomBalloonTipwpf.StaticInstance != null)
+				CustomBalloonTipwpf.StaticInstance.Close();
 		}
 
 		private void Form1_VisibleChanged(object sender, EventArgs e)
@@ -1101,6 +1105,18 @@ namespace QuickAccess
 
 			if (webResultsWindow == null) webResultsWindow = new WebResultsWindow();
 			webResultsWindow.ShowDialog();
+		}
+
+		private void menuItem4_Click(object sender, EventArgs e)
+		{
+			for (int i = 1; i <= 10; i++)
+			CustomBalloonTipwpf.ShowCustomBalloonTip(
+				"Title " + i,
+				"Message " + i,
+				2000,
+				CustomBalloonTipwpf.IconTypes.Information,
+				(snder) => { if (snder is CustomBalloonTipwpf.CustomBalloonTipClass) MessageBox.Show("Clicked on: " + (snder as CustomBalloonTipwpf.CustomBalloonTipClass).Message); },
+				Scaling: i/2);
 		}
 	}
 }

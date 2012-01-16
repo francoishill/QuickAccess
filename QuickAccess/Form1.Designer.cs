@@ -44,6 +44,7 @@
 			this.buttonTestCrash = new System.Windows.Forms.Button();
 			this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
+			this.menuItem4 = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
 			// notifyIcon1
@@ -100,7 +101,8 @@
             this.menuItem_Exit,
             this.menuItem_Commands,
             this.menuItem1,
-            this.menuItem3});
+            this.menuItem3,
+            this.menuItem4});
 			this.contextMenu_TrayIcon.Popup += new System.EventHandler(this.contextMenu_TrayIcon_Popup);
 			// 
 			// menuItem_Exit
@@ -189,6 +191,12 @@
 			this.progressBar1.TabIndex = 7;
 			this.progressBar1.Visible = false;
 			// 
+			// menuItem4
+			// 
+			this.menuItem4.Index = 4;
+			this.menuItem4.Text = "Show &ten notifications";
+			this.menuItem4.Click += new System.EventHandler(this.menuItem4_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -246,6 +254,7 @@
 				private System.Windows.Forms.Label labelRecoveryAndRestartSafe;
 				private System.Windows.Forms.ProgressBar progressBar1;
 				private System.Windows.Forms.MenuItem menuItem3;
+				private System.Windows.Forms.MenuItem menuItem4;
     }
 }
 

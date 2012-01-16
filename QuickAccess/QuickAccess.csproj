@@ -204,14 +204,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\SharedClasses\CustomBalloonTip.cs">
-      <Link>CustomBalloonTip.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\CustomBalloonTip.designer.cs">
-      <Link>CustomBalloonTip.designer.cs</Link>
-      <DependentUpon>CustomBalloonTip.cs</DependentUpon>
-    </Compile>
     <Compile Include="..\..\SharedClasses\DebugInterop.cs">
       <Link>DebugInterop.cs</Link>
     </Compile>
@@ -275,10 +267,6 @@
     <Compile Include="WebResultsWindow.xaml.cs">
       <DependentUpon>WebResultsWindow.xaml</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="..\..\SharedClasses\CustomBalloonTip.resx">
-      <Link>CustomBalloonTip.resx</Link>
-      <DependentUpon>CustomBalloonTip.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\..\SharedClasses\OverlayForm.resx">
       <Link>OverlayForm.resx</Link>
       <DependentUpon>OverlayForm.cs</DependentUpon>

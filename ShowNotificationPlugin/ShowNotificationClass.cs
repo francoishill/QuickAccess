@@ -12,13 +12,13 @@ namespace ShowNotificationPlugin
 	{
 		public void Rundefault()
 		{
-			CustomBalloonTipwpf.ShowCustomBalloonTip(
-				"Plugin title",
-				"Plugin message",
-				2000,
-				CustomBalloonTipwpf.IconTypes.Shield,
-				OnClickCallback: delegate { MessageBox.Show("Callback was clicked"); },
-				Scaling: 2);
+			//CustomBalloonTipwpf.ShowCustomBalloonTip(
+			//	"Plugin title",
+			//	"Plugin message",
+			//	2000,
+			//	CustomBalloonTipwpf.IconTypes.Shield,
+			//	OnClickCallback: delegate { MessageBox.Show("Callback was clicked"); },
+			//	Scaling: 2);
 		}
 	}
 }

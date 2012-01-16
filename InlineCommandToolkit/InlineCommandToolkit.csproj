@@ -125,6 +125,10 @@
       <Link>CommandsWindow.xaml.cs</Link>
       <DependentUpon>CommandsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml.cs">
+      <Link>CustomBalloonTipwpf.xaml.cs</Link>
+      <DependentUpon>CustomBalloonTipwpf.xaml</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\DictionaryPropertyGridAdapter.cs">
       <Link>DictionaryPropertyGridAdapter.cs</Link>
     </Compile>
@@ -223,6 +227,10 @@
     </Page>
     <Page Include="..\..\SharedClasses\CommandsWindow.xaml">
       <Link>CommandsWindow.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml">
+      <Link>CustomBalloonTipwpf.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="..\..\SharedClasses\InputBoxWPF.xaml">
