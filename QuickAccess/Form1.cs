@@ -1116,7 +1116,7 @@ namespace QuickAccess
 				2000,
 				CustomBalloonTipwpf.IconTypes.Information,
 				(snder) => { if (snder is CustomBalloonTipwpf.CustomBalloonTipClass) MessageBox.Show("Clicked on: " + (snder as CustomBalloonTipwpf.CustomBalloonTipClass).Message); },
-				Scaling: i/2);
+				Scaling: ((double)i)/(double)2);
 		}
 	}
 }
