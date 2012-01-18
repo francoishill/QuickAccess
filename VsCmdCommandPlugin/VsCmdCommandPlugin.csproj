@@ -66,9 +66,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
-      <Link>WindowsInterop.cs</Link>
-    </Compile>
     <Compile Include="VsCmdCommandPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

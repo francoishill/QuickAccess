@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InlineCommandToolkit;
 using InterfaceForQuickAccessPlugin;
+using SharedClasses;
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
 
 namespace CmdCommandPlugin
