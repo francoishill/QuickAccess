@@ -226,6 +226,9 @@
     <Compile Include="IQuickAccessPlugin.cs" />
     <Compile Include="MouseGestures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\General.xaml.cs">
+      <DependentUpon>General.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="..\..\SharedClasses\CommandsUsercontrol.xaml">
@@ -246,6 +249,9 @@
     </Page>
     <Page Include="..\..\SharedClasses\PropertiesEditor.xaml">
       <Link>PropertiesEditor.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\General.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

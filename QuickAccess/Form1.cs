@@ -231,7 +231,15 @@ namespace QuickAccess
 		{
 			if (string.Compare(e.PropertyName, "NumberUnreadMessages", true) == 0)
 			{
-				notifyIcon1.Icon = CommandsUsercontrol.HasUnreadMessages ? IconsInterop.OverlayIconWithCircle(notifyIcon1.Icon, System.Drawing.Brushes.Red, new Point(0, 0), 17) : originalTrayIcon;
+				//notifyIcon1.Icon = DynamicDLLs.HasUnreadMessages ? IconsInterop.OverlayIconWithCircle(notifyIcon1.Icon, System.Drawing.Brushes.Red, new Point(0, 0), 17) : originalTrayIcon;
+				notifyIcon1.Icon = DynamicDLLs.HasUnreadMessages ?
+					IconsInterop.OverlayIconWithFourCircles(
+						notifyIcon1.Icon,
+						DynamicDLLs.HasUnreadErrorMessages ? System.Drawing.Brushes.Red : System.Drawing.Brushes.Transparent,
+						DynamicDLLs.HasUnreadSuccessMessages ? System.Drawing.Brushes.Green : System.Drawing.Brushes.Transparent,
+						DynamicDLLs.HasUnreadNoteworhyMessages ? System.Drawing.Brushes.Purple : System.Drawing.Brushes.Transparent,
+						DynamicDLLs.HasUnreadSubtleMessages ? System.Drawing.Brushes.Gray : System.Drawing.Brushes.Transparent)
+					: originalTrayIcon;
 			}
 		}
 
@@ -1110,13 +1118,13 @@ namespace QuickAccess
 		private void menuItem4_Click(object sender, EventArgs e)
 		{
 			for (int i = 1; i <= 10; i++)
-			CustomBalloonTipwpf.ShowCustomBalloonTip(
-				"Title " + i,
-				"Message " + i,
-				2000,
-				CustomBalloonTipwpf.IconTypes.Information,
-				(snder) => { if (snder is CustomBalloonTipwpf.CustomBalloonTipClass) MessageBox.Show("Clicked on: " + (snder as CustomBalloonTipwpf.CustomBalloonTipClass).Message); },
-				Scaling: ((double)i)/(double)2);
+				CustomBalloonTipwpf.ShowCustomBalloonTip(
+					"Title " + i,
+					"Message " + i,
+					2000,
+					CustomBalloonTipwpf.IconTypes.Information,
+					(snder) => { if (snder is CustomBalloonTipwpf.CustomBalloonTipClass) MessageBox.Show("Clicked on: " + (snder as CustomBalloonTipwpf.CustomBalloonTipClass).Message); },
+					Scaling: ((double)i) / (double)2);
 		}
 	}
 }
