@@ -62,26 +62,103 @@
 				</Trigger>
 			</ControlTemplate.Triggers>
 		</ControlTemplate>
+		<Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
+		<Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
+		<Color x:Key="BorderMediumColor">#33888888</Color>
+		<Color x:Key="ControlLightColor">White</Color>
+		<LinearGradientBrush x:Key='GridBackgroundBrush'
+												 StartPoint='0,0'
+												 EndPoint='0,1'>
+			<!---from(#666), color-stop(25%,#999), to(#666))-->
+			<GradientStop Color='#666'
+										Offset='0' />
+			<GradientStop Color='#999'
+										Offset='0.25' />
+			<GradientStop Color='#666'
+										Offset='1' />
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key='TextboxBackgroundBrush'
+												 StartPoint='0,0'
+												 EndPoint='0,1'>
+			<GradientStop Color='#F0F0F0'
+										Offset='0' />
+			<GradientStop Color='#FFF'
+										Offset='0.75' />
+			<GradientStop Color='#F0F0F0'
+										Offset='1' />
+		</LinearGradientBrush>
+		<Style TargetType="{x:Type TextBox}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type TextBoxBase}">
+						<Border Name="Border"
+										CornerRadius="2"
+										Padding="2"
+										BorderThickness="1"
+										Background='{StaticResource TextboxBackgroundBrush}'>
+							<!--<Border.Background>
+								<SolidColorBrush Color="{StaticResource ControlLightColor}" />
+							</Border.Background>-->
+							<Border.BorderBrush>
+								<SolidColorBrush Color="{StaticResource BorderMediumColor}" />
+							</Border.BorderBrush>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates">
+									<VisualState x:Name="Normal" />
+									<VisualState x:Name="Disabled">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetName="Border"
+																										Storyboard.TargetProperty="(Panel.Background).
+                    (SolidColorBrush.Color)">
+												<EasingColorKeyFrame KeyTime="0"
+																						 Value="{StaticResource DisabledControlLightColor}" />
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="ReadOnly">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetName="Border"
+																										Storyboard.TargetProperty="(Panel.Background).
+                    (SolidColorBrush.Color)">
+												<EasingColorKeyFrame KeyTime="0"
+																						 Value="{StaticResource DisabledControlDarkColor}" />
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="MouseOver" />
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<ScrollViewer Margin="0"
+														x:Name="PART_ContentHost" />
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</Window.Resources>
-	<Grid>
+	<Grid Background='{StaticResource GridBackgroundBrush}'>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
+			<RowDefinition Height='45' />
 			<RowDefinition Height='30' />
-			<RowDefinition Height='20' />
 			<RowDefinition />
 		</Grid.RowDefinitions>
 		<TextBox x:Name='textBoxSearchQuery'
 						 Grid.Row='0'
 						 Grid.ColumnSpan='2'
 						 VerticalAlignment='Top'
-						 Height='20'
+						 Height='35'
+						 FontSize='20'
+						 Foreground='#070'
+						 Margin='5'
 						 KeyDown='textBoxSearchQuery_KeyDown'
 						 TextChanged='textBoxSearchQuery_TextChanged' />
 		<TextBox x:Name='textBoxFilterResults'
 						 Margin='100,0,0,0'
+						 Height='20'
 						 Grid.Row='1'
 						 FontSize='10'
 						 Foreground='Red'
@@ -89,6 +166,8 @@
 		<ListBox x:Name='listBox1'
 						 Grid.Column='0'
 						 Grid.Row='2'
+						 BorderThickness='0'
+						 Background='{StaticResource TextboxBackgroundBrush}'
 						 SelectionChanged="listBox1_SelectionChanged">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
@@ -120,7 +199,8 @@
 								Grid.Row='2' />-->
 		<Custom:WebControl Name='webSourceControl1'
 											 Grid.Column='1'
-											 Grid.Row='2' />
+											 Grid.Row='2'
+											 Margin='3,0,0,0'/>
 		<!--<Custom:WebSourceControl Name='webSourceControl1'
 														 Grid.Column='1'
 														 Grid.Row='2'/>-->

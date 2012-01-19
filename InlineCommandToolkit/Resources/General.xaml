@@ -692,9 +692,25 @@
 						</Style.Resources>
 					</Style>-->
 		</ResourceDictionary>
-		<!--Brushes-->
+		<!--Easily changeable colors-->
 		<ResourceDictionary>
-			<LinearGradientBrush x:Key='LinearGradientBrush_CommandsWindowBackground'
+			<!--<SolidColorBrush x:Key='WindowBackgroundBrush'
+											 Color='Transparent' />
+			<SolidColorBrush x:Key='CommandArgumentAutoCompleteBoxBackgroundBrush'
+											 Color='#77ffffff' />
+			<LinearGradientBrush x:Key='CommandArgumentAutoCompleteBoxDropdownItemBackground'
+													 StartPoint='0,0'
+													 EndPoint='0,1'>
+				<GradientStop Color='#000'
+											Offset='0' />
+				<GradientStop Color='#333'
+											Offset='0.7' />
+				<GradientStop Color='#111'
+											Offset='1' />
+			</LinearGradientBrush>
+			<SolidColorBrush x:Key='CommandArgumentAutoCompleteBoxDropdownItemForeground'
+											 Color='#ddd'/>-->
+			<LinearGradientBrush x:Key='WindowBackgroundBrush'
 													 StartPoint="0,0"
 													 EndPoint="0,1">
 				<GradientStop Color="#fff"
@@ -702,6 +718,43 @@
 				<GradientStop Color="#eee"
 											Offset="0.7" />
 				<GradientStop Color="#f0f0f0"
+											Offset="1" />
+			</LinearGradientBrush>
+			<SolidColorBrush x:Key='CommandArgumentAutoCompleteBoxBackgroundBrush'
+											 Color='#fff' />
+			<LinearGradientBrush x:Key='CommandArgumentAutoCompleteBoxDropdownItemBackground'
+													 StartPoint='0,0'
+													 EndPoint='0,1'>
+				<GradientStop Color='#ddd'
+											Offset='0' />
+				<GradientStop Color='#f0f0f0'
+											Offset='0.75' />
+				<GradientStop Color='#ddd'
+											Offset='1' />
+			</LinearGradientBrush>
+			<SolidColorBrush x:Key='CommandArgumentAutoCompleteBoxDropdownItemForeground'
+											 Color='#333'/>
+		</ResourceDictionary>
+		<!--Brushes-->
+		<ResourceDictionary>
+			<LinearGradientBrush x:Key='EmbeddedButtonBackgroundBrush'
+													 StartPoint="0,0"
+													 EndPoint="0,1">
+				<GradientStop Color="#fff"
+											Offset="0" />
+				<GradientStop Color="#eee"
+											Offset="0.7" />
+				<GradientStop Color="#f0f0f0"
+											Offset="1" />
+			</LinearGradientBrush>
+			<LinearGradientBrush x:Key='CommandListBoxItemMainBorderBackgroundBrush'
+													 StartPoint="0,0"
+													 EndPoint="0,1">
+				<GradientStop Color="#456"
+											Offset="0" />
+				<GradientStop Color="#345"
+											Offset="0.7" />
+				<GradientStop Color="#405060"
 											Offset="1" />
 			</LinearGradientBrush>
 		</ResourceDictionary>
@@ -1044,8 +1097,6 @@
 					</Border>
 				</Grid>
 			</ControlTemplate>
-			<!--<ControlTemplate x:Key="TextBoxBaseControlTemplate"
-                                     TargetType="{x:Type input:AutoCompleteBox}">-->
 			<ControlTemplate x:Key="TextBoxBaseControlTemplate"
 											 TargetType="{x:Type TextBoxBase}">
 				<Border Background="{TemplateBinding Background}"
@@ -1054,13 +1105,6 @@
 								CornerRadius="5"
 								Padding="2">
 					<DockPanel>
-						<!--<RatherPutActiveCommandNameButtonAndArgumentsListOutsideTheAutoCompleteBox />
-								<FixDownKeyIssue_UncommentFollowingCode_CannotMoveUpDownWithArrowKeys />-->
-						<!--<ListBox>
-									<ListBoxItem>Hallo1</ListBoxItem>
-									<ListBoxItem>Hallo2</ListBoxItem>
-									<ListBoxItem>Hallo3</ListBoxItem>
-								</ListBox>-->
 						<Border x:Name="EmbeddedButton"
 										DockPanel.Dock="Left"
 										BorderBrush="#ccc"
@@ -1069,23 +1113,9 @@
 										Padding="3,0,3,3"
 										Margin="0,0,3,0"
 										MouseLeftButtonDown='EmbeddedButton_MouseLeftButtonDown'
-										MouseRightButtonUp='EmbeddedButton_MouseRightButtonDown'>
-							<Border.Background>
-								<LinearGradientBrush StartPoint="0,0"
-																		 EndPoint="0,1">
-									<GradientStop Color="#fff"
-																Offset="0" />
-									<GradientStop Color="#eee"
-																Offset="0.7" />
-									<GradientStop Color="#f0f0f0"
-																Offset="1" />
-								</LinearGradientBrush>
-							</Border.Background>
+										MouseRightButtonUp='EmbeddedButton_MouseRightButtonDown'
+										Background='{StaticResource EmbeddedButtonBackgroundBrush}'>
 							<DockPanel VerticalAlignment='Center'>
-								<!--<TextBlock DockPanel.Dock='Left'
-															 x:Name="EmbeddedButtonTextBlock"
-															 Foreground="#555"
-															 Text="Halloo">-->
 								<TextBlock DockPanel.Dock='Left'
 													 x:Name="EmbeddedButtonTextBlock"
 													 Foreground="#555"
@@ -1097,8 +1127,6 @@
 											</StackPanel>
 										</TextBlock.ToolTip>
 									</TextBlock>
-								<!--<TextBlock DockPanel.Dock='Right'
-															 Text='{Binding Description, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}'/>-->
 							</DockPanel>
 						</Border>
 						<Border DockPanel.Dock='Left'>
@@ -1125,18 +1153,8 @@
 														CornerRadius="3"
 														Padding="3,0,3,3"
 														Margin="0,0,3,0"
-														Opacity='0.7'>
-											<Border.Background>
-												<LinearGradientBrush StartPoint="0,0"
-																						 EndPoint="0,1">
-													<GradientStop Color="#456"
-																				Offset="0" />
-													<GradientStop Color="#345"
-																				Offset="0.7" />
-													<GradientStop Color="#405060"
-																				Offset="1" />
-												</LinearGradientBrush>
-											</Border.Background>
+														Opacity='0.7'
+														Background='{StaticResource CommandListBoxItemMainBorderBackgroundBrush}'>
 											<DockPanel>
 												<DockPanel DockPanel.Dock='Top'
 																	 LastChildFill='True'
@@ -1190,7 +1208,7 @@
 																								 BorderThickness='0'
 																								 MinimumPrefixLength='0'
 																								 MinimumPopulateDelay='0'
-																								 Background='#77ffffff'
+																								 Background='{StaticResource CommandArgumentAutoCompleteBoxBackgroundBrush}'
 																								 Text='{Binding CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}'
 																								 Tag='{Binding DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}'
 																								 ItemsSource='{Binding PredefinedAutocompleteList, UpdateSourceTrigger=PropertyChanged}'
@@ -1213,21 +1231,8 @@
 														</input:AutoCompleteBox.ContextMenu>
 														<input:AutoCompleteBox.ItemContainerStyle>
 															<Style TargetType='ListBoxItem'>
-																<Setter Property="Background">
-																	<Setter.Value>
-																		<LinearGradientBrush StartPoint='0,0'
-																												 EndPoint='0,1'>
-																			<GradientStop Color='#000'
-																										Offset='0' />
-																			<GradientStop Color='#333'
-																										Offset='0.7' />
-																			<GradientStop Color='#111'
-																										Offset='1' />
-																		</LinearGradientBrush>
-																	</Setter.Value>
-																</Setter>
-																<Setter Property="BorderBrush"
-																				Value="Pink" />
+																<Setter Property="Background"
+																				Value='{StaticResource CommandArgumentAutoCompleteBoxDropdownItemBackground}' />
 															</Style>
 														</input:AutoCompleteBox.ItemContainerStyle>
 														<input:AutoCompleteBox.ItemTemplate>
@@ -1239,7 +1244,7 @@
 																	<TextBlock DockPanel.Dock='Right'
 																						 Padding='3,0'
 																						 FontSize='14'
-																						 Foreground='#ddd'
+																						 Foreground='{StaticResource CommandArgumentAutoCompleteBoxDropdownItemForeground}'
 																						 Text="{Binding}"
 																						 VerticalAlignment="Center" />
 																</DockPanel>
