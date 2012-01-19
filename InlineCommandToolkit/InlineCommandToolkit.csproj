@@ -169,6 +169,10 @@
       <Link>OverlayGesturesForm.designer.cs</Link>
       <DependentUpon>OverlayGesturesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\..\SharedClasses\OverlayRibbon.xaml.cs">
+      <Link>OverlayRibbon.xaml.cs</Link>
+      <DependentUpon>OverlayRibbon.xaml</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\PickItemForm.cs">
       <Link>PickItemForm.cs</Link>
       <SubType>Form</SubType>
@@ -247,8 +251,18 @@
       <Link>InputBoxWPF.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="..\..\SharedClasses\OverlayRibbon.xaml">
+      <Link>OverlayRibbon.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="..\..\SharedClasses\PropertiesEditor.xaml">
       <Link>PropertiesEditor.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\DefaultStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\GlassStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\General.xaml">

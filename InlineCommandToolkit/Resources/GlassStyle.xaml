@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+										xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary>
+			<SolidColorBrush x:Key='WindowBackgroundBrush'
+											 Color='Transparent' />
+			<SolidColorBrush x:Key='CommandArgumentAutoCompleteBoxBackgroundBrush'
+											 Color='#77ffffff' />
+			<LinearGradientBrush x:Key='CommandArgumentAutoCompleteBoxDropdownItemBackground'
+													 StartPoint='0,0'
+													 EndPoint='0,1'>
+				<GradientStop Color='#000'
+											Offset='0' />
+				<GradientStop Color='#333'
+											Offset='0.7' />
+				<GradientStop Color='#111'
+											Offset='1' />
+			</LinearGradientBrush>
+			<SolidColorBrush x:Key='CommandArgumentAutoCompleteBoxDropdownItemForeground'
+											 Color='#ddd' />
+		</ResourceDictionary>
+	</ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

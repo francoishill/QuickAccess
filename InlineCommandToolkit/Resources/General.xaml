@@ -7,6 +7,8 @@
 										xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
 										xmlns:input="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit">
 	<ResourceDictionary.MergedDictionaries>
+		<!--<ResourceDictionary Source='pack://application:,,,/InlineCommandToolkit;component/Resources/GlassStyle.xaml' />-->
+		<ResourceDictionary Source='pack://application:,,,/InlineCommandToolkit;component/Resources/DefaultStyle.xaml' />
 		<!--Presentation frameworks (will have to move the one level up as there cannot be a ResourceDictionary nested inside another-->
 		<ResourceDictionary>
 			<!--<ResourceDictionary Source='/PresentationFrameawork.Aero,Version=3.0.0.0,Culture=neutral,PublicKeyToken=31bf3856ad364e35,ProcessorArchitecture=MSIL;component/themes/aero.normalcolor.xaml' />-->
@@ -17,9 +19,12 @@
 			<!--<ResourceDictionary Source='/PresentationFramework.Luna,Version=3.0.0.0,Culture=neutral,PublicKeyToken=31bf3856ad364e35;component/themes/luna.normalcolor.xaml' />-->
 			<!--<ResourceDictionary Source='Themes/Generic.xaml' />-->
 		</ResourceDictionary>
-		<!--Style CommentedOut ScrollViewer and Scrollbars-->
+		<!--CommentedOut (couple of separate commented out ResourceDictionaries)-->
 		<ResourceDictionary>
-			<!--<Style x:Key="{x:Type ScrollViewer}"
+			<ResourceDictionary.MergedDictionaries>
+				<!--Style CommentedOut ScrollViewer and Scrollbars-->
+				<ResourceDictionary>
+					<!--<Style x:Key="{x:Type ScrollViewer}"
 						 TargetType="{x:Type ScrollViewer}">
 				<Setter Property="HorizontalScrollBarVisibility"
 								Value="Hidden" />
@@ -386,10 +391,10 @@
 					</MultiTrigger>
 				</Style.Triggers>
 			</Style>-->
-		</ResourceDictionary>
-		<!--Style AnotherCommentedOut ScrollViewer and Scrollbars-->
-		<ResourceDictionary>
-			<!--<Style x:Key="{x:Type ScrollBar}"
+				</ResourceDictionary>
+				<!--Style AnotherCommentedOut ScrollViewer and Scrollbars-->
+				<ResourceDictionary>
+					<!--<Style x:Key="{x:Type ScrollBar}"
 						 TargetType="{x:Type ScrollBar}">
 				<Style.Triggers>
 					<Trigger Property="IsMouseOver"
@@ -440,10 +445,10 @@
 					</Setter.Value>
 				</Setter>
 			</Style>-->
-		</ResourceDictionary>
-		<!--Style CommentedOut (previous style for AutoCompleteBox_InlineCommands-->
-		<ResourceDictionary>
-			<!--<Style x:Key='AutoCompleteBox_InlineCommands'
+				</ResourceDictionary>
+				<!--Style CommentedOut (previous style for AutoCompleteBox_InlineCommands-->
+				<ResourceDictionary>
+					<!--<Style x:Key='AutoCompleteBox_InlineCommands'
 						 TargetType="{x:Type input:AutoCompleteBox}">
 				<Setter Property="IsTabStop"
 								Value="False" />
@@ -641,10 +646,10 @@
 					</Setter.Value>
 				</Setter>
 			</Style>-->
-		</ResourceDictionary>
-		<!--Style AnotherCommentedOut (previous style for AutoCompleteBox_InlineCommands-->
-		<ResourceDictionary>
-			<!--<Style x:Key="autoCompleteTextBox"
+				</ResourceDictionary>
+				<!--Style AnotherCommentedOut (previous style for AutoCompleteBox_InlineCommands-->
+				<ResourceDictionary>
+					<!--<Style x:Key="autoCompleteTextBox"
 						 TargetType="{x:Type TextBox}">
 				<Setter Property="Template">
 					<Setter.Value>
@@ -672,10 +677,10 @@
 					</Setter.Value>
 				</Setter>
 			</Style>-->
-		</ResourceDictionary>
-		<!--Styles CommentedOut (some HighlightBrushKey values for ListBox and ListBoxItem-->
-		<ResourceDictionary>
-			<!--<Style TargetType="{x:Type ListBoxItem}">
+				</ResourceDictionary>
+				<!--Styles CommentedOut (some HighlightBrushKey values for ListBox and ListBoxItem-->
+				<ResourceDictionary>
+					<!--<Style TargetType="{x:Type ListBoxItem}">
 						<Style.Resources>
 							<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
 															 Color="Transparent" />
@@ -691,49 +696,61 @@
 															 Color="Transparent" />
 						</Style.Resources>
 					</Style>-->
-		</ResourceDictionary>
-		<!--Easily changeable colors-->
-		<ResourceDictionary>
-			<!--<SolidColorBrush x:Key='WindowBackgroundBrush'
-											 Color='Transparent' />
-			<SolidColorBrush x:Key='CommandArgumentAutoCompleteBoxBackgroundBrush'
-											 Color='#77ffffff' />
-			<LinearGradientBrush x:Key='CommandArgumentAutoCompleteBoxDropdownItemBackground'
-													 StartPoint='0,0'
-													 EndPoint='0,1'>
-				<GradientStop Color='#000'
-											Offset='0' />
-				<GradientStop Color='#333'
-											Offset='0.7' />
-				<GradientStop Color='#111'
-											Offset='1' />
-			</LinearGradientBrush>
-			<SolidColorBrush x:Key='CommandArgumentAutoCompleteBoxDropdownItemForeground'
-											 Color='#ddd'/>-->
-			<LinearGradientBrush x:Key='WindowBackgroundBrush'
-													 StartPoint="0,0"
-													 EndPoint="0,1">
-				<GradientStop Color="#fff"
-											Offset="0" />
-				<GradientStop Color="#eee"
-											Offset="0.7" />
-				<GradientStop Color="#f0f0f0"
-											Offset="1" />
-			</LinearGradientBrush>
-			<SolidColorBrush x:Key='CommandArgumentAutoCompleteBoxBackgroundBrush'
-											 Color='#fff' />
-			<LinearGradientBrush x:Key='CommandArgumentAutoCompleteBoxDropdownItemBackground'
-													 StartPoint='0,0'
-													 EndPoint='0,1'>
-				<GradientStop Color='#ddd'
-											Offset='0' />
-				<GradientStop Color='#f0f0f0'
-											Offset='0.75' />
-				<GradientStop Color='#ddd'
-											Offset='1' />
-			</LinearGradientBrush>
-			<SolidColorBrush x:Key='CommandArgumentAutoCompleteBoxDropdownItemForeground'
-											 Color='#333'/>
+				</ResourceDictionary>
+				<!--Styles CommentedOut (some Button styles (think they were used for the hide/close button on the CommandsUsercontrol), NOT really sure whether they're used)-->
+				<ResourceDictionary>
+					<!--<Style x:Key="BaseButtonStyle"
+						 TargetType="{x:Type ButtonBase}">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type ButtonBase}">
+							<theme:ButtonChrome x:Name="Chrome"
+																	Background="{TemplateBinding Background}"
+																	BorderBrush="{TemplateBinding BorderBrush}"
+																	RenderDefaulted="{TemplateBinding Button.IsDefaulted}"
+																	RenderMouseOver="{TemplateBinding IsMouseOver}"
+																	RenderPressed="{TemplateBinding IsPressed}"
+																	SnapsToDevicePixels="true">
+								<ContentPresenter Margin="{TemplateBinding Padding}"
+																	VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+																	HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+																	RecognizesAccessKey="True"
+																	SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+							</theme:ButtonChrome>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsKeyboardFocused"
+												 Value="true">
+									<Setter TargetName="Chrome"
+													Property="RenderDefaulted"
+													Value="true" />
+								</Trigger>
+								<Trigger Property="ToggleButton.IsChecked"
+												 Value="true">
+									<Setter TargetName="Chrome"
+													Property="RenderPressed"
+													Value="true" />
+								</Trigger>
+								<Trigger Property="IsEnabled"
+												 Value="false">
+									<Setter Property="Foreground"
+													Value="#ADADAD" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<Style x:Key="{x:Type ToggleButton}"
+						 BasedOn="{StaticResource BaseButtonStyle}"
+						 TargetType="{x:Type ToggleButton}" />
+			<Style x:Key="{x:Type RepeatButton}"
+						 BasedOn="{StaticResource BaseButtonStyle}"
+						 TargetType="{x:Type RepeatButton}" />
+			<Style x:Key="{x:Type Button}"
+						 BasedOn="{StaticResource BaseButtonStyle}"
+						 TargetType="{x:Type Button}" />-->
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 		<!--Brushes-->
 		<ResourceDictionary>
@@ -937,7 +954,7 @@
 				</Setter>
 			</Style>
 		</ResourceDictionary>
-		<!--DrawingImages-->
+		<!--DrawingImages (TaskBarItem)-->
 		<ResourceDictionary>
 			<DrawingImage x:Key="Button1Image">
 				<DrawingImage.Drawing>
@@ -1365,59 +1382,6 @@
 				</Border>
 			</ControlTemplate>
 		</ResourceDictionary>
-		<!--Styles (some Button style, NOT really sure whether they're used)-->
-		<ResourceDictionary>
-			<Style x:Key="BaseButtonStyle"
-						 TargetType="{x:Type ButtonBase}">
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="{x:Type ButtonBase}">
-							<theme:ButtonChrome x:Name="Chrome"
-																	Background="{TemplateBinding Background}"
-																	BorderBrush="{TemplateBinding BorderBrush}"
-																	RenderDefaulted="{TemplateBinding Button.IsDefaulted}"
-																	RenderMouseOver="{TemplateBinding IsMouseOver}"
-																	RenderPressed="{TemplateBinding IsPressed}"
-																	SnapsToDevicePixels="true">
-								<ContentPresenter Margin="{TemplateBinding Padding}"
-																	VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-																	HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-																	RecognizesAccessKey="True"
-																	SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-							</theme:ButtonChrome>
-							<ControlTemplate.Triggers>
-								<Trigger Property="IsKeyboardFocused"
-												 Value="true">
-									<Setter TargetName="Chrome"
-													Property="RenderDefaulted"
-													Value="true" />
-								</Trigger>
-								<Trigger Property="ToggleButton.IsChecked"
-												 Value="true">
-									<Setter TargetName="Chrome"
-													Property="RenderPressed"
-													Value="true" />
-								</Trigger>
-								<Trigger Property="IsEnabled"
-												 Value="false">
-									<Setter Property="Foreground"
-													Value="#ADADAD" />
-								</Trigger>
-							</ControlTemplate.Triggers>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
-			<Style x:Key="{x:Type ToggleButton}"
-						 BasedOn="{StaticResource BaseButtonStyle}"
-						 TargetType="{x:Type ToggleButton}" />
-			<Style x:Key="{x:Type RepeatButton}"
-						 BasedOn="{StaticResource BaseButtonStyle}"
-						 TargetType="{x:Type RepeatButton}" />
-			<Style x:Key="{x:Type Button}"
-						 BasedOn="{StaticResource BaseButtonStyle}"
-						 TargetType="{x:Type Button}" />
-		</ResourceDictionary>
 		<!--ControlTemplate Button style for inside Messages Richtextbox for commands-->
 		<ResourceDictionary>
 			<ControlTemplate TargetType='{x:Type Button}'
@@ -1461,7 +1425,7 @@
 				</ControlTemplate.Triggers>
 			</ControlTemplate>
 		</ResourceDictionary>
-		<!--Styles (button SemiTransparentUntilHover-->
+		<!--Styles (button SemiTransparentUntilHover)-->
 		<ResourceDictionary>
 			<Style x:Key='ButtonStyleSemiTransparentUntilHover'
 						 TargetType="{x:Type Button}">
@@ -1477,7 +1441,7 @@
 				</Style.Triggers>
 			</Style>
 		</ResourceDictionary>
-		<!--Style ScrollViewer and Scrollbars-->
+		<!--Style ScrollViewer and Scrollbars (nice thin gray scrollbars, vertical scrollbar on left and not right)-->
 		<ResourceDictionary>
 			<!-- All the following is required to Re-Style the ScrollViewer, see 
              http://msdn2.microsoft.com/en-us/library/aa970847(VS.85).aspx

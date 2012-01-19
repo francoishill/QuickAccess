@@ -212,6 +212,15 @@ namespace QuickAccess
 			commandsWindow = new CommandsWindow(this);
 			commandsWindow.Show();
 			commandsWindow.Hide();
+			commandsWindow.MouseClickedRequestToOpenOverlayWindow += (snder, evtargs) =>
+			{
+				if (!evtargs.WasRightClick)
+				ShowAndActivateMainWindow(evtargs.ScalingFactor);
+				else
+				{
+					ShowOverlayGesturesWindow();
+				}
+			};
 			commandsWindow.Closed += delegate { this.Close(); };
 			commandsWindow.GetCommandsUsercontrol().CommandPropertyChangedEvent += new System.ComponentModel.PropertyChangedEventHandler(CommandsUsercontrol_OnCommandPropertyChanged);
 			//bool MustStillAddOverlayToTRAYICON;
@@ -349,23 +358,7 @@ namespace QuickAccess
 						ShowAndActivateMainWindow(evtargs.ScalingFactor);
 					else
 					{
-						if (overlayGestures != null && overlayGestures.IsDisposed)
-							overlayGestures = null;
-						if (overlayGestures == null)
-						{
-							overlayGestures = new OverlayGesturesForm();
-							overlayGestures.FormClosed += (snder, ea) =>
-							{
-								Form thisForm = snder as Form;
-								if (!thisForm.IsDisposed)
-									thisForm.Dispose();
-								thisForm = null;
-							};
-						}
-						////overlayGestures.Closed += delegate { overlayGestures = null; };
-						overlayGestures.ShowDialog();
-						//overlayGestures = null;
-						//WindowsInterop.ShowAndActivateWindow(overlayGestures);
+						ShowOverlayGesturesWindow();
 					}
 				};
 				//overlayRibbonMain.MouseRightButtonUp += (tag, evtargs) =>
@@ -379,6 +372,27 @@ namespace QuickAccess
 				EventAddedMouseClickedRequestToOpenOverlayWindow = true;
 			}
 			overlayRibbonMain.Show();
+		}
+
+		private void ShowOverlayGesturesWindow()
+		{
+			if (overlayGestures != null && overlayGestures.IsDisposed)
+				overlayGestures = null;
+			if (overlayGestures == null)
+			{
+				overlayGestures = new OverlayGesturesForm();
+				overlayGestures.FormClosed += (snder, ea) =>
+				{
+					Form thisForm = snder as Form;
+					if (!thisForm.IsDisposed)
+						thisForm.Dispose();
+					thisForm = null;
+				};
+			}
+			////overlayGestures.Closed += delegate { overlayGestures = null; };
+			overlayGestures.ShowDialog();
+			//overlayGestures = null;
+			//WindowsInterop.ShowAndActivateWindow(overlayGestures);
 		}
 
 		//OverlayRibbon overlayRibbonMain = new OverlayRibbon();
