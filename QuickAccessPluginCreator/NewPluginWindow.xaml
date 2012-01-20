@@ -1,0 +1,17 @@
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
+				x:Class="QuickAccessPluginCreator.NewPluginWindow"
+				Title="MainWindow"
+				Height="350"
+				Width="525"
+				WindowStartupLocation='CenterScreen'>
+	<Grid>
+		<extToolkit:WatermarkTextBox HorizontalAlignment="Left"
+																 TextWrapping="Wrap"
+																 MinWidth='150'
+																 IsReadOnly='False'
+																 Watermark='Enter plugin name here...'
+																 VerticalAlignment="Top" />
+	</Grid>
+</Window>

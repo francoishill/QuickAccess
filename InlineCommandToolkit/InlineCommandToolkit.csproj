@@ -116,6 +116,9 @@
     <Reference Include="WPFToolkit">
       <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\WPFToolkit.dll</HintPath>
     </Reference>
+    <Reference Include="wpftoolkit.extended">
+      <HintPath>c:\francois\other\dlls\wpf toolkit (extended)\wpftoolkit.extended.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">

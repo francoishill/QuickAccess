@@ -19,6 +19,7 @@ using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStri
 using SharedClasses;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
+using QuickAccessPluginCreator;
 
 namespace QuickAccess
 {
@@ -1139,6 +1140,14 @@ namespace QuickAccess
 					CustomBalloonTipwpf.IconTypes.Information,
 					(snder) => { if (snder is CustomBalloonTipwpf.CustomBalloonTipClass) MessageBox.Show("Clicked on: " + (snder as CustomBalloonTipwpf.CustomBalloonTipClass).Message); },
 					Scaling: ((double)i) / (double)2);
+		}
+
+		NewPluginWindow newPluginWindow;
+		private void menuItem5_Click(object sender, EventArgs e)
+		{
+			if (newPluginWindow == null)
+				newPluginWindow = new NewPluginWindow();
+			WindowsInterop.ShowAndActivateWindow(newPluginWindow);
 		}
 	}
 }
