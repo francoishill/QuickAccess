@@ -13,7 +13,7 @@ using System.Threading;
 using UnhandledExceptions;
 using PropertyInterceptor;
 using DynamicDLLsInterop;
-using InterfaceForQuickAccessPlugin;
+//using InterfaceForQuickAccessPlugin;
 using ICommandWithHandler = InlineCommandToolkit.InlineCommands.ICommandWithHandler;//InlineCommands.CommandsManagerClass.ICommandWithHandler;
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
 using SharedClasses;
@@ -137,7 +137,12 @@ namespace QuickAccess
 
 			//MessageBox.Show("FtpPassword = " + GlobalSettings.VisualStudioInteropSettings.Instance.FtpPassword);
 
-			UserMessages.iconForMessages = this.Icon;
+			UserMessages.iconForMessages = this.Icon;//IconsInterop.IconToImageSource(this.Icon);
+
+			//UserMessages.Confirm("Hallo");
+			//System.Windows.Window w = UserMessages.GetTopmostForm();
+			//w.Close();
+			//w = null;
 
 			//if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "InlineCommandToolkit.dll"))
 			//	DynamicDLLs.LoadPlugin(AppDomain.CurrentDomain.BaseDirectory + "InlineCommandToolkit.dll");

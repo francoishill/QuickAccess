@@ -184,6 +184,10 @@
       <Link>PickItemForm.designer.cs</Link>
       <DependentUpon>PickItemForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\..\SharedClasses\PickItemWPF.xaml.cs">
+      <Link>PickItemWPF.xaml.cs</Link>
+      <DependentUpon>PickItemWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\PropertiesEditor.xaml.cs">
       <Link>PropertiesEditor.xaml.cs</Link>
       <DependentUpon>PropertiesEditor.xaml</DependentUpon>
@@ -256,6 +260,10 @@
     </Page>
     <Page Include="..\..\SharedClasses\OverlayRibbon.xaml">
       <Link>OverlayRibbon.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\..\SharedClasses\PickItemWPF.xaml">
+      <Link>PickItemWPF.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="..\..\SharedClasses\PropertiesEditor.xaml">

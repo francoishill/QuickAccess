@@ -9,7 +9,8 @@
     <RootNamespace>QuickAccessPluginCreator</RootNamespace>
     <AssemblyName>QuickAccessPluginCreator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -55,6 +56,8 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <EmbeddedResource Include="Templates\CommandPluginTemplate\NewCommandPluginTemplate.cs" />
+    <EmbeddedResource Include="Templates\CommandPluginTemplate\Properties\AssemblyInfo.cs" />
     <Page Include="NewPluginWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +103,9 @@
       <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
       <Name>InlineCommandToolkit</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\CommandPluginTemplate\NewCommandPluginTemplate.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

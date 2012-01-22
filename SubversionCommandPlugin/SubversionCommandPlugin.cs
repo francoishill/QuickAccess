@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InlineCommandToolkit;
-using InterfaceForQuickAccessPlugin;
+//using InterfaceForQuickAccessPlugin;
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
 
 namespace SubversionCommandPlugin
@@ -18,15 +18,15 @@ namespace SubversionCommandPlugin
 		public override string ArgumentsExample { get { return @"commit c:\dev86\myproject1;Bug fixed where it automatically..."; } }
 
 		private readonly ObservableCollection<string>[] predefinedArgumentsList =
-				{
-					new ObservableCollection<string>() { "commit", "update", "status", "statuslocal" },
-					new ObservableCollection<string>() { "all", "QuickAccess", "SharedClasses", "TestingSharedClasses" },
-				};
+		{
+			new ObservableCollection<string>() { "commit", "update", "status", "statuslocal" },
+			new ObservableCollection<string>() { "all", "QuickAccess", "SharedClasses", "TestingSharedClasses" },
+		};
 		public override ObservableCollection<string>[] PredefinedArgumentsList { get { return predefinedArgumentsList; } }
 
 		private readonly Dictionary<string, string>[] argumentsReplaceKeyValuePair =
-				{
-				};
+		{
+		};
 		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return argumentsReplaceKeyValuePair; } }
 
 		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)

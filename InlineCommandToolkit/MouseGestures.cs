@@ -1,7 +1,7 @@
 ﻿
-namespace MouseGesturePlugins
+namespace InlineCommandToolkit
 {
-	public interface IMouseGesture
+	public interface IMouseGesture: InlineCommandToolkit.IQuickAccessPluginInterface
 	{
 		string GestureString { get; }
 		string ThisCommandName { get; }

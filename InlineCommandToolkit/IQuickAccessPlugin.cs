@@ -1,5 +1,5 @@
 ﻿
-namespace InterfaceForQuickAccessPlugin
+namespace InlineCommandToolkit
 {
 	public interface IQuickAccessPluginInterface
 	{

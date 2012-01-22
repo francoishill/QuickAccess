@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InlineCommandToolkit;
-using InterfaceForQuickAccessPlugin;
+//using InterfaceForQuickAccessPlugin;
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
 
 namespace GoogleSearchCommandPlugin

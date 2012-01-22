@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceForQuickAccessPlugin;
+using InlineCommandToolkit;
+//using InterfaceForQuickAccessPlugin;
 using SharedClasses;
 
 namespace MouseGesturePlugins
 {
-	public class GesturesTemp1 : IMouseGesture, IQuickAccessPluginInterface
+	public class GesturesTemp1 : IMouseGesture//, IQuickAccessPluginInterface
 	{
 		public string GestureString { get { return "UR"; } }
 
@@ -30,7 +31,7 @@ namespace MouseGesturePlugins
 		}
 	}
 
-	public class GesturesTemp2 : IMouseGesture, IQuickAccessPluginInterface
+	public class GesturesTemp2 : IMouseGesture//, IQuickAccessPluginInterface
 	{
 		public string GestureString { get { return "UL"; } }
 
@@ -52,7 +53,7 @@ namespace MouseGesturePlugins
 		}
 	}
 
-	public class GesturesTemp3 : IMouseGesture, IQuickAccessPluginInterface
+	public class GesturesTemp3 : IMouseGesture//, IQuickAccessPluginInterface
 	{
 		public string GestureString { get { return "DR"; } }
 
