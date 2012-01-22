@@ -36,16 +36,13 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+	<Reference Include="InlineCommandToolkit">
+      <HintPath>..\..\..\..\..\Documents\Visual Studio 2010\Projects\QuickAccess\InlineCommandToolkit\bin\Release\InlineCommandToolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NewCommandPluginTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\InlineCommandToolkit\InlineCommandToolkit.csproj">
-      <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
-      <Name>InlineCommandToolkit</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
