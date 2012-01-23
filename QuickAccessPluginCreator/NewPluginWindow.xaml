@@ -3,17 +3,20 @@
 				xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
 				x:Class="QuickAccessPluginCreator.NewPluginWindow"
 				Title="MainWindow"
-				Height="350"
-				Width="525"
+				Height="550"
+				Width="400"
 				WindowStartupLocation='CenterScreen'>
 	<Grid>
-		<StackPanel Margin='30'>
+		<DockPanel Margin='10' LastChildFill='True'>
 			<ComboBox Name='comboBoxPluginType'
+								DockPanel.Dock='Top'
 								Text='Choose plugin type...' />
-			<extToolkit:WatermarkTextBox x:Name='textBoxPluginName'
+			<Button DockPanel.Dock='Bottom' HorizontalAlignment='Right' Content='A_ccept' Padding='5,2' Margin='5'
+							Click="Button_Click" />
+			<!--<extToolkit:WatermarkTextBox x:Name='textBoxPluginName'
 																	 Watermark='Enter plugin name here...'
-																	 Margin='0,20,0,0'/>
-			
-		</StackPanel>
+																	 Margin='0,20,0,0'/>-->
+			<extToolkit:PropertyGrid x:Name='propertyGrid1' Margin='0,20,0,0' />
+		</DockPanel>
 	</Grid>
 </Window>

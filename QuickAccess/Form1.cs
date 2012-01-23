@@ -1147,12 +1147,13 @@ namespace QuickAccess
 					Scaling: ((double)i) / (double)2);
 		}
 
-		NewPluginWindow newPluginWindow;
+		//NewPluginWindow newPluginWindow;
 		private void menuItem5_Click(object sender, EventArgs e)
 		{
-			if (newPluginWindow == null)
-				newPluginWindow = new NewPluginWindow();
-			WindowsInterop.ShowAndActivateWindow(newPluginWindow);
+			//if (newPluginWindow == null)
+			//	newPluginWindow = new NewPluginWindow();
+			//WindowsInterop.ShowAndActivateWindow(newPluginWindow);
+			NewPluginWindow.ShowAndSavePlugin();
 		}
 	}
 }

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,16 +28,14 @@ namespace QuickAccessPluginCreator
 		{
 			InitializeComponent();
 
-
 			comboBoxPluginType.Items.Clear();
 			comboBoxPluginType.Items.Add(typeof(InlineCommandToolkit.InlineCommands.ICommandWithHandler));
 			comboBoxPluginType.Items.Add(typeof(InlineCommandToolkit.IMouseGesture));
-
-			tmp();
 		}
 
+		private static NewPluginWindow tmpWindow;
 		private const string TemplateInitialPart = "QuickAccessPluginCreator.Templates.";
-		private void tmp()
+		public static void ShowAndSavePlugin()
 		{
 			string newCommandName = UserMessages.Prompt("Please enter the command name");
 
@@ -89,6 +90,8 @@ namespace QuickAccessPluginCreator
 			foreach (string key in templates.Keys)
 			{
 				string tmpCsProjFilepath = null;
+				Dictionary<string, string> fullReplacementTokens = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+
 				//0				  10				20				30				40				50				60				70				80
 				//01234567890123456789012345678901234567890123456789012345678901234567890123456789012
 				//QuickAccessPluginCreator.Templates.CommandPluginTemplate.Properties.AssemblyInfo.cs
@@ -122,13 +125,8 @@ namespace QuickAccessPluginCreator
 					//textOfFile = textOfFile.Replace("NewCommandPluginTemplate", newCommandName);
 
 					string[] lines = File.ReadAllLines(fullpathOfFile);
-					List<string> newLines = new List<string>();
-					Dictionary<string, string> fullReplacementTokens = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-					foreach (string lin in lines)
+					foreach (string line in lines)
 					{
-						string line = lin.Replace("NewCommandPluginTemplate", newCommandName);
-						newLines.Add(line);
-
 						if (line.Contains("[{") && line.Contains("}]"))
 						{
 							string tmpline = line;
@@ -144,30 +142,76 @@ namespace QuickAccessPluginCreator
 						}
 					}
 
-					List<string> keyList = fullReplacementTokens.Keys.ToList();
-					for (int i = 0; i < keyList.Count; i++)
-					{
-						string keyreplace = keyList[i];
-						string answer = null;
-						if (keyreplace.Substring(2, keyreplace.Length - 4).ToLower() == "CommandName".ToLower())
-							answer = newCommandName;
-						else
-							answer = UserMessages.Prompt("Please enter " + keyreplace.Substring(2, keyreplace.Length - 4));
-						if (answer == null)
-							continue;
-						fullReplacementTokens[keyreplace] = answer;
-					}
+					//List<string> keyList = fullReplacementTokens.Keys.ToList();
+					//for (int i = 0; i < keyList.Count; i++)
+					//{
+					//	string keyreplace = keyList[i];
+					//	string answer = null;
+					//	if (keyreplace.Substring(2, keyreplace.Length - 4).ToLower() == "CommandName".ToLower())
+					//		answer = newCommandName;
+					//	else
+					//		answer = UserMessages.Prompt("Please enter " + keyreplace.Substring(2, keyreplace.Length - 4));
+					//	i, f (answer == null)
+					//		continue;
+					//	fullReplacementTokens[keyreplace] = answer;
+					//}
 
-					for (int i = 0; i < newLines.Count; i++)
-						foreach (string replacement in fullReplacementTokens.Keys)
-							newLines[i] = newLines[i].Replace(replacement, fullReplacementTokens[replacement]);
+					//for (int i = 0; i < newLines.Count; i++)
+					//	foreach (string replacement in fullReplacementTokens.Keys)
+					//		newLines[i] = newLines[i].Replace(replacement, fullReplacementTokens[replacement]);
 
-					File.WriteAllLines(fullpathOfFile, newLines);
-					if (fullpathOfFile.ToLower().EndsWith(".csproj"))
-						tmpCsProjFilepath = fullpathOfFile;
+					//File.WriteAllLines(fullpathOfFile, newLines);
+					//if (fullpathOfFile.ToLower().EndsWith(".csproj"))
+					//	tmpCsProjFilepath = fullpathOfFile;
 				}
+
+				if (tmpWindow == null)
+					tmpWindow = new NewPluginWindow();
+				if (fullReplacementTokens.ContainsKey("[{CommandName}]"))
+					fullReplacementTokens["[{CommandName}]"] = newCommandName;
+				tmpWindow.propertyGrid1.SelectedObject = GenerateObjectWithReplaceValues(ref fullReplacementTokens, new List<string> { "CommandName" });
+				if (tmpWindow.ShowDialog() == true)
+				{
+					foreach (PropertyInfo pi in tmpWindow.propertyGrid1.SelectedObject.GetType().GetProperties())
+						fullReplacementTokens["[{" + pi.Name + "}]"] = pi.GetValue(tmpWindow.propertyGrid1.SelectedObject).ToString();
+					foreach (string file in templates[key])
+					{
+						string fileRelativePath = file.Substring(TemplateInitialPart.Length);//CommandPluginTemplate.Properties.AssemblyInfo.cs
+						int lastDotPos = fileRelativePath.LastIndexOf('.');//80
+						fileRelativePath = fileRelativePath.Replace('.', '\\');
+						string fileRelativeLastDotPutBackAgain =
+						fileRelativePath.Substring(0, lastDotPos) +
+							"." +
+							fileRelativePath.Substring(lastDotPos + 1);
+
+						string fullpathOfFile = tempDir + fileRelativeLastDotPutBackAgain;
+						fullpathOfFile = fullpathOfFile.Replace("NewCommandPluginTemplate", newCommandName);
+
+						string[] lines = File.ReadAllLines(fullpathOfFile);
+						List<string> newLines = new List<string>();
+						foreach (string lin in lines)
+						{
+							string line = lin.Replace("NewCommandPluginTemplate", newCommandName);
+							newLines.Add(line);
+						}
+
+						for (int i = 0; i < newLines.Count; i++)
+							foreach (string replacement in fullReplacementTokens.Keys)
+								newLines[i] = newLines[i].Replace(replacement, fullReplacementTokens[replacement]);
+
+						File.WriteAllLines(fullpathOfFile, newLines);
+						if (fullpathOfFile.ToLower().EndsWith(".csproj"))
+							tmpCsProjFilepath = fullpathOfFile;
+					}
+				}
+
 				if (tmpCsProjFilepath != null && File.Exists(tmpCsProjFilepath))
 				{
+					///
+					///
+					//TODO: Add here to check if successfully built, then ask user if plugin must be placed in QuickAccess\Plugins in the programfiles folder.
+					///
+					///
 					VisualStudioInterop.BuildVsProjectReturnNewversionString(
 						newCommandName,
 						tmpCsProjFilepath,
@@ -187,6 +231,23 @@ namespace QuickAccessPluginCreator
 			//	if (reso.ToLower().EndsWith(HtmlFileName.ToLower()))
 			//	{
 			//	}
+		}
+
+		public static object GenerateObjectWithReplaceValues(ref Dictionary<string, string> ReplaceValueDictionary, List<string> ignoreValues)
+		{
+			List<DynamicCodeInvoking.DynamicTypeBuilder.Property> properties = new List<DynamicCodeInvoking.DynamicTypeBuilder.Property>();
+			foreach (string key in ReplaceValueDictionary.Keys)
+				if (!ignoreValues.Contains(key.Substring(2, key.Length - 4), StringComparer.InvariantCultureIgnoreCase))
+				properties.Add(new DynamicCodeInvoking.DynamicTypeBuilder.Property(key.Substring(2, key.Length - 4), typeof(string)));
+
+			return DynamicCodeInvoking.DynamicTypeBuilder.CreateNewObject(
+				"ReplaceValues",
+				properties);
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			this.DialogResult = true;
 		}
 	}
 }
