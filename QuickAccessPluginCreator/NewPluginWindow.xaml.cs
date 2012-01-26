@@ -42,6 +42,8 @@ namespace QuickAccessPluginCreator
 			if (newCommandName == null)
 				return;
 
+			newCommandName += newCommandName.EndsWith("Plugin", StringComparison.InvariantCultureIgnoreCase) ? "" : "Plugin";
+
 			Dictionary<string, List<string>> templates = new Dictionary<string, List<string>>(StringComparer.InvariantCultureIgnoreCase);
 
 			string tempDir = Path.GetTempPath() + "NewPlugins\\";
@@ -204,6 +206,7 @@ namespace QuickAccessPluginCreator
 							tmpCsProjFilepath = fullpathOfFile;
 					}
 				}
+				tmpWindow = null;
 
 				if (tmpCsProjFilepath != null && File.Exists(tmpCsProjFilepath))
 				{
@@ -212,7 +215,7 @@ namespace QuickAccessPluginCreator
 					//TODO: Add here to check if successfully built, then ask user if plugin must be placed in QuickAccess\Plugins in the programfiles folder.
 					///
 					///
-					VisualStudioInterop.BuildVsProjectReturnNewversionString(
+					string newVersionString = VisualStudioInterop.BuildVsProjectReturnNewversionString(
 						newCommandName,
 						tmpCsProjFilepath,
 						"",
@@ -222,6 +225,32 @@ namespace QuickAccessPluginCreator
 						VisualStudioInterop.PlatformTarget.x86,
 						false,
 						null);
+
+					if (newVersionString != null)
+					{
+						string quickAccessProjectDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\QuickAccess";
+						if (Directory.Exists(quickAccessProjectDir)
+							&& (UserMessages.Confirm("The plugin was successfully created and built." + Environment.NewLine
+							+ "The following directory is found on this machine, do you want to move the source files to this directory (directory = " + quickAccessProjectDir + "?", DefaultYesButton: true)))
+						{
+							string newDir = quickAccessProjectDir + "\\" + newCommandName;
+							Directory.Move(tempDir + key, newDir);
+							tmpCsProjFilepath = newDir + "\\" + Path.GetFileName(tmpCsProjFilepath);
+						}
+						else
+						{
+							string newDir = UserMessages.ChooseDirectory("Please choose directory into which source folder will be moved", Directory.Exists(quickAccessProjectDir) ? quickAccessProjectDir : null);
+							if (newDir != null)
+							{
+								if (newDir[newDir.Length - 1] != '\\') newDir += "\\";
+								newDir += newCommandName;
+								Directory.Move(tempDir + key, newDir);
+								tmpCsProjFilepath = newDir + "\\" + Path.GetFileName(tmpCsProjFilepath);
+							}
+						}
+						//if (UserMessages.Confirm("New plugin () successfully built, 
+					}
+
 					System.Diagnostics.Process.Start("explorer", "/select, " + tmpCsProjFilepath);
 				}
 			}

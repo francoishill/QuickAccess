@@ -1133,6 +1133,7 @@ namespace QuickAccess
 
 			if (webResultsWindow == null) webResultsWindow = new WebResultsWindow();
 			webResultsWindow.ShowDialog();
+			webResultsWindow = null;
 		}
 
 		private void menuItem4_Click(object sender, EventArgs e)

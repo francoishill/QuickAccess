@@ -52,6 +52,7 @@ namespace QuickAccess
 			if (e.Key == Key.Enter)
 			{
 				this.Effect = new BlurEffect() { Radius = 4 };
+				this.IsEnabled = false;
 				listBox1.ItemsSource = null;
 				string searchQuery = textBoxSearchQuery.Text;
 				ObservableCollection<TorrentSearchResult> results = ParseHtmlInterop.GetResultsForTorrentzSearch(searchQuery);
@@ -59,6 +60,7 @@ namespace QuickAccess
 					UserMessages.ShowWarningMessage("No results for '" + searchQuery + "'");
 				else listBox1.ItemsSource = results;
 				this.Effect = null;
+				this.IsEnabled = true;
 			}
 		}
 
