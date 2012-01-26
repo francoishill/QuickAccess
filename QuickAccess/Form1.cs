@@ -1033,7 +1033,14 @@ namespace QuickAccess
 		private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
-				ShowAndActivateMainWindow(1);
+			{
+				if (MainWindow == null)
+					return;
+				if (MainWindow.Visibility != System.Windows.Visibility.Visible)
+					ShowAndActivateMainWindow(1);
+				else
+					MainWindow.Hide();
+			}
 		}
 
 		private void PopulateCommandsMenuItem()
