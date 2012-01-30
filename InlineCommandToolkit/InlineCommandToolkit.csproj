@@ -76,6 +76,15 @@
     <Reference Include="CookComputing.XmlRpcV2">
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\XmlRpc\CookComputing.XmlRpcV2.dll</HintPath>
     </Reference>
+    <Reference Include="Emgu.CV">
+      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Emgu (facial recognition)\Emgu.CV.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.UI">
+      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Emgu (facial recognition)\Emgu.CV.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.Util">
+      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Emgu (facial recognition)\Emgu.Util.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Windows.Shell">
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Microsoft_Windows_Shell\Microsoft.Windows.Shell.dll</HintPath>
     </Reference>
@@ -121,6 +130,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\..\Francois\Dev\VSprojects\SharedClasses\EncodeAndDecodeInterop.cs">
+      <Link>EncodeAndDecodeInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\..\Francois\Dev\VSprojects\SharedClasses\FaceTrainingForm.cs">
+      <Link>FaceTrainingForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\..\Francois\Dev\VSprojects\SharedClasses\FaceTrainingForm.designer.cs">
+      <Link>FaceTrainingForm.designer.cs</Link>
+      <DependentUpon>FaceTrainingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
       <Link>ApplicationRecoveryAndRestart.cs</Link>
     </Compile>
@@ -131,6 +151,14 @@
     <Compile Include="..\..\SharedClasses\CommandsWindow.xaml.cs">
       <Link>CommandsWindow.xaml.cs</Link>
       <DependentUpon>CommandsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\ConfirmUsingFaceDetection.cs">
+      <Link>ConfirmUsingFaceDetection.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\ConfirmUsingFaceDetection.designer.cs">
+      <Link>ConfirmUsingFaceDetection.designer.cs</Link>
+      <DependentUpon>ConfirmUsingFaceDetection.cs</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml.cs">
       <Link>CustomBalloonTipwpf.xaml.cs</Link>
@@ -148,6 +176,9 @@
     <Compile Include="..\..\SharedClasses\EventHandlers.cs">
       <Link>EventHandlers.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\FaceDetectionInterop.cs">
+      <Link>FaceDetectionInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\FileSystemInterop.cs">
       <Link>FileSystemInterop.cs</Link>
     </Compile>
@@ -163,6 +194,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\NetworkInteropSerializedClasses\InfoTransferred.cs">
       <Link>InfoTransferred.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\NsisInterop.cs">
+      <Link>NsisInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\OverlayGesturesForm.cs">
       <Link>OverlayGesturesForm.cs</Link>
@@ -213,8 +247,14 @@
     <Compile Include="..\..\SharedClasses\ThreadingInterop.cs">
       <Link>ThreadingInterop.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\TracXmlRpcInterop.cs">
+      <Link>TracXmlRpcInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\UserMessages.cs">
       <Link>UserMessages.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\VisualStudioInterop.cs">
+      <Link>VisualStudioInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\Win32Api.cs">
       <Link>Win32Api.cs</Link>
@@ -281,6 +321,14 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\..\..\..\..\..\..\Francois\Dev\VSprojects\SharedClasses\FaceTrainingForm.resx">
+      <Link>FaceTrainingForm.resx</Link>
+      <DependentUpon>FaceTrainingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\SharedClasses\ConfirmUsingFaceDetection.resx">
+      <Link>ConfirmUsingFaceDetection.resx</Link>
+      <DependentUpon>ConfirmUsingFaceDetection.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\..\SharedClasses\OverlayGesturesForm.resx">
       <Link>OverlayGesturesForm.resx</Link>
       <DependentUpon>OverlayGesturesForm.cs</DependentUpon>
@@ -292,6 +340,10 @@
     <EmbeddedResource Include="EnterStringAndListOfEnumsForm.resx">
       <DependentUpon>EnterStringAndListOfEnumsForm.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\haarcascade_eye.xml" />
+    <EmbeddedResource Include="Resources\haarcascade_frontalface_default.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

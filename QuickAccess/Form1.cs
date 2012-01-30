@@ -165,7 +165,7 @@ namespace QuickAccess
 			//	{
 			//EnsureAllSettingsAreNotNull();
 
-			GenericSettings.EnsureAllSettingsAreInitialized();
+			//GenericSettings.EnsureAllSettingsAreInitialized();
 
 			//GenericSettings.ShowAndEditAllSettings();
 			//GenericSettings.ShowAndEditAllSettings();

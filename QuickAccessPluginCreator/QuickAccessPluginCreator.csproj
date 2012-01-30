@@ -68,15 +68,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="..\..\SharedClasses\NsisInterop.cs">
-      <Link>NsisInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\TracXmlRpcInterop.cs">
-      <Link>TracXmlRpcInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\VisualStudioInterop.cs">
-      <Link>VisualStudioInterop.cs</Link>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
