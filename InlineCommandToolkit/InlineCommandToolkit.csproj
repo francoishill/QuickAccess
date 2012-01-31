@@ -345,6 +345,12 @@
     <EmbeddedResource Include="Resources\haarcascade_eye.xml" />
     <EmbeddedResource Include="Resources\haarcascade_frontalface_default.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\haarcascade_mcs_nose.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\haarcascade_lefteye_2splits.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1135,7 +1135,6 @@ namespace QuickAccess
 		private void menuItem3_Click(object sender, EventArgs e)
 		{
 			//MessageBox.Show("Loading wind results for strand");
-			//string html = ParseHtmlInterop.GetHtmlFromUrl("http://www.goodwind.co.za/mobile/station?station=Strand", new System.Net.NetworkCredential("francoishill11@gmail.com", "bokbokkie"));
 			//MessageBox.Show(html);
 
 			if (webResultsWindow == null) webResultsWindow = new WebResultsWindow();
