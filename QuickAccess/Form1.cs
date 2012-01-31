@@ -1163,5 +1163,10 @@ namespace QuickAccess
 			//WindowsInterop.ShowAndActivateWindow(newPluginWindow);
 			NewPluginWindow.ShowAndSavePlugin();
 		}
+
+		private void menuItem6_Click(object sender, EventArgs e)
+		{
+			FaceTrainingForm.ShowFacetraining();
+		}
 	}
 }

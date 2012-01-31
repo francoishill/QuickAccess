@@ -257,7 +257,7 @@ namespace QuickAccessPluginCreator
 
 			//UserMessages.ShowInfoMessage(templates.ToString());
 			//foreach (string reso in myResources)
-			//	if (reso.ToLower().EndsWith(HtmlFileName.ToLower()))
+			//	if (reso.ToLower().EndsWith(HtmlTemplateFileName.ToLower()))
 			//	{
 			//	}
 		}
