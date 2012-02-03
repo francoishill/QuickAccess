@@ -63,36 +63,54 @@ namespace PublishCommandPlugin
 		{
 			try
 			{
-				if (arguments[0] == "localvs")
+				bool? HasPlugins = null;
+				bool? AutomaticallyUpdateRevision = null;
+				bool? WriteIntoRegistryForWindowsAutostartup = null;
+
+				HasPlugins = UserMessages.ConfirmNullable("Does the application have plugins (in a Plugins subfolder of the binaries)?", DefaultYesButton: true);				
+				if (HasPlugins != null)
+					AutomaticallyUpdateRevision = UserMessages.ConfirmNullable("Update the revision also?");
+				if (HasPlugins != null && AutomaticallyUpdateRevision != null)
+					WriteIntoRegistryForWindowsAutostartup = UserMessages.ConfirmNullable("Auto startup with windows (written into registry)?", DefaultYesButton: true);
+
+				if (HasPlugins != null && AutomaticallyUpdateRevision != null && WriteIntoRegistryForWindowsAutostartup != null)
 				{
-					string tmpNoUseVersionStr;
-					VisualStudioInterop.PerformPublish(
-						textfeedbackSenderObject: this,
-						projName: arguments[1],
-						versionString: out tmpNoUseVersionStr,
-						HasPlugins: UserMessages.Confirm("Does the application have plugins (in a Plugins subfolder of the binaries)?", DefaultYesButton: true),
-						AutomaticallyUpdateRevision: UserMessages.Confirm("Update the revision also?"),
-						WriteIntoRegistryForWindowsAutostartup: UserMessages.Confirm("Auto startup with windows (written into registry)?", DefaultYesButton: true),
-						textFeedbackEvent: textFeedbackEvent);
-				}
-				else if (arguments[0] == "onlinevs")
-				{
-					VisualStudioInterop.PerformPublishOnline(
-							 textfeedbackSenderObject: this,
-							 projName: arguments[1],
-							 HasPlugins: UserMessages.Confirm("Does the application have plugins (in a Plugins subfolder of the binaries)?", DefaultYesButton: true),
-							 AutomaticallyUpdateRevision: UserMessages.Confirm("Update the revision also?"),
-							 WriteIntoRegistryForWindowsAutostartup: UserMessages.Confirm("Auto startup with windows (written into registry)?", DefaultYesButton: true),
-							 textFeedbackEvent: textFeedbackEvent,
-							 progressChanged: progressChangedEvent);
+					if (arguments[0] == "localvs")
+					{
+						string tmpNoUseVersionStr;
+						VisualStudioInterop.PerformPublish(
+							textfeedbackSenderObject: this,
+							projName: arguments[1],
+							versionString: out tmpNoUseVersionStr,
+							HasPlugins: (bool)HasPlugins,
+							AutomaticallyUpdateRevision: (bool)AutomaticallyUpdateRevision,
+							WriteIntoRegistryForWindowsAutostartup: (bool)WriteIntoRegistryForWindowsAutostartup,
+							textFeedbackEvent: textFeedbackEvent);
+					}
+					else if (arguments[0] == "onlinevs")
+					{
+						VisualStudioInterop.PerformPublishOnline(
+								 textfeedbackSenderObject: this,
+								 projName: arguments[1],
+								 HasPlugins: (bool)HasPlugins,
+								 AutomaticallyUpdateRevision: (bool)AutomaticallyUpdateRevision,
+								 WriteIntoRegistryForWindowsAutostartup: (bool)WriteIntoRegistryForWindowsAutostartup,
+								 textFeedbackEvent: textFeedbackEvent,
+								 progressChanged: progressChangedEvent);
+					}
+					else
+					{
+						errorMessage = "Invalid sub-command for Publish: " + arguments[0];
+						return false;
+					}
+					errorMessage = "";
+					return true;
 				}
 				else
 				{
-					errorMessage = "Invalid sub-command for Publish: " + arguments[0];
+					errorMessage = "User cancelled the operation";
 					return false;
 				}
-				errorMessage = "";
-				return true;
 			}
 			catch (Exception exc)
 			{
