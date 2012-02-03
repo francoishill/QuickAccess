@@ -20,7 +20,7 @@ namespace PublishCommandPlugin
 		private readonly ObservableCollection<string>[] predefinedArgumentsList =
 		{
 			new ObservableCollection<string>() { "localvs", "onlinevs" },
-			new ObservableCollection<string>() { "QuickAccess", "MonitorSystem" },
+			new ObservableCollection<string>() { "QuickAccess", "MonitorSystem", "PublishOwnApps" },
 		};
 		public override ObservableCollection<string>[] PredefinedArgumentsList { get { return predefinedArgumentsList; } }
 
@@ -122,7 +122,7 @@ namespace PublishCommandPlugin
 		private CommandArgument[] availableArguments = new CommandArgument[]
 		{
 			new CommandArgument("", "sub-command", new ObservableCollection<string>() { "localvs", "onlinevs" }),
-			new CommandArgument("", "folder/path", new ObservableCollection<string>() { "QuickAccess", "MonitorSystem"})
+			new CommandArgument("", "folder/path", new ObservableCollection<string>() { "QuickAccess", "MonitorSystem","PublishOwnApps"})
 		};
 		public override CommandArgument[] AvailableArguments { get { return availableArguments; } set { availableArguments = value; } }
 

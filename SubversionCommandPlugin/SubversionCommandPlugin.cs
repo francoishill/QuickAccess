@@ -20,7 +20,7 @@ namespace SubversionCommandPlugin
 		private readonly ObservableCollection<string>[] predefinedArgumentsList =
 		{
 			new ObservableCollection<string>() { "commit", "update", "status", "statuslocal" },
-			new ObservableCollection<string>() { "all", "QuickAccess", "SharedClasses", "TestingSharedClasses" },
+			new ObservableCollection<string>() { "all", "QuickAccess", "SharedClasses", "PublishOwnApps", "TestingSharedClasses" },
 		};
 		public override ObservableCollection<string>[] PredefinedArgumentsList { get { return predefinedArgumentsList; } }
 
@@ -91,7 +91,7 @@ namespace SubversionCommandPlugin
 		private CommandArgument[] availableArguments = new CommandArgument[]
 				{
 					new CommandArgument("", "sub-command", new ObservableCollection<string>() { "commit", "update", "status", "statuslocal" }),
-					new CommandArgument("", "folder/path", new ObservableCollection<string>() { "all", "QuickAccess", "SharedClasses", "TestingSharedClasses"}),
+					new CommandArgument("", "folder/path", new ObservableCollection<string>() { "all", "QuickAccess", "SharedClasses", "PublishOwnApps", "TestingSharedClasses"}),
 					new CommandArgument("", "description", new ObservableCollection<string>())
 				};
 		public override CommandArgument[] AvailableArguments { get { return availableArguments; } set { availableArguments = value; } }

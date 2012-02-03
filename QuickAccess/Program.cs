@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using SharedClasses;
+
+[assembly: SuppressIldasmAttribute()]
 
 namespace QuickAccess
 {
@@ -65,7 +68,10 @@ namespace QuickAccess
 					{
 						Application.EnableVisualStyles();
 						Application.SetCompatibleTextRenderingDefault(false);
-						Application.Run(new Form1());
+
+						if (SharedClasses.FaceDetectionInterop.CheckFaceDetectionDllsExistInCurrentExeDir(true)
+							|| UserMessages.Confirm("Due to missing DLLs, application will not be able to do online publishing, continue withouth this support?"))
+							Application.Run(new Form1());
 					}
 				}
 
