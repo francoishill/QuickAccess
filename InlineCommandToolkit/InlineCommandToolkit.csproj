@@ -105,7 +105,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\SQLite.NET\bin\System.Data.SQLite.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Sqlite\System.Data.SQLite.DLL</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
@@ -182,10 +182,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\EventHandlers.cs">
       <Link>EventHandlers.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ExploreFaceTrainingDatabaseWindow.xaml.cs">
-      <Link>ExploreFaceTrainingDatabaseWindow.xaml.cs</Link>
-      <DependentUpon>ExploreFaceTrainingDatabaseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\FaceDetectionInterop.cs">
       <Link>FaceDetectionInterop.cs</Link>
@@ -303,10 +299,6 @@
     </Page>
     <Page Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml">
       <Link>CustomBalloonTipwpf.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="..\..\SharedClasses\ExploreFaceTrainingDatabaseWindow.xaml">
-      <Link>ExploreFaceTrainingDatabaseWindow.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="..\..\SharedClasses\InputBoxWPF.xaml">
