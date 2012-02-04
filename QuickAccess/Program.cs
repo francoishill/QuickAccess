@@ -9,6 +9,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using SharedClasses;
 
+//This line is supposed to prevent dissasembly with ILDASM, but it does not prevent dotPeek
 [assembly: SuppressIldasmAttribute()]
 
 namespace QuickAccess

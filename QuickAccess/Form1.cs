@@ -20,6 +20,10 @@ using SharedClasses;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 using QuickAccessPluginCreator;
+using QuickAccess.TestEmguCV;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.CV.UI;
 
 namespace QuickAccess
 {
@@ -1166,6 +1170,47 @@ namespace QuickAccess
 		private void menuItem6_Click(object sender, EventArgs e)
 		{
 			FaceTrainingForm.ShowFacetraining();
+		}
+
+		private void menuItem8_Click(object sender, EventArgs e)
+		{
+			List<string> embeddedImagePaths = VisualStudioInterop.GetAllEmbeddedResourcesReturnFilePaths(
+				x =>
+					x.ToLower().Contains(".TestEmguCV.".ToLower())
+					&& x.EndsWith(".png", StringComparison.InvariantCultureIgnoreCase), true);
+
+			if (embeddedImagePaths == null || embeddedImagePaths.Count == 0)
+				return;
+
+			//string ChosenImage = UserMessages.PickItem<string>(embeddedImagePaths, "Please choose the image to use for pedestrian detection", null);
+			string ChosenImage = (string)UserMessages.PickItemWPF(typeof(string), embeddedImagePaths.ToArray(), "Please choose the image to use for pedestrian detection", null);
+
+			if (ChosenImage != null)
+			{
+				Image<Bgr, byte> imageOut;
+				bool usedGPU;
+				long elapsedMilliseconds;
+				string errorMsg;
+				if (!PedestrianDetection.DetectInImage(
+					//@"C:\Emgu\emgucv-windows-x86 2.3.0.1416\Emgu.CV.Example\PedestrianDetection\2pedestrian.png",
+					ChosenImage,
+					out imageOut,
+					out usedGPU,					
+					out elapsedMilliseconds,
+					out errorMsg))
+					UserMessages.ShowWarningMessage("Could not do pedestrian detection: " + errorMsg);
+				else
+				{
+					ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+					{
+						ImageViewer.Show(
+							imageOut,
+							String.Format("Pedestrain detection using {0} in {1} milliseconds.",
+							   usedGPU ? "GPU" : "CPU",
+							   elapsedMilliseconds));
+					});
+				}
+			}
 		}
 	}
 }
