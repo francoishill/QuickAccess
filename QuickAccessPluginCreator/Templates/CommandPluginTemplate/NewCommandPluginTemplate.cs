@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using InlineCommandToolkit;
 
 namespace [{CommandName}]CommandPlugin
@@ -33,12 +35,47 @@ namespace [{CommandName}]CommandPlugin
 			return true;
 		}
 
+		//Just a sample class that is used in the PerformCommand to demostrate inline buttons
+		public class MyCallbackClass
+		{
+			public string Name;
+			public int MyNumber;
+			public MyCallbackClass(string Name, int MyNumber)
+			{
+				this.Name = Name;
+				this.MyNumber = MyNumber;
+			}
+		}
 		//This is where the command actually get performed (after successful validation)
 		public override bool PerformCommand(out string errorMessage, TextFeedbackEventHandler textFeedbackEvent = null, ProgressChangedEventHandler progressChangedEvent = null, params string[] arguments)
 		{
 			//TODO: Perform the command here
 			errorMessage = "";
-			UserMessages.ShowMessage("This is where the command is performed");
+			//An example of a normal text feedback message
+			TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(this, textFeedbackEvent, "This is where the command is performed", TextFeedbackType.Noteworthy);
+			//An example of a text feedback message with inline buttons which have callbacks on double-click
+			TextFeedbackEventArgs_MultiObjects.RaiseTextFeedbackEvent_Ifnotnull(
+				this,
+				textFeedbackEvent,
+				//This list is concatenated into one paragraph each of them either text or button
+				new List<TextFeedbackSection>()
+				{
+					new TextFeedbackSection("Note that an"),
+					new TextFeedbackSection("inline", (o) => { UserMessages.ShowInfoMessage("The following button was pressed: " + o.ToString()); }, "INLINE TEXT ID#", TextFeedbackSection.DisplayTypeEnum.MakeButton),
+					new TextFeedbackSection(
+						"buttons",
+						(o) =>
+						{
+							MyCallbackClass mc = o as MyCallbackClass;
+							UserMessages.ShowInfoMessage(string.Format("Button was pressed:{0}name = '{1}'{0}number = {2}", Environment.NewLine, mc.Name, mc.MyNumber));
+						},
+						new MyCallbackClass("Test name", 77123),
+						TextFeedbackSection.DisplayTypeEnum.MakeButton),
+					new TextFeedbackSection("with a callback event (performed on double-clicking the button) can also be inserted into message.")
+				},
+				TextFeedbackType.Subtle,
+				true);
+			//This is to say the command was successfully performed
 			return true;
 		}
 
