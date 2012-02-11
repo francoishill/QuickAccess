@@ -1514,7 +1514,7 @@
 				</GradientBrush.GradientStops>
 			</LinearGradientBrush>
 			<!-- SrollViewer ScrollBar Repeat Buttons (at each end) -->
-			<Style x:Key="ScrollBarLineButton"
+			<!--<Style x:Key="ScrollBarLineButton"
 						 TargetType="{x:Type RepeatButton}">
 				<Setter Property="SnapsToDevicePixels"
 								Value="True" />
@@ -1553,10 +1553,10 @@
 						</ControlTemplate>
 					</Setter.Value>
 				</Setter>
-			</Style>
+			</Style>-->
 			<!-- SrollViewer ScrollBar Repeat Buttons (The part in the middle, 
              not the thumb the long area between the buttons ) -->
-			<Style x:Key="ScrollBarPageButton"
+			<!--<Style x:Key="ScrollBarPageButton"
 						 TargetType="{x:Type RepeatButton}">
 				<Setter Property="SnapsToDevicePixels"
 								Value="True" />
@@ -1573,10 +1573,10 @@
 						</ControlTemplate>
 					</Setter.Value>
 				</Setter>
-			</Style>
+			</Style>-->
 			<!-- ScrollViewer ScrollBar Thumb, that part that can be dragged
             up/down or left/right Buttons -->
-			<Style x:Key="ScrollBarThumb"
+			<!--<Style x:Key="ScrollBarThumb"
 						 TargetType="{x:Type Thumb}">
 				<Setter Property="SnapsToDevicePixels"
 								Value="True" />
@@ -1596,8 +1596,8 @@
 						</ControlTemplate>
 					</Setter.Value>
 				</Setter>
-			</Style>
-			<ControlTemplate x:Key="VerticalScrollBar"
+			</Style>-->
+			<!--<ControlTemplate x:Key="VerticalScrollBar"
 											 TargetType="{x:Type ScrollBar}">
 				<Grid>
 					<Grid.RowDefinitions>
@@ -1637,9 +1637,9 @@
 												Command="ScrollBar.LineDownCommand"
 												Content="M 0 0 L 4 4 L 8 0 Z" />
 				</Grid>
-			</ControlTemplate>
+			</ControlTemplate>-->
 			<!-- HorizontalScrollBar Template using the previously created Templates -->
-			<ControlTemplate x:Key="HorizontalScrollBar"
+			<!--<ControlTemplate x:Key="HorizontalScrollBar"
 											 TargetType="{x:Type ScrollBar}">
 				<Grid>
 					<Grid.ColumnDefinitions>
@@ -1679,9 +1679,9 @@
 												Command="ScrollBar.LineRightCommand"
 												Content="M 0 0 L 4 4 L 0 8 Z" />
 				</Grid>
-			</ControlTemplate>
+			</ControlTemplate>-->
 			<!-- Style for overall  ScrollBar -->
-			<Style x:Key="{x:Type ScrollBar}"
+			<!--<Style x:Key="{x:Type ScrollBar}"
 						 TargetType="{x:Type ScrollBar}">
 				<Setter Property="SnapsToDevicePixels"
 								Value="True" />
@@ -1707,9 +1707,9 @@
 										Value="{StaticResource VerticalScrollBar}" />
 					</Trigger>
 				</Style.Triggers>
-			</Style>
+			</Style>-->
 			<!-- Style for overall  ScrollViewer -->
-			<Style TargetType="{x:Type ScrollViewer}">
+			<!--<Style TargetType="{x:Type ScrollViewer}">
 				<Setter Property="OverridesDefaultStyle"
 								Value="True" />
 				<Setter Property="Template">
@@ -1742,7 +1742,7 @@
 						</ControlTemplate>
 					</Setter.Value>
 				</Setter>
-			</Style>
+			</Style>-->
 		</ResourceDictionary>
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
