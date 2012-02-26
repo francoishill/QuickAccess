@@ -79,5 +79,10 @@ namespace InlineCommandToolkit
 				return false;
 			}
 		}
+
+		public static bool EnterStringAndListOfEnums<T>(string Message, out string OutString, out List<T> ListOfEnums)
+		{
+			return EnterStringAndListOfEnumsForm.EnterStringAndListOfEnums<T>(Message, out OutString, out ListOfEnums);
+		}
 	}
 }

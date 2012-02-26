@@ -1183,7 +1183,7 @@ namespace QuickAccess
 				return;
 
 			//string ChosenImage = UserMessages.PickItem<string>(embeddedImagePaths, "Please choose the image to use for pedestrian detection", null);
-			string ChosenImage = (string)UserMessages.PickItemWPF(typeof(string), embeddedImagePaths.ToArray(), "Please choose the image to use for pedestrian detection", null);
+			string ChosenImage = (string)PickItemWPF.PickItem(typeof(string), embeddedImagePaths.ToArray(), "Please choose the image to use for pedestrian detection", null);
 
 			if (ChosenImage != null)
 			{

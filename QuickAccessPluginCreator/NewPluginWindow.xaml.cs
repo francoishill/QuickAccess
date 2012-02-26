@@ -37,7 +37,7 @@ namespace QuickAccessPluginCreator
 		private const string TemplateInitialPart = "QuickAccessPluginCreator.Templates.";
 		public static void ShowAndSavePlugin()
 		{
-			string newCommandName = UserMessages.Prompt("Please enter the command name");
+			string newCommandName = InputBoxWPF.Prompt("Please enter the command name");
 
 			if (newCommandName == null)
 				return;
@@ -152,7 +152,7 @@ namespace QuickAccessPluginCreator
 					//	if (keyreplace.Substring(2, keyreplace.Length - 4).ToLower() == "CommandName".ToLower())
 					//		answer = newCommandName;
 					//	else
-					//		answer = UserMessages.Prompt("Please enter " + keyreplace.Substring(2, keyreplace.Length - 4));
+					//		answer = InputBoxWPF.Prompt("Please enter " + keyreplace.Substring(2, keyreplace.Length - 4));
 					//	i, f (answer == null)
 					//		continue;
 					//	fullReplacementTokens[keyreplace] = answer;
