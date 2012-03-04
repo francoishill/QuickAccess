@@ -1212,5 +1212,11 @@ namespace QuickAccess
 				}
 			}
 		}
+
+		private void menuItem9_Click(object sender, EventArgs e)
+		{
+			AppManagerInterface appManagerInterface = new AppManagerInterface();
+			appManagerInterface.Show();
+		}
 	}
 }

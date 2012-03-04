@@ -43,12 +43,13 @@
 			this.menuItem4 = new System.Windows.Forms.MenuItem();
 			this.menuItem5 = new System.Windows.Forms.MenuItem();
 			this.menuItem6 = new System.Windows.Forms.MenuItem();
+			this.menuItem7 = new System.Windows.Forms.MenuItem();
+			this.menuItem8 = new System.Windows.Forms.MenuItem();
 			this.comboboxCommand = new System.Windows.Forms.ComboBox();
 			this.buttonTestCrash = new System.Windows.Forms.Button();
 			this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
-			this.menuItem7 = new System.Windows.Forms.MenuItem();
-			this.menuItem8 = new System.Windows.Forms.MenuItem();
+			this.menuItem9 = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
 			// notifyIcon1
@@ -109,7 +110,8 @@
             this.menuItem4,
             this.menuItem5,
             this.menuItem6,
-            this.menuItem7});
+            this.menuItem7,
+            this.menuItem9});
 			this.contextMenu_TrayIcon.Popup += new System.EventHandler(this.contextMenu_TrayIcon_Popup);
 			// 
 			// menuItem_Exit
@@ -160,6 +162,19 @@
 			this.menuItem6.Index = 6;
 			this.menuItem6.Text = "Train &face detection";
 			this.menuItem6.Click += new System.EventHandler(this.menuItem6_Click);
+			// 
+			// menuItem7
+			// 
+			this.menuItem7.Index = 7;
+			this.menuItem7.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem8});
+			this.menuItem7.Text = "Test Emgu Cv";
+			// 
+			// menuItem8
+			// 
+			this.menuItem8.Index = 0;
+			this.menuItem8.Text = "Pedestrian detection";
+			this.menuItem8.Click += new System.EventHandler(this.menuItem8_Click);
 			// 
 			// comboboxCommand
 			// 
@@ -216,18 +231,11 @@
 			this.progressBar1.TabIndex = 7;
 			this.progressBar1.Visible = false;
 			// 
-			// menuItem7
+			// menuItem9
 			// 
-			this.menuItem7.Index = 7;
-			this.menuItem7.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItem8});
-			this.menuItem7.Text = "Test Emgu Cv";
-			// 
-			// menuItem8
-			// 
-			this.menuItem8.Index = 0;
-			this.menuItem8.Text = "Pedestrian detection";
-			this.menuItem8.Click += new System.EventHandler(this.menuItem8_Click);
+			this.menuItem9.Index = 8;
+			this.menuItem9.Text = "&Application manager";
+			this.menuItem9.Click += new System.EventHandler(this.menuItem9_Click);
 			// 
 			// Form1
 			// 
@@ -291,6 +299,7 @@
 				private System.Windows.Forms.MenuItem menuItem6;
 				private System.Windows.Forms.MenuItem menuItem7;
 				private System.Windows.Forms.MenuItem menuItem8;
+				private System.Windows.Forms.MenuItem menuItem9;
     }
 }
 

@@ -148,6 +148,10 @@
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
       <Link>ApplicationRecoveryAndRestart.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\AppManagerInterface.xaml.cs">
+      <Link>AppManagerInterface.xaml.cs</Link>
+      <DependentUpon>AppManagerInterface.xaml</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\CommandsUsercontrol.xaml.cs">
       <Link>CommandsUsercontrol.xaml.cs</Link>
       <DependentUpon>CommandsUsercontrol.xaml</DependentUpon>
@@ -163,6 +167,9 @@
     <Compile Include="..\..\SharedClasses\ConfirmUsingFaceDetection.designer.cs">
       <Link>ConfirmUsingFaceDetection.designer.cs</Link>
       <DependentUpon>ConfirmUsingFaceDetection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\ConvertersGeneral.cs">
+      <Link>ConvertersGeneral.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml.cs">
       <Link>CustomBalloonTipwpf.xaml.cs</Link>
@@ -236,6 +243,10 @@
     <Compile Include="..\..\SharedClasses\PropertyInterceptor.cs">
       <Link>PropertyInterceptor.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\RemoteXmlRpc.xaml.cs">
+      <Link>RemoteXmlRpc.xaml.cs</Link>
+      <DependentUpon>RemoteXmlRpc.xaml</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\SerializationInterop.cs">
       <Link>SerializationInterop.cs</Link>
     </Compile>
@@ -266,6 +277,9 @@
     <Compile Include="..\..\SharedClasses\Win32Api.cs">
       <Link>Win32Api.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\WindowMessagesInterop.cs">
+      <Link>WindowMessagesInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
       <Link>WindowsInterop.cs</Link>
     </Compile>
@@ -289,6 +303,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="..\..\SharedClasses\AppManagerInterface.xaml">
+      <Link>AppManagerInterface.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="..\..\SharedClasses\CommandsUsercontrol.xaml">
       <Link>CommandsUsercontrol.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -316,6 +335,11 @@
     <Page Include="..\..\SharedClasses\PropertiesEditor.xaml">
       <Link>PropertiesEditor.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\..\SharedClasses\RemoteXmlRpc.xaml">
+      <Link>RemoteXmlRpc.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\DefaultStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
