@@ -225,6 +225,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\SharedClasses\ConvertersGeneral.cs">
+      <Link>ConvertersGeneral.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\DebugInterop.cs">
       <Link>DebugInterop.cs</Link>
     </Compile>
@@ -317,7 +320,7 @@
     <None Include="QuickAccess_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app.ico" />
+    <Resource Include="app.ico" />
     <EmbeddedResource Include="TestEmguCV\1pedestrian.png" />
     <EmbeddedResource Include="TestEmguCV\2pedestrian.png" />
     <EmbeddedResource Include="TestEmguCV\3pedestrian.png" />

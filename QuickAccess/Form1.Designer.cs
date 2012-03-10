@@ -49,7 +49,6 @@
 			this.buttonTestCrash = new System.Windows.Forms.Button();
 			this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
-			this.menuItem9 = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
 			// notifyIcon1
@@ -110,8 +109,7 @@
             this.menuItem4,
             this.menuItem5,
             this.menuItem6,
-            this.menuItem7,
-            this.menuItem9});
+            this.menuItem7});
 			this.contextMenu_TrayIcon.Popup += new System.EventHandler(this.contextMenu_TrayIcon_Popup);
 			// 
 			// menuItem_Exit
@@ -231,12 +229,6 @@
 			this.progressBar1.TabIndex = 7;
 			this.progressBar1.Visible = false;
 			// 
-			// menuItem9
-			// 
-			this.menuItem9.Index = 8;
-			this.menuItem9.Text = "&Application manager";
-			this.menuItem9.Click += new System.EventHandler(this.menuItem9_Click);
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -299,7 +291,6 @@
 				private System.Windows.Forms.MenuItem menuItem6;
 				private System.Windows.Forms.MenuItem menuItem7;
 				private System.Windows.Forms.MenuItem menuItem8;
-				private System.Windows.Forms.MenuItem menuItem9;
     }
 }
 

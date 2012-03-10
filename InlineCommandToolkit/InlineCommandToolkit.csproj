@@ -148,10 +148,6 @@
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
       <Link>ApplicationRecoveryAndRestart.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\AppManagerInterface.xaml.cs">
-      <Link>AppManagerInterface.xaml.cs</Link>
-      <DependentUpon>AppManagerInterface.xaml</DependentUpon>
-    </Compile>
     <Compile Include="..\..\SharedClasses\CommandsUsercontrol.xaml.cs">
       <Link>CommandsUsercontrol.xaml.cs</Link>
       <DependentUpon>CommandsUsercontrol.xaml</DependentUpon>
@@ -303,11 +299,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="..\..\SharedClasses\AppManagerInterface.xaml">
-      <Link>AppManagerInterface.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="..\..\SharedClasses\CommandsUsercontrol.xaml">
       <Link>CommandsUsercontrol.xaml</Link>
       <Generator>MSBuild:Compile</Generator>

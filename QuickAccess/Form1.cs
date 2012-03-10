@@ -217,6 +217,8 @@ namespace QuickAccess
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
+			WindowMessagesInterop.InitializeClientMessages();
+
 			AddAllCurrentDomainAssembliesToLoadedList();
 
 			commandsWindow = new CommandsWindow(this);
@@ -306,7 +308,15 @@ namespace QuickAccess
 		private Point MousePositionBeforePopup = new Point(-1, -1);
 		protected override void WndProc(ref Message m)
 		{
-			if (m.Msg == Win32Api.WM_HOTKEY)
+			WindowMessagesInterop.MessageTypes mt;
+			WindowMessagesInterop.ClientHandleMessage(m.Msg, m.WParam, m.LParam, out mt);
+			if (mt == WindowMessagesInterop.MessageTypes.Show)
+				ShowAndActivateMainWindow(1);
+			else if (mt == WindowMessagesInterop.MessageTypes.Hide)
+				MainWindow.Hide();
+			else if (mt == WindowMessagesInterop.MessageTypes.Close)
+				this.Close();
+			else if (m.Msg == Win32Api.WM_HOTKEY)
 			{
 				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
 					ToggleWindowActivation();
@@ -1211,12 +1221,6 @@ namespace QuickAccess
 					});
 				}
 			}
-		}
-
-		private void menuItem9_Click(object sender, EventArgs e)
-		{
-			AppManagerInterface appManagerInterface = new AppManagerInterface();
-			appManagerInterface.Show();
 		}
 	}
 }
