@@ -375,7 +375,12 @@ namespace QuickAccess
 				overlayRibbonMain.MouseClickedRequestToOpenOverlayWindow += (sndr, evtargs) =>
 				{
 					if (!evtargs.WasRightClick)
-						ShowAndActivateMainWindow(evtargs.ScalingFactor);
+					{
+						if (MainWindow.Visibility != System.Windows.Visibility.Visible)
+							ShowAndActivateMainWindow(evtargs.ScalingFactor);
+						else
+							MainWindow.Hide();
+					}
 					else
 					{
 						ShowOverlayGesturesWindow();
