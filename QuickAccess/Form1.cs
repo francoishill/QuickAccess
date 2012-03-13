@@ -215,9 +215,61 @@ namespace QuickAccess
 			//inlineCommandsWindowWPF.GetInlineCommandsUserControl().LoadPlugins();
 		}
 
+		private void StartPipeClient()
+		{
+			NamedPipesInterop.NamedPipeClient pipeclient = null;
+			pipeclient = NamedPipesInterop.NamedPipeClient.StartNewPipeClient(
+			ActionOnError: (e) => { Console.WriteLine("Error occured: " + e.GetException().Message); },
+			ActionOnMessageReceived: (m) =>
+			{
+				if (m.MessageType == PipeMessageTypes.AcknowledgeClientRegistration)
+					Console.WriteLine("Client successfully registered.");
+				else
+				{
+					if (m.MessageType == PipeMessageTypes.Show)
+					{
+						//if (this.InvokeRequired)
+						//	this.Invoke((Action)delegate { ShowAndActivateMainWindow(1); });
+						//else
+						ShowAndActivateMainWindow(1);
+					}
+					else if (m.MessageType == PipeMessageTypes.Hide)
+					{
+						//if (this.InvokeRequired)
+						//	this.Invoke((Action)delegate { this.WindowState = FormWindowState.Minimized; });
+						//else
+						MainWindow.Dispatcher.Invoke(delegate { MainWindow.Hide(); });
+					}
+					else if (m.MessageType == PipeMessageTypes.Close)
+					{
+						if (pipeclient != null)
+							pipeclient.ForceCancelRetryLoop = true;
+						this.notifyIcon1.Visible = false;
+						if (this.InvokeRequired)
+							this.Invoke((Action)delegate { this.Close(); });
+						else
+							this.Close();
+					}
+				}
+			});
+		}
+
+		//private void ShowForm()
+		//{
+		//	this.Show();
+		//	if (this.WindowState == FormWindowState.Minimized)
+		//		this.WindowState = FormWindowState.Normal;
+		//	bool tmptopmost = this.TopMost;
+		//	this.TopMost = true;
+		//	Application.DoEvents();
+		//	this.TopMost = tmptopmost;
+		//	this.Activate();
+		//}
+
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			WindowMessagesInterop.InitializeClientMessages();
+			StartPipeClient();
+			//WindowMessagesInterop.InitializeClientMessages();
 
 			AddAllCurrentDomainAssembliesToLoadedList();
 
@@ -227,7 +279,7 @@ namespace QuickAccess
 			commandsWindow.MouseClickedRequestToOpenOverlayWindow += (snder, evtargs) =>
 			{
 				if (!evtargs.WasRightClick)
-				ShowAndActivateMainWindow(evtargs.ScalingFactor);
+					ShowAndActivateMainWindow(evtargs.ScalingFactor);
 				else
 				{
 					ShowOverlayGesturesWindow();
@@ -308,15 +360,16 @@ namespace QuickAccess
 		private Point MousePositionBeforePopup = new Point(-1, -1);
 		protected override void WndProc(ref Message m)
 		{
-			WindowMessagesInterop.MessageTypes mt;
-			WindowMessagesInterop.ClientHandleMessage(m.Msg, m.WParam, m.LParam, out mt);
-			if (mt == WindowMessagesInterop.MessageTypes.Show)
-				ShowAndActivateMainWindow(1);
-			else if (mt == WindowMessagesInterop.MessageTypes.Hide)
-				MainWindow.Hide();
-			else if (mt == WindowMessagesInterop.MessageTypes.Close)
-				this.Close();
-			else if (m.Msg == Win32Api.WM_HOTKEY)
+			//WindowMessagesInterop.MessageTypes mt;
+			//WindowMessagesInterop.ClientHandleMessage(m.Msg, m.WParam, m.LParam, out mt);
+			//if (mt == WindowMessagesInterop.MessageTypes.Show)
+			//	ShowAndActivateMainWindow(1);
+			//else if (mt == WindowMessagesInterop.MessageTypes.Hide)
+			//	MainWindow.Hide();
+			//else if (mt == WindowMessagesInterop.MessageTypes.Close)
+			//	this.Close();
+			//else
+			if (m.Msg == Win32Api.WM_HOTKEY)
 			{
 				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
 					ToggleWindowActivation();
@@ -1024,30 +1077,33 @@ namespace QuickAccess
 		private void ShowAndActivateMainWindow(double ScalingFactor = 1)
 		{
 			//ShowOverlayCommandWindows();
-			if (OriginalWidthOfMainWindow == null) OriginalWidthOfMainWindow = MainWindow.Width;//.ActualWidth;
-			if (OriginalHeightOfMainWindow == null) OriginalHeightOfMainWindow = MainWindow.Height;//.ActualHeight;
-			MainWindow.Width = (double)OriginalWidthOfMainWindow;
-			MainWindow.Height = (double)OriginalHeightOfMainWindow;
-			(MainWindow.Content as System.Windows.FrameworkElement).LayoutTransform
-				= new ScaleTransform(ScalingFactor, ScalingFactor);
-			MainWindow.Width *= ScalingFactor > 1.8 ? 1.8 : ScalingFactor;
-			MainWindow.Height *= ScalingFactor > 1.2 ? 1.2 : ScalingFactor;
-
-			if (ScalingFactor <= 1)
+			MainWindow.Dispatcher.BeginInvoke((Action)delegate
 			{
-				MainWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-				Rectangle workingArea1 = Screen.GetWorkingArea(new Point((int)MainWindow.Left, (int)MainWindow.Top));
-				MainWindow.Left = workingArea1.Left + (workingArea1.Width - MainWindow.Width) / 2;
-				MainWindow.Top = workingArea1.Top + (workingArea1.Height - MainWindow.Height) / 2;
-			}
-			else
-			{
-				MainWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.Manual;
-				MainWindow.Left = 0;
-				MainWindow.Top = 0;
-			}
+				if (OriginalWidthOfMainWindow == null) OriginalWidthOfMainWindow = MainWindow.Width;//.ActualWidth;
+				if (OriginalHeightOfMainWindow == null) OriginalHeightOfMainWindow = MainWindow.Height;//.ActualHeight;
+				MainWindow.Width = (double)OriginalWidthOfMainWindow;
+				MainWindow.Height = (double)OriginalHeightOfMainWindow;
+				(MainWindow.Content as System.Windows.FrameworkElement).LayoutTransform
+					= new ScaleTransform(ScalingFactor, ScalingFactor);
+				MainWindow.Width *= ScalingFactor > 1.8 ? 1.8 : ScalingFactor;
+				MainWindow.Height *= ScalingFactor > 1.2 ? 1.2 : ScalingFactor;
 
-			WindowsInterop.ShowAndActivateWindow(MainWindow);
+				if (ScalingFactor <= 1)
+				{
+					MainWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+					Rectangle workingArea1 = Screen.GetWorkingArea(new Point((int)MainWindow.Left, (int)MainWindow.Top));
+					MainWindow.Left = workingArea1.Left + (workingArea1.Width - MainWindow.Width) / 2;
+					MainWindow.Top = workingArea1.Top + (workingArea1.Height - MainWindow.Height) / 2;
+				}
+				else
+				{
+					MainWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.Manual;
+					MainWindow.Left = 0;
+					MainWindow.Top = 0;
+				}
+
+				WindowsInterop.ShowAndActivateWindow(MainWindow);
+			});
 		}
 		private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
 		{
@@ -1210,7 +1266,7 @@ namespace QuickAccess
 					//@"C:\Emgu\emgucv-windows-x86 2.3.0.1416\Emgu.CV.Example\PedestrianDetection\2pedestrian.png",
 					ChosenImage,
 					out imageOut,
-					out usedGPU,					
+					out usedGPU,
 					out elapsedMilliseconds,
 					out errorMsg))
 					UserMessages.ShowWarningMessage("Could not do pedestrian detection: " + errorMsg);

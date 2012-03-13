@@ -273,9 +273,6 @@
     <Compile Include="..\..\SharedClasses\Win32Api.cs">
       <Link>Win32Api.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\WindowMessagesInterop.cs">
-      <Link>WindowMessagesInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
       <Link>WindowsInterop.cs</Link>
     </Compile>
