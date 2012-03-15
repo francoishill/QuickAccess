@@ -32,7 +32,7 @@
     <SuiteName>Own applications</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>application.html</WebPage>
-    <ApplicationRevision>121</ApplicationRevision>
+    <ApplicationRevision>122</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
@@ -243,9 +243,6 @@
     <Compile Include="..\..\SharedClasses\MouseHooks.cs">
       <Link>MouseHooks.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\NamedPipesInterop.cs">
-      <Link>NamedPipesInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\OverlayForm.cs">
       <Link>OverlayForm.cs</Link>
       <SubType>Form</SubType>
@@ -275,6 +272,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
       <Link>UserActivityHook.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\WindowMessagesInterop.cs">
+      <Link>WindowMessagesInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\WPFinterop.cs">
       <Link>WPFinterop.cs</Link>

@@ -215,7 +215,7 @@ namespace QuickAccess
 			//inlineCommandsWindowWPF.GetInlineCommandsUserControl().LoadPlugins();
 		}
 
-		private void StartPipeClient()
+		/*private void StartPipeClient()
 		{
 			NamedPipesInterop.NamedPipeClient pipeclient = null;
 			pipeclient = NamedPipesInterop.NamedPipeClient.StartNewPipeClient(
@@ -252,7 +252,7 @@ namespace QuickAccess
 					}
 				}
 			});
-		}
+		}*/
 
 		//private void ShowForm()
 		//{
@@ -268,8 +268,8 @@ namespace QuickAccess
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			StartPipeClient();
-			//WindowMessagesInterop.InitializeClientMessages();
+			//StartPipeClient();
+			WindowMessagesInterop.InitializeClientMessages();
 
 			AddAllCurrentDomainAssembliesToLoadedList();
 
@@ -360,16 +360,15 @@ namespace QuickAccess
 		private Point MousePositionBeforePopup = new Point(-1, -1);
 		protected override void WndProc(ref Message m)
 		{
-			//WindowMessagesInterop.MessageTypes mt;
-			//WindowMessagesInterop.ClientHandleMessage(m.Msg, m.WParam, m.LParam, out mt);
-			//if (mt == WindowMessagesInterop.MessageTypes.Show)
-			//	ShowAndActivateMainWindow(1);
-			//else if (mt == WindowMessagesInterop.MessageTypes.Hide)
-			//	MainWindow.Hide();
-			//else if (mt == WindowMessagesInterop.MessageTypes.Close)
-			//	this.Close();
-			//else
-			if (m.Msg == Win32Api.WM_HOTKEY)
+			WindowMessagesInterop.MessageTypes mt;
+			WindowMessagesInterop.ClientHandleMessage(m.Msg, m.WParam, m.LParam, out mt);
+			if (mt == WindowMessagesInterop.MessageTypes.Show)
+				ShowAndActivateMainWindow(1);
+			else if (mt == WindowMessagesInterop.MessageTypes.Hide)
+				MainWindow.Hide();
+			else if (mt == WindowMessagesInterop.MessageTypes.Close)
+				this.Close();
+			else if (m.Msg == Win32Api.WM_HOTKEY)
 			{
 				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
 					ToggleWindowActivation();
