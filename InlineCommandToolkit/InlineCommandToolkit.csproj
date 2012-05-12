@@ -264,6 +264,13 @@
     <Compile Include="..\..\SharedClasses\TracXmlRpcInterop.cs">
       <Link>TracXmlRpcInterop.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\UserMessageBox.cs">
+      <Link>UserMessageBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\UserMessageBox.designer.cs">
+      <Link>UserMessageBox.designer.cs</Link>
+      <DependentUpon>UserMessageBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\UserMessages.cs">
       <Link>UserMessages.cs</Link>
     </Compile>
@@ -355,6 +362,10 @@
     <EmbeddedResource Include="..\..\SharedClasses\PickItemForm.resx">
       <Link>PickItemForm.resx</Link>
       <DependentUpon>PickItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\SharedClasses\UserMessageBox.resx">
+      <Link>UserMessageBox.resx</Link>
+      <DependentUpon>UserMessageBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EnterStringAndListOfEnumsForm.resx">
       <DependentUpon>EnterStringAndListOfEnumsForm.cs</DependentUpon>

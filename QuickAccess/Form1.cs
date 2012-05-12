@@ -1073,7 +1073,7 @@ namespace QuickAccess
 			if (e.Button == System.Windows.Forms.MouseButtons.Right) this.Hide();
 		}
 
-		private void ShowAndActivateMainWindow(double ScalingFactor = 1)
+		public void ShowAndActivateMainWindow(double ScalingFactor = 1)
 		{
 			//ShowOverlayCommandWindows();
 			MainWindow.Dispatcher.BeginInvoke((Action)delegate

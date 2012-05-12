@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -7,6 +8,8 @@ using System.Threading;
 using System.Windows.Forms;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Microsoft.VisualBasic.ApplicationServices;
+using Microsoft.Win32;
 using SharedClasses;
 
 //This line is supposed to prevent dissasembly with ILDASM, but it does not prevent dotPeek
@@ -16,22 +19,42 @@ namespace QuickAccess
 {
 	static class Program
 	{
+		const string UrlHandlerArgument = "handleurl";
+		const string UrlHandlerUriStart = "quickaccess";
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		static void Main()
 		{
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
 			AssociateFacesFileExtensionInRegistry();
+			AssociateUrlProtocolHandler();
+			SingleInstanceApplication.Run(NewInstanceHandler);
+		}
 
-			string[] args = Environment.GetCommandLineArgs();
+		public static void NewInstanceHandler(object sender, StartupNextInstanceEventArgs e)
+		{
+			e.BringToForeground = false;			
 
+			Form1 form1 = null;
+			var app = sender as SingleInstanceApplication;
+			if (app != null)
+				form1 = app.GetMainForm() as Form1;
+
+			ProcessCommandLineArguments(form1, e.CommandLine.ToArray(), false);
+		}
+
+		public static void ProcessCommandLineArguments(Form1 mainForm, string[] args, bool IsFirstInstance)
+		{
 			if (args.Length == 3)
 			{
 				if (args[1] == null)
 					return;
 
-				if (args[1].ToLower() == "extract")
+				if (args[1].Equals("extract", StringComparison.InvariantCultureIgnoreCase))
 				{
 					if (File.Exists(args[2]))
 					{
@@ -52,33 +75,56 @@ namespace QuickAccess
 							}
 					}
 				}
-			}
-			else if (args.Length == 1)
-			{
-				//QuickAccess-{6EBAC5AC-BCF2-4263-A82C-F189930AEA30}
-				//Mutex.
+				else if (args[1].Equals(UrlHandlerArgument, StringComparison.InvariantCultureIgnoreCase))
+				{
+					bool commandRecognized = false;
+					string expectedStartString = UrlHandlerUriStart + ":";
+					if (args[2].StartsWith(expectedStartString, StringComparison.InvariantCultureIgnoreCase))
+					{
+						string commandString = args[2].Substring(expectedStartString.Length);
+						commandString = Uri.UnescapeDataString(commandString);
+						if (commandString == "show")
+						{
+							commandRecognized = true;
+							if (mainForm != null && !IsFirstInstance)
+								mainForm.ShowAndActivateMainWindow();
+						}
+						else if (commandString.StartsWith("selectfile/", StringComparison.InvariantCultureIgnoreCase))
+						{
+							commandRecognized = true;
+							Process.Start("explorer", "/select, \"" + commandString.Substring("selectfile/".Length) + "\"");
+						}
+					}
 
+					if (!commandRecognized)
+						UserMessages.ShowWarningMessage("QuickAccess cannot process unknown uri command: " + args[2]);
+				}
+			}
+		}
+
+		public class SingleInstanceApplication : WindowsFormsApplicationBase
+		{
+			private SingleInstanceApplication()
+			{
+				base.IsSingleInstance = true;
+			}
+
+			public Form GetMainForm() { return MainForm; }
+
+			public static void Run(StartupNextInstanceEventHandler startupHandler)
+			{
 				using (Mutex mutex = new Mutex(false, "QuickAccess-{6EBAC5AC-BCF2-4263-A82C-F189930AEA30}"))
 				{
-					if (!mutex.WaitOne(0, true))
-					{
-						Application.EnableVisualStyles();
-						MessageBox.Show("Another instances of QuickAccess is already running.", "Only one instance allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					}
-					else
-					{
-						Application.EnableVisualStyles();
-						Application.SetCompatibleTextRenderingDefault(false);
+					SingleInstanceApplication app = new SingleInstanceApplication();
+					app.StartupNextInstance += startupHandler;
 
-						if (SharedClasses.FaceDetectionInterop.CheckFaceDetectionDllsExistInCurrentExeDir(true)
-							|| UserMessages.Confirm("Due to missing DLLs, application will not be able to do online publishing, continue withouth this support?"))
-							Application.Run(new Form1());
+					if (mutex.WaitOne(0, true))
+					{
+						app.MainForm = new Form1();
+						ProcessCommandLineArguments(app.MainForm as Form1, Environment.GetCommandLineArgs(), true);
 					}
+					app.Run(Environment.GetCommandLineArgs());
 				}
-
-				//Application.EnableVisualStyles();
-				//Application.SetCompatibleTextRenderingDefault(false);
-				//Application.Run(new Form1());
 			}
 		}
 
@@ -93,6 +139,18 @@ namespace QuickAccess
 				"\"" + Environment.GetCommandLineArgs()[0] + "\"" + " \"" + "extract" + "\" " + "\"%1\"",//In format QuickAccess.exe extract "filepath..\to..\extra\face.faces"
 				"Extract faces here",
 				"\"" + Environment.GetCommandLineArgs()[0] + "\"");
+		}
+
+		private static void AssociateUrlProtocolHandler()
+		{
+			var classesRootKey = RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryInterop.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32);
+			var quickaccessKey = classesRootKey.CreateSubKey(UrlHandlerUriStart);
+			quickaccessKey.SetValue(null, "URL:QuickAccess Protocol");
+			quickaccessKey.SetValue("URL Protocol", "");
+			var shellSubkey = quickaccessKey.CreateSubKey("shell");
+			var openSubkey = shellSubkey.CreateSubKey("open");
+			var commandSubkey = openSubkey.CreateSubKey("command");
+			commandSubkey.SetValue(null, "\"" + Environment.GetCommandLineArgs()[0] + "\" " + UrlHandlerArgument + " \"%1\"");
 		}
 	}
 }
