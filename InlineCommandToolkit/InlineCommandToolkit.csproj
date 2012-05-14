@@ -266,6 +266,7 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\UserMessageBox.cs">
       <Link>UserMessageBox.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\..\SharedClasses\UserMessageBox.designer.cs">
       <Link>UserMessageBox.designer.cs</Link>
