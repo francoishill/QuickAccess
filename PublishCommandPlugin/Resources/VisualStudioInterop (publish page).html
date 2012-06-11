@@ -2,6 +2,8 @@
 <html>
 <head>
     <title></title>
+    <link href="/css/prettify.css" rel="stylesheet" />
+    <script src="/js/prettify.js"></script>
     <style>
         html, body
         {
@@ -59,6 +61,11 @@
             
         }
 
+        .jsonText
+        {
+            font-size: 10pt;
+        }
+
         .downloadlink
         {
             font-size: 36px;
@@ -71,7 +78,7 @@
         }
     </style>
 </head>
-<body>
+<body onload='prettyPrint();'>
     <div class='pagegenerateddate'>
     <label>Page was generated on {PageGeneratedDate}</label>
     </div>
@@ -101,6 +108,12 @@
             {NewFeaturesList}
         </ol>
     </div>
+    <br />
+
+    <div class="jsonText">
+        <pre><code class='prettyprint'>{JsonText}</code></pre>
+    </div>
+
     <br />
     <div class='headingvaluepair'>
         <a href='{SetupFilename}' class='downloadlink'>Download</a>

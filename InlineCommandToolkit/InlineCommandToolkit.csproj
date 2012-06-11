@@ -10,23 +10,7 @@
     <AssemblyName>InlineCommandToolkit</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WPF, HAVEPLUGINS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -37,7 +21,6 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -48,7 +31,6 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -59,7 +41,6 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\Release\</OutputPath>
@@ -70,20 +51,30 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;WPF, HAVEPLUGINS</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CookComputing.XmlRpcV2">
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\XmlRpc\CookComputing.XmlRpcV2.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV">
-      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Emgu (facial recognition)\Emgu.CV.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.UI">
-      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Emgu (facial recognition)\Emgu.CV.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.Util">
-      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Emgu (facial recognition)\Emgu.Util.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Windows.Shell">
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Microsoft_Windows_Shell\Microsoft.Windows.Shell.dll</HintPath>
@@ -103,10 +94,6 @@
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Sqlite\System.Data.SQLite.DLL</HintPath>
-    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Web" />
@@ -137,14 +124,6 @@
     <Compile Include="..\..\..\..\..\..\..\Francois\Dev\VSprojects\SharedClasses\EncodeAndDecodeInterop.cs">
       <Link>EncodeAndDecodeInterop.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\..\Francois\Dev\VSprojects\SharedClasses\FaceTrainingForm.cs">
-      <Link>FaceTrainingForm.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\..\..\..\..\..\Francois\Dev\VSprojects\SharedClasses\FaceTrainingForm.designer.cs">
-      <Link>FaceTrainingForm.designer.cs</Link>
-      <DependentUpon>FaceTrainingForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
       <Link>ApplicationRecoveryAndRestart.cs</Link>
     </Compile>
@@ -155,14 +134,6 @@
     <Compile Include="..\..\SharedClasses\CommandsWindow.xaml.cs">
       <Link>CommandsWindow.xaml.cs</Link>
       <DependentUpon>CommandsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ConfirmUsingFaceDetection.cs">
-      <Link>ConfirmUsingFaceDetection.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ConfirmUsingFaceDetection.designer.cs">
-      <Link>ConfirmUsingFaceDetection.designer.cs</Link>
-      <DependentUpon>ConfirmUsingFaceDetection.cs</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\ConvertersGeneral.cs">
       <Link>ConvertersGeneral.cs</Link>
@@ -185,9 +156,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\EventHandlers.cs">
       <Link>EventHandlers.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\FaceDetectionInterop.cs">
-      <Link>FaceDetectionInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\FileSystemInterop.cs">
       <Link>FileSystemInterop.cs</Link>
@@ -278,6 +246,9 @@
     <Compile Include="..\..\SharedClasses\VisualStudioInterop.cs">
       <Link>VisualStudioInterop.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\WebInterop.cs">
+      <Link>WebInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\Win32Api.cs">
       <Link>Win32Api.cs</Link>
     </Compile>
@@ -348,14 +319,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\..\..\..\..\..\Francois\Dev\VSprojects\SharedClasses\FaceTrainingForm.resx">
-      <Link>FaceTrainingForm.resx</Link>
-      <DependentUpon>FaceTrainingForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\SharedClasses\ConfirmUsingFaceDetection.resx">
-      <Link>ConfirmUsingFaceDetection.resx</Link>
-      <DependentUpon>ConfirmUsingFaceDetection.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\..\SharedClasses\OverlayGesturesForm.resx">
       <Link>OverlayGesturesForm.resx</Link>
       <DependentUpon>OverlayGesturesForm.cs</DependentUpon>
@@ -381,6 +344,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\haarcascade_lefteye_2splits.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TestfastJSON\fastJSON\fastJSON.csproj">
+      <Project>{207e91b1-c9f8-4913-88e1-3549ef5f3273}</Project>
+      <Name>fastJSON</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

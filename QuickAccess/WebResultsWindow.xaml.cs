@@ -26,7 +26,8 @@ namespace QuickAccess
 		{
 			InitializeComponent();
 
-			webSourceControl1.LoadCompleted += delegate//.Navigated += delegate
+			//webSourceControl1.LoadCompleted += delegate
+			webBrowser1.Navigated += delegate
 			{
 				listBox1.IsEnabled = true;
 				if (listBox1.SelectedItem is TorrentSearchResult)
@@ -41,7 +42,8 @@ namespace QuickAccess
 				listBox1.IsEnabled = false;
 				TorrentSearchResult result = (listBox1.SelectedItem as TorrentSearchResult);
 				result.LoadingAnimationVisible = System.Windows.Visibility.Visible;
-				try { webSourceControl1.LoadURL(result.Uri); }//.Navigate(result.Uri); }
+				//try { webSourceControl1.LoadURL(result.Uri); }
+				try { webBrowser1.Navigate(result.Uri); }
 				catch (Exception exc) { UserMessages.ShowErrorMessage(exc.Message); }
 				
 			}

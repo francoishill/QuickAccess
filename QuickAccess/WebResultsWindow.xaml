@@ -1,12 +1,12 @@
 ﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				xmlns:Custom="http://schemas.awesomium.com/winfx"
 				x:Class="QuickAccess.WebResultsWindow"
 				Title="WebResultsWindow"
 				Height="300"
 				Width="500"
 				WindowStartupLocation='CenterScreen'
 				Loaded='Window_Loaded'>
+	<!--xmlns:Custom="http://schemas.awesomium.com/winfx"-->
 	<Window.Resources>
 		<ControlTemplate x:Key="loadingAnimation">
 			<Image x:Name="content"
@@ -194,13 +194,13 @@
 		</ListBox>
 		<GridSplitter Grid.Row='2'
 									Width='2' />
-		<!--<WebBrowser x:Name='webBrowser1'
+		<WebBrowser x:Name='webBrowser1'
 								Grid.Column='1'
-								Grid.Row='2' />-->
-		<Custom:WebControl Name='webSourceControl1'
+								Grid.Row='2' />
+		<!--<Custom:WebControl Name='webSourceControl1'
 											 Grid.Column='1'
 											 Grid.Row='2'
-											 Margin='3,0,0,0'/>
+											 Margin='3,0,0,0'/>-->
 		<!--<Custom:WebSourceControl Name='webSourceControl1'
 														 Grid.Column='1'
 														 Grid.Row='2'/>-->

@@ -6,8 +6,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
-using Emgu.CV;
-using Emgu.CV.Structure;
+//TODO: Facedetection disabled for now
+//using Emgu.CV;
+//using Emgu.CV.Structure;
 using Microsoft.VisualBasic.ApplicationServices;
 using Microsoft.Win32;
 using SharedClasses;
@@ -62,17 +63,18 @@ namespace QuickAccess
 						if (!Directory.Exists(saveToDir))
 							Directory.CreateDirectory(saveToDir);
 
-						int counter = 1;
-						Dictionary<string, List<Image<Gray, byte>>> tmpList = new Dictionary<string, List<Image<Gray, byte>>>();
-						FaceDetectionInterop.ExtractFacesFromFile(FaceDetectionInterop.Passphrase, FaceDetectionInterop.Salt, ref tmpList, args[2]);
-						foreach (string name in tmpList.Keys)
-							foreach (Image<Gray, byte> faceimage in tmpList[name])
-							{
-								string personFullDir = saveToDir + "\\" + name;
-								if (!Directory.Exists(personFullDir))
-									Directory.CreateDirectory(personFullDir);
-								faceimage.ToBitmap().Save(personFullDir + "\\Face" + " (" + counter++ + ").bmp");
-							}
+						//TODO: Facedetection disabled for now
+						//int counter = 1;
+						//Dictionary<string, List<Image<Gray, byte>>> tmpList = new Dictionary<string, List<Image<Gray, byte>>>();
+						//FaceDetectionInterop.ExtractFacesFromFile(FaceDetectionInterop.Passphrase, FaceDetectionInterop.Salt, ref tmpList, args[2]);
+						//foreach (string name in tmpList.Keys)
+						//	foreach (Image<Gray, byte> faceimage in tmpList[name])
+						//	{
+						//		string personFullDir = saveToDir + "\\" + name;
+						//		if (!Directory.Exists(personFullDir))
+						//			Directory.CreateDirectory(personFullDir);
+						//		faceimage.ToBitmap().Save(personFullDir + "\\Face" + " (" + counter++ + ").bmp");
+						//	}
 					}
 				}
 				else if (args[1].Equals(UrlHandlerArgument, StringComparison.InvariantCultureIgnoreCase))
