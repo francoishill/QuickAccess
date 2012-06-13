@@ -127,6 +127,9 @@
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
       <Link>ApplicationRecoveryAndRestart.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\AutoUpdating.cs">
+      <Link>AutoUpdating.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\CommandsUsercontrol.xaml.cs">
       <Link>CommandsUsercontrol.xaml.cs</Link>
       <DependentUpon>CommandsUsercontrol.xaml</DependentUpon>
