@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 11
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickAccess", "QuickAccess\QuickAccess.csproj", "{1B48E76E-6DA2-4344-A96F-AE307692CADB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InlineCommandToolkit", "InlineCommandToolkit\InlineCommandToolkit.csproj", "{3F73ECE5-851E-4C02-AC70-37C0F92783AD}"
@@ -42,8 +42,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubversionCommandPlugin", "SubversionCommandPlugin\SubversionCommandPlugin.csproj", "{99BF393F-E714-4460-8039-E7C80688AAF8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickAccessPluginCreator", "QuickAccessPluginCreator\QuickAccessPluginCreator.csproj", "{B52A81D6-17E7-4434-A3CE-5B91187CD478}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastJSON", "..\TestfastJSON\fastJSON\fastJSON.csproj", "{207E91B1-C9F8-4913-88E1-3549EF5F3273}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,18 +122,6 @@ Global
 		{1D51FF28-7AFD-429B-9768-F6D652B103D8}.Release|x64.ActiveCfg = Release|Any CPU
 		{1D51FF28-7AFD-429B-9768-F6D652B103D8}.Release|x86.ActiveCfg = Release|x86
 		{1D51FF28-7AFD-429B-9768-F6D652B103D8}.Release|x86.Build.0 = Release|x86
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|Any CPU.Build.0 = Release|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|Mixed Platforms.Build.0 = Release|x86
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|x64.ActiveCfg = Release|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|x86.ActiveCfg = Release|Any CPU
 		{24DDFF3B-5AEF-433B-8FCF-FE7C63D9B21F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24DDFF3B-5AEF-433B-8FCF-FE7C63D9B21F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24DDFF3B-5AEF-433B-8FCF-FE7C63D9B21F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
