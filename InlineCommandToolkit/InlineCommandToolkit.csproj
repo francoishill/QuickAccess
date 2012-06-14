@@ -130,6 +130,14 @@
     <Compile Include="..\..\SharedClasses\AutoUpdating.cs">
       <Link>AutoUpdating.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\AutoUpdatingForm.cs">
+      <Link>AutoUpdatingForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\AutoUpdatingForm.designer.cs">
+      <Link>AutoUpdatingForm.designer.cs</Link>
+      <DependentUpon>AutoUpdatingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\CommandsUsercontrol.xaml.cs">
       <Link>CommandsUsercontrol.xaml.cs</Link>
       <DependentUpon>CommandsUsercontrol.xaml</DependentUpon>
@@ -322,6 +330,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\..\SharedClasses\AutoUpdatingForm.resx">
+      <Link>AutoUpdatingForm.resx</Link>
+      <DependentUpon>AutoUpdatingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\..\SharedClasses\OverlayGesturesForm.resx">
       <Link>OverlayGesturesForm.resx</Link>
       <DependentUpon>OverlayGesturesForm.cs</DependentUpon>

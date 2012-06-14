@@ -33,6 +33,7 @@ namespace QuickAccess
 			Application.SetCompatibleTextRenderingDefault(false);
 			AssociateFacesFileExtensionInRegistry();
 			AssociateUrlProtocolHandler();
+            AutoUpdatingForm.CheckForUpdates();
 			SingleInstanceApplication.Run(NewInstanceHandler);
 		}
 
