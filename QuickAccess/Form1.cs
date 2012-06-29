@@ -144,6 +144,8 @@ namespace QuickAccess
 
 			UserMessages.iconForMessages = this.Icon;//IconsInterop.IconToImageSource(this.Icon);
 
+			DeleteAllDropboxConfilctsOfVsProjects();
+
 			//UserMessages.Confirm("Hallo");
 			//System.Windows.Window w = UserMessages.GetTopmostForm();
 			//w.Close();
@@ -214,6 +216,15 @@ namespace QuickAccess
 			//TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(null, textFeedbackEvent, "Done loading plugins.", TextFeedbackType.Noteworthy);
 
 			//inlineCommandsWindowWPF.GetInlineCommandsUserControl().LoadPlugins();
+		}
+
+		private void DeleteAllDropboxConfilctsOfVsProjects()
+		{
+			var vsprojectsDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).TrimEnd('\\') + @"\Dropbox\Dev\VSprojects";
+			if (Directory.Exists(vsprojectsDir))
+				foreach (var f in Directory.GetFiles(vsprojectsDir, "* conflicted copy *", SearchOption.AllDirectories))
+					if (f.IndexOf(@"\bin\", StringComparison.InvariantCultureIgnoreCase) != -1)
+						File.Delete(f);
 		}
 
 		/*private void StartPipeClient()
