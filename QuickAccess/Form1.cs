@@ -49,6 +49,7 @@ namespace QuickAccess
 		System.Windows.Media.Color LabelColorOptionalArgument = System.Windows.Media.Colors.Black;
 
 		Icon originalTrayIcon = null;
+		public static string CurrentVersionString = null;
 
 		public Form1()
 		{
@@ -61,6 +62,22 @@ namespace QuickAccess
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
 			InitializeComponent();
+
+			System.Windows.Forms.Timer timerVersionString = new System.Windows.Forms.Timer();
+			timerVersionString.Interval = 1000;
+			timerVersionString.Tick +=
+			(s, e) =>
+			{
+				if (CurrentVersionString != null && commandsWindow != null)
+				{
+					commandsWindow.Title += " (up to date version " + CurrentVersionString + ")";
+					System.Windows.Forms.Timer t = s as System.Windows.Forms.Timer;
+					t.Stop();
+					t.Dispose();
+					t = null;
+				}
+			};
+			timerVersionString.Start();
 
 			originalTrayIcon = notifyIcon1.Icon;
 

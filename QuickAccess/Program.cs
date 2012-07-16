@@ -33,7 +33,9 @@ namespace QuickAccess
 			Application.SetCompatibleTextRenderingDefault(false);
 			AssociateFacesFileExtensionInRegistry();
 			AssociateUrlProtocolHandler();
-            AutoUpdatingForm.CheckForUpdates(delegate { Application.Exit(); });
+			AutoUpdatingForm.CheckForUpdates(
+				exitApplicationAction: delegate { Application.Exit(); },
+				ActionIfUptoDate_Versionstring: (versionstring) => { Form1.CurrentVersionString = versionstring; });
 			SingleInstanceApplication.Run(NewInstanceHandler);
 		}
 
