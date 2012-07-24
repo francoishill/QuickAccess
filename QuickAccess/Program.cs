@@ -143,7 +143,8 @@ namespace QuickAccess
 				"ExtractFaces",
 				"\"" + Environment.GetCommandLineArgs()[0] + "\"" + " \"" + "extract" + "\" " + "\"%1\"",//In format QuickAccess.exe extract "filepath..\to..\extra\face.faces"
 				"Extract faces here",
-				"\"" + Environment.GetCommandLineArgs()[0] + "\"");
+				"\"" + Environment.GetCommandLineArgs()[0] + "\"",
+				(err, title) => UserMessages.ShowErrorMessage(err, title));
 		}
 
 		private static void AssociateUrlProtocolHandler()
