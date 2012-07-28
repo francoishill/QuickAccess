@@ -34,8 +34,9 @@ namespace QuickAccess
 			AssociateFacesFileExtensionInRegistry();
 			AssociateUrlProtocolHandler();
 			AutoUpdatingForm.CheckForUpdates(
-				exitApplicationAction: delegate { Application.Exit(); },
-				ActionIfUptoDate_Versionstring: (versionstring) => { Form1.CurrentVersionString = versionstring; });
+				exitApplicationAction: () => Application.Exit(),
+				ActionIfUptoDate_Versionstring: versionstring => Form1.CurrentVersionString = versionstring,
+				ActionIfUnableToCheckForUpdates: errmsg => Form1.ErrorMessageIfCannotCheckVersion = errmsg);
 			SingleInstanceApplication.Run(NewInstanceHandler);
 		}
 

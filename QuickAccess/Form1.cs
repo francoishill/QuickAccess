@@ -50,6 +50,7 @@ namespace QuickAccess
 
 		Icon originalTrayIcon = null;
 		public static string CurrentVersionString = null;
+		public static string ErrorMessageIfCannotCheckVersion = null;
 
 		public Form1()
 		{
@@ -71,6 +72,14 @@ namespace QuickAccess
 				if (CurrentVersionString != null && commandsWindow != null)
 				{
 					commandsWindow.Title += " (up to date version " + CurrentVersionString + ")";
+					System.Windows.Forms.Timer t = s as System.Windows.Forms.Timer;
+					t.Stop();
+					t.Dispose();
+					t = null;
+				}
+				else if (ErrorMessageIfCannotCheckVersion != null && commandsWindow != null)
+				{
+					commandsWindow.Title += " (" + ErrorMessageIfCannotCheckVersion + ")";
 					System.Windows.Forms.Timer t = s as System.Windows.Forms.Timer;
 					t.Stop();
 					t.Dispose();

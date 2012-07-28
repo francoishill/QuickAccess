@@ -175,7 +175,7 @@ namespace QuickAccessPluginCreator
 				if (tmpWindow.ShowDialog() == true)
 				{
 					foreach (PropertyInfo pi in tmpWindow.propertyGrid1.SelectedObject.GetType().GetProperties())
-						fullReplacementTokens["[{" + pi.Name + "}]"] = pi.GetValue(tmpWindow.propertyGrid1.SelectedObject).ToString();
+						fullReplacementTokens["[{" + pi.Name + "}]"] = pi.GetValue(tmpWindow.propertyGrid1.SelectedObject, new object[0]).ToString();
 					foreach (string file in templates[key])
 					{
 						string fileRelativePath = file.Substring(TemplateInitialPart.Length);//CommandPluginTemplate.Properties.AssemblyInfo.cs
