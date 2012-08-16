@@ -919,52 +919,52 @@ namespace QuickAccess
 			}*/
 		}
 
-		UserActivityHook actHook;
+		//UserActivityHook actHook;
 		private void InitializeHooks(bool InstallMouseHook, bool InstallKeyboardHook)
 		{
-			actHook = new UserActivityHook(InstallMouseHook, InstallKeyboardHook);
-			actHook.OnMouseActivity += new MouseEventHandler(actHook_OnMouseActivity);
-			actHook.KeyDown += new KeyEventHandler(actHook_KeyDown);
-			actHook.KeyPress += new KeyPressEventHandler(actHook_KeyPress);
-			actHook.KeyUp += new KeyEventHandler(actHook_KeyUp);
+			//actHook = new UserActivityHook(InstallMouseHook, InstallKeyboardHook);
+			//actHook.OnMouseActivity += new UserActivityHook.MoreMouseEventHandler(actHook_OnMouseActivity);
+			//actHook.KeyDown += new KeyEventHandler(actHook_KeyDown);
+			//actHook.KeyPress += new KeyPressEventHandler(actHook_KeyPress);
+			//actHook.KeyUp += new KeyEventHandler(actHook_KeyUp);
 		}
 
-		void actHook_OnMouseActivity(object sender, MouseEventArgs e)
-		{
-			switch (e.Button)
-			{
-				case MouseButtons.Left:
-					break;
-				case MouseButtons.Middle:
-					break;
-				case MouseButtons.None:
-					break;
-				case MouseButtons.Right:
-					break;
-				case MouseButtons.XButton1:
-					break;
-				case MouseButtons.XButton2:
-					break;
-				default:
-					break;
-			}
-		}
+		//void actHook_OnMouseActivity(object sender, UserActivityHook.MoreMouseEventArgs e)
+		//{
+		//    switch (e.Button.Button)
+		//    {
+		//        case MouseButtons.Left:
+		//            break;
+		//        case MouseButtons.Middle:
+		//            break;
+		//        case MouseButtons.None:
+		//            break;
+		//        case MouseButtons.Right:
+		//            break;
+		//        case MouseButtons.XButton1:
+		//            break;
+		//        case MouseButtons.XButton2:
+		//            break;
+		//        default:
+		//            break;
+		//    }
+		//}
 
-		void actHook_KeyDown(object sender, KeyEventArgs e)
-		{
+		//void actHook_KeyDown(object sender, KeyEventArgs e)
+		//{
 
-		}
+		//}
 
-		void actHook_KeyPress(object sender, KeyPressEventArgs e)
-		{
-		}
+		//void actHook_KeyPress(object sender, KeyPressEventArgs e)
+		//{
+		//}
 
-		void actHook_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (ModifierKeys == Keys.Control)
-			{
-			}
-		}
+		//void actHook_KeyUp(object sender, KeyEventArgs e)
+		//{
+		//    if (ModifierKeys == Keys.Control)
+		//    {
+		//    }
+		//}
 
 		private void updateStatusText(string str)
 		{

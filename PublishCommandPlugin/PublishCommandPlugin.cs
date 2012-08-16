@@ -81,6 +81,7 @@ namespace PublishCommandPlugin
 						VisualStudioInterop.PerformPublish(
 							textfeedbackSenderObject: this,
 							projName: arguments[1],
+							_64Only: false,
 							versionString: out tmpNoUseVersionStr,
 							HasPlugins: (bool)HasPlugins,
 							AutomaticallyUpdateRevision: (bool)AutomaticallyUpdateRevision,
@@ -92,6 +93,7 @@ namespace PublishCommandPlugin
 						VisualStudioInterop.PerformPublishOnline(
 								 textfeedbackSenderObject: this,
 								 projName: arguments[1],
+								 _64Only: false,
 								 HasPlugins: (bool)HasPlugins,
 								 AutomaticallyUpdateRevision: (bool)AutomaticallyUpdateRevision,
 								 WriteIntoRegistryForWindowsAutostartup: (bool)WriteIntoRegistryForWindowsAutostartup,

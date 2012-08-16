@@ -247,6 +247,9 @@
     <Compile Include="..\..\SharedClasses\PropertyInterceptor.cs">
       <Link>PropertyInterceptor.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\RegistryInterop.cs">
+      <Link>RegistryInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\RemoteXmlRpc.xaml.cs">
       <Link>RemoteXmlRpc.xaml.cs</Link>
       <DependentUpon>RemoteXmlRpc.xaml</DependentUpon>
@@ -301,6 +304,13 @@
     <Compile Include="..\..\SharedClasses\WPFdraggableCanvas.cs">
       <Link>WPFdraggableCanvas.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\WpfNotificationWindow.xaml.cs">
+      <Link>WpfNotificationWindow.xaml.cs</Link>
+      <DependentUpon>WpfNotificationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\xDelta3Interop.cs">
+      <Link>xDelta3Interop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\XmlRpcInterop.cs">
       <Link>XmlRpcInterop.cs</Link>
     </Compile>
@@ -348,6 +358,11 @@
     </Page>
     <Page Include="..\..\SharedClasses\RemoteXmlRpc.xaml">
       <Link>RemoteXmlRpc.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\SharedClasses\WpfNotificationWindow.xaml">
+      <Link>WpfNotificationWindow.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
