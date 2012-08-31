@@ -44,7 +44,7 @@ namespace QuickAccess
 
 		public static void NewInstanceHandler(object sender, StartupNextInstanceEventArgs e)
 		{
-			e.BringToForeground = false;			
+			e.BringToForeground = false;
 
 			Form1 form1 = null;
 			var app = sender as SingleInstanceApplication;

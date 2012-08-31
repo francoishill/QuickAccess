@@ -128,6 +128,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\SharedClasses\CompareObjects.cs">
+      <Link>CompareObjects.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\EncodeAndDecodeInterop.cs">
       <Link>EncodeAndDecodeInterop.cs</Link>
     </Compile>
