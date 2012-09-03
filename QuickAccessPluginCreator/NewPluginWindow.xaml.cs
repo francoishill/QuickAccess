@@ -215,7 +215,9 @@ namespace QuickAccessPluginCreator
 					//TODO: Add here to check if successfully built, then ask user if plugin must be placed in QuickAccess\Plugins in the programfiles folder.
 					///
 					///
-					string newVersionString = VisualStudioInterop.BuildVsProjectReturnNewversionString(
+					string newversionString;
+					string currentVersionString;
+					if (VisualStudioInterop.BuildVsProjectReturnNewversionString(
 						newCommandName,
 						tmpCsProjFilepath,
 						"",
@@ -224,9 +226,10 @@ namespace QuickAccessPluginCreator
 						VisualStudioInterop.ProjectConfiguration.Release,
 						VisualStudioInterop.PlatformTarget.x86,
 						false,
-						null);
-
-					if (newVersionString != null)
+						null,
+						null,
+						out newversionString,
+						out currentVersionString))
 					{
 						string quickAccessProjectDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Visual Studio 2010\Projects\QuickAccess";
 						if (Directory.Exists(quickAccessProjectDir)

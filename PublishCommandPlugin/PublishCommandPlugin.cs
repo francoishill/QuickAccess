@@ -82,7 +82,7 @@ namespace PublishCommandPlugin
 							textfeedbackSenderObject: this,
 							projName: arguments[1],
 							_64Only: false,
-							versionString: out tmpNoUseVersionStr,
+							publishedVersionString: out tmpNoUseVersionStr,
 							HasPlugins: (bool)HasPlugins,
 							AutomaticallyUpdateRevision: (bool)AutomaticallyUpdateRevision,
 							WriteIntoRegistryForWindowsAutostartup: (bool)WriteIntoRegistryForWindowsAutostartup,

@@ -114,7 +114,8 @@ namespace QuickAccess
 			{
 				labelRecoveryAndRestartSafe.Visible = true;
 				notifyIcon1.ShowBalloonTip(3000, "Recovery and Restart", "QuickAccess is now Recovery and Restart Safe", ToolTipIcon.Info);
-			});
+			},
+			err => UserMessages.ShowErrorMessage(err));
 
 			//textBoxCommand.Tag = new List<string>();
 			comboboxCommand.Tag = new List<string>();
@@ -1240,7 +1241,7 @@ namespace QuickAccess
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			ApplicationRecoveryAndRestart.TestCrash(true);
+			ApplicationRecoveryAndRestart.TestCrash(true, msg => UserMessages.Confirm(msg));
 		}
 
 		private WebResultsWindow webResultsWindow;
