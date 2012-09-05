@@ -186,6 +186,9 @@
     <Compile Include="..\..\SharedClasses\fastJSON.cs">
       <Link>fastJSON.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\FeedbackMessageTypes.cs">
+      <Link>FeedbackMessageTypes.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\FileSystemInterop.cs">
       <Link>FileSystemInterop.cs</Link>
     </Compile>
@@ -217,6 +220,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\NetworkInteropSerializedClasses\InfoTransferred.cs">
       <Link>InfoTransferred.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\NetworkInteropSimple.cs">
+      <Link>NetworkInteropSimple.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\NsisInterop.cs">
       <Link>NsisInterop.cs</Link>
@@ -254,6 +260,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\PropertyInterceptor.cs">
       <Link>PropertyInterceptor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\PublishInterop.cs">
+      <Link>PublishInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\RegistryInterop.cs">
       <Link>RegistryInterop.cs</Link>
