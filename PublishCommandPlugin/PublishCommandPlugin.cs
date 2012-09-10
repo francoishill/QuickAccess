@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using InlineCommandToolkit;
 //using InterfaceForQuickAccessPlugin;
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
+using SharedClasses;
 
 namespace PublishCommandPlugin
 {
@@ -67,7 +68,7 @@ namespace PublishCommandPlugin
 				bool? AutomaticallyUpdateRevision = null;
 				bool? WriteIntoRegistryForWindowsAutostartup = null;
 
-				HasPlugins = UserMessages.ConfirmNullable("Does the application have plugins (in a Plugins subfolder of the binaries)?", DefaultYesButton: true);				
+				HasPlugins = UserMessages.ConfirmNullable("Does the application have plugins (in a Plugins subfolder of the binaries)?", DefaultYesButton: true);
 				if (HasPlugins != null)
 					AutomaticallyUpdateRevision = UserMessages.ConfirmNullable("Update the revision also?");
 				if (HasPlugins != null && AutomaticallyUpdateRevision != null)
@@ -78,27 +79,95 @@ namespace PublishCommandPlugin
 					if (arguments[0] == "localvs")
 					{
 						string tmpNoUseVersionStr;
-						VisualStudioInterop.PerformPublish(
-							textfeedbackSenderObject: this,
+						string tmpNoUseSetupPath;
+						PublishInterop.PerformPublish(
+							//VisualStudioInterop.PerformPublish(
+							//textfeedbackSenderObject: this,
 							projName: arguments[1],
 							_64Only: false,
-							publishedVersionString: out tmpNoUseVersionStr,
 							HasPlugins: (bool)HasPlugins,
 							AutomaticallyUpdateRevision: (bool)AutomaticallyUpdateRevision,
-							WriteIntoRegistryForWindowsAutostartup: (bool)WriteIntoRegistryForWindowsAutostartup,
-							textFeedbackEvent: textFeedbackEvent);
+							InstallLocallyAfterSuccessfullNSIS: true,
+							StartupWithWindows: (bool)WriteIntoRegistryForWindowsAutostartup,
+							SelectSetupIfSuccessful: false,
+							publishedVersionString: out tmpNoUseVersionStr,
+							publishedSetupPath: out tmpNoUseSetupPath,
+							actionOnMessage: (mes, msgtype) =>
+							{
+								if (textFeedbackEvent != null)
+								{
+									TextFeedbackType tmpFeedbackType = TextFeedbackType.Subtle;
+									switch (msgtype)
+									{
+										case FeedbackMessageTypes.Success:
+											tmpFeedbackType = TextFeedbackType.Success;
+											break;
+										case FeedbackMessageTypes.Error:
+											tmpFeedbackType = TextFeedbackType.Error;
+											break;
+										case FeedbackMessageTypes.Warning:
+											tmpFeedbackType = TextFeedbackType.Noteworthy;
+											break;
+										case FeedbackMessageTypes.Status:
+											tmpFeedbackType = TextFeedbackType.Subtle;
+											break;
+									}
+									textFeedbackEvent(null, new TextFeedbackEventArgs(mes, tmpFeedbackType));
+								}
+							},
+							actionOnProgressPercentage: (progperc) =>
+							{
+								if (progressChangedEvent != null)
+									progressChangedEvent(null, new ProgressChangedEventArgs(progperc, 100));
+							});
 					}
 					else if (arguments[0] == "onlinevs")
 					{
-						VisualStudioInterop.PerformPublishOnline(
-								 textfeedbackSenderObject: this,
-								 projName: arguments[1],
-								 _64Only: false,
-								 HasPlugins: (bool)HasPlugins,
-								 AutomaticallyUpdateRevision: (bool)AutomaticallyUpdateRevision,
-								 WriteIntoRegistryForWindowsAutostartup: (bool)WriteIntoRegistryForWindowsAutostartup,
-								 textFeedbackEvent: textFeedbackEvent,
-								 progressChanged: progressChangedEvent);
+						string tmpNoUseVersionStr;
+						string tmpNoUseSetupPath;
+						PublishInterop.PerformPublishOnline(
+							//VisualStudioInterop.PerformPublishOnline(
+							//textfeedbackSenderObject: this,
+							projName: arguments[1],
+							_64Only: false,
+							HasPlugins: (bool)HasPlugins,
+							AutomaticallyUpdateRevision: (bool)AutomaticallyUpdateRevision,
+							InstallLocallyAfterSuccessfullNSIS: true,
+							StartupWithWindows: (bool)WriteIntoRegistryForWindowsAutostartup,
+							SelectSetupIfSuccessful: false,
+							OpenWebsite: false,
+							publishedVersionString: out tmpNoUseVersionStr,
+							publishedSetupPath: out tmpNoUseSetupPath,
+							actionOnMessage: (mes, msgtype) =>
+							{
+								if (textFeedbackEvent != null)
+								{
+									TextFeedbackType tmpFeedbackType = TextFeedbackType.Subtle;
+									switch (msgtype)
+									{
+										case FeedbackMessageTypes.Success:
+											tmpFeedbackType = TextFeedbackType.Success;
+											break;
+										case FeedbackMessageTypes.Error:
+											tmpFeedbackType = TextFeedbackType.Error;
+											break;
+										case FeedbackMessageTypes.Warning:
+											tmpFeedbackType = TextFeedbackType.Noteworthy;
+											break;
+										case FeedbackMessageTypes.Status:
+											tmpFeedbackType = TextFeedbackType.Subtle;
+											break;
+									}
+									textFeedbackEvent(null, new TextFeedbackEventArgs(mes, tmpFeedbackType));
+								}
+							},
+							actionOnProgressPercentage: (progperc) =>
+							{
+								if (progressChangedEvent != null)
+									progressChangedEvent(null, new ProgressChangedEventArgs(progperc, 100));
+							});
+						//textFeedbackEvent: textFeedbackEvent,
+						//progressChanged: progressChangedEvent);
 					}
 					else
 					{

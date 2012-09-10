@@ -301,6 +301,9 @@
     <Compile Include="..\..\SharedClasses\TracXmlRpcInterop.cs">
       <Link>TracXmlRpcInterop.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\UploadingProtocolTypesEnum.cs">
+      <Link>UploadingProtocolTypesEnum.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\UserMessages.cs">
       <Link>UserMessages.cs</Link>
       <SubType>Form</SubType>

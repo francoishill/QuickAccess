@@ -250,6 +250,9 @@
       <Link>UnhandledExceptionsWindow.xaml.cs</Link>
       <DependentUpon>UnhandledExceptionsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="..\..\SharedClasses\UploadingProtocolTypesEnum.cs">
+      <Link>UploadingProtocolTypesEnum.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
       <Link>UserActivityHook.cs</Link>
     </Compile>

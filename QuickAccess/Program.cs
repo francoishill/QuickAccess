@@ -138,16 +138,17 @@ namespace QuickAccess
 
 		private static void AssociateFacesFileExtensionInRegistry()
 		{
-			RegistryInterop.AddCommandToFileTypeHandlerAndAddExstensionListToHandler(
-				new List<string>() { ".faces" },
-				"Faces file",
-				"File containing faces (used for face detection)",
-				@"%SystemRoot%\System32\shell32.dll,170",
-				"ExtractFaces",
-				"\"" + Environment.GetCommandLineArgs()[0] + "\"" + " \"" + "extract" + "\" " + "\"%1\"",//In format QuickAccess.exe extract "filepath..\to..\extra\face.faces"
-				"Extract faces here",
-				"\"" + Environment.GetCommandLineArgs()[0] + "\"",
-				(err, title) => UserMessages.ShowErrorMessage(err, title));
+			int followingCodeTakenOutNeedsRewrite;
+			//RegistryInterop.AddCommandToFileTypeHandlerAndAddExstensionListToHandler(
+			//    new List<string>() { ".faces" },
+			//    "Faces file",
+			//    "File containing faces (used for face detection)",
+			//    @"%SystemRoot%\System32\shell32.dll,170",
+			//    "ExtractFaces",
+			//    "\"" + Environment.GetCommandLineArgs()[0] + "\"" + " \"" + "extract" + "\" " + "\"%1\"",//In format QuickAccess.exe extract "filepath..\to..\extra\face.faces"
+			//    "Extract faces here",
+			//    "\"" + Environment.GetCommandLineArgs()[0] + "\"",
+			//    (err, title) => UserMessages.ShowErrorMessage(err, title));
 		}
 
 		private static void AssociateUrlProtocolHandler()
