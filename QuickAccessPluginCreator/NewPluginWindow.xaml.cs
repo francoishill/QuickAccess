@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using SharedClasses;
 //using System.Windows.Shapes;
 
 namespace QuickAccessPluginCreator
@@ -267,12 +268,12 @@ namespace QuickAccessPluginCreator
 
 		public static object GenerateObjectWithReplaceValues(ref Dictionary<string, string> ReplaceValueDictionary, List<string> ignoreValues)
 		{
-			List<DynamicCodeInvoking.DynamicTypeBuilder.Property> properties = new List<DynamicCodeInvoking.DynamicTypeBuilder.Property>();
+			List<ReflectionInterop.DynamicTypeBuilder.Property> properties = new List<ReflectionInterop.DynamicTypeBuilder.Property>();
 			foreach (string key in ReplaceValueDictionary.Keys)
 				if (!ignoreValues.Contains(key.Substring(2, key.Length - 4), StringComparer.InvariantCultureIgnoreCase))
-				properties.Add(new DynamicCodeInvoking.DynamicTypeBuilder.Property(key.Substring(2, key.Length - 4), typeof(string)));
+					properties.Add(new ReflectionInterop.DynamicTypeBuilder.Property(key.Substring(2, key.Length - 4), typeof(string)));
 
-			return DynamicCodeInvoking.DynamicTypeBuilder.CreateNewObject(
+			return ReflectionInterop.DynamicTypeBuilder.CreateNewObject(
 				"ReplaceValues",
 				properties);
 		}

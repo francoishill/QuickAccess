@@ -23,12 +23,23 @@ namespace QuickAccess
 		const string UrlHandlerArgument = "handleurl";
 		const string UrlHandlerUriStart = "quickaccess";
 
+		//private static bool alreadySetUnhandledExceptionHandler = false;
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		static void Main()
 		{
+			//if (!alreadySetUnhandledExceptionHandler)
+			//{
+			//    alreadySetUnhandledExceptionHandler = true;
+			//    //Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);//Declares exception handler in Form1 constructor
+			//    Application.ThreadException += (snder, evt) =>
+			//    {
+			//        ApplicationRecoveryAndRestart.UnhandledExceptions.Add(evt.Exception);
+			//    };
+			//}
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			AssociateFacesFileExtensionInRegistry();

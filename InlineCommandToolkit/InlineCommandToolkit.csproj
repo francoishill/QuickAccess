@@ -87,10 +87,6 @@
     <Reference Include="Microsoft.Windows.Shell">
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Microsoft_Windows_Shell\Microsoft.Windows.Shell.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Windows API\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
     <Reference Include="MouseGestures">
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\MouseGestures\MouseGestures.dll</HintPath>
     </Reference>
@@ -132,6 +128,9 @@
   <ItemGroup>
     <Compile Include="..\..\..\..\..\..\..\Francois\Dev\VSprojects\SharedClasses\BuildingInterop.cs">
       <Link>BuildingInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\AppTypeIndependant.cs">
+      <Link>AppTypeIndependant.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\CompareObjects.cs">
       <Link>CompareObjects.cs</Link>
@@ -266,6 +265,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\PublishInterop.cs">
       <Link>PublishInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\ReflectionInterop.cs">
+      <Link>ReflectionInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\RegistryInterop.cs">
       <Link>RegistryInterop.cs</Link>
@@ -443,6 +445,17 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\haarcascade_lefteye_2splits.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Shell32">
+      <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -60,7 +60,7 @@ namespace QuickAccess
 			//else UserMessages.ShowInfoMessage("Object returned from dynamic dll is of type = " + obj.GetType().ToString() + Environment.NewLine +
 			//	(obj is Color ? "Color = " + ((Color)obj).ToKnownColor().ToString() : ""));
 
-			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+			//AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
 			InitializeComponent();
 
@@ -89,33 +89,6 @@ namespace QuickAccess
 			timerVersionString.Start();
 
 			originalTrayIcon = notifyIcon1.Icon;
-
-			if (IsApplicationArestartedInstance())
-			{
-				//MessageBox.Show("Application successfully restarted from crash. No functionality incorporated yet.", "Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				if (Directory.Exists(ApplicationRecoveryAndRestart.CrashReportsDirectory))
-				{
-					MessageBox.Show("QuickAccess successfully restarted from crash. See Crash report.", "Restarted successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					Process.Start("explorer", "\"" + ApplicationRecoveryAndRestart.CrashReportsDirectory + "\"");
-				}
-				else MessageBox.Show("QuickAccess successfully restarted from crash. Could not find Crash reports folder ("
-					+ ApplicationRecoveryAndRestart.CrashReportsDirectory
-					+ ").", "Successfully Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
-
-			ApplicationRecoveryAndRestart.RegisterApplicationRecoveryAndRestart(delegate
-			{
-				//TODO: Application Restart and Recovery is there but no use so far?
-				//File.WriteAllText(@"C:\Francois\Crash reports\tmpQuickAccess.log", "Application crashed, more details not incorporated yet." + DateTime.Now.ToString());
-				//using (StreamWriter sw = new StreamWriter())
-				ApplicationRecoveryAndRestart.WriteCrashReportFile("QuickAccess", "Application crashed, more details not incorporated yet.");
-			},
-			delegate
-			{
-				labelRecoveryAndRestartSafe.Visible = true;
-				notifyIcon1.ShowBalloonTip(3000, "Recovery and Restart", "QuickAccess is now Recovery and Restart Safe", ToolTipIcon.Info);
-			},
-			err => UserMessages.ShowErrorMessage(err));
 
 			//textBoxCommand.Tag = new List<string>();
 			comboboxCommand.Tag = new List<string>();
@@ -307,6 +280,33 @@ namespace QuickAccess
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
+			ApplicationRecoveryAndRestart.RegisterForRecoveryAndRestart(
+				delegate//On crash
+				{
+					notifyIcon1.Visible = false;
+					//TODO: Application Restart and Recovery is there but no use so far?
+					//File.WriteAllText(@"C:\Francois\Crash reports\tmpQuickAccess.log", "Application crashed, more details not incorporated yet." + DateTime.Now.ToString());
+					//using (StreamWriter sw = new StreamWriter())
+					//ApplicationRecoveryAndRestart.WriteCrashReportFile("QuickAccess");//, "Application crashed, more details not incorporated yet.");
+				},
+				delegate//On successfully restarted
+				{
+					//MessageBox.Show("Application successfully restarted from crash. No functionality incorporated yet.", "Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					if (Directory.Exists(ApplicationRecoveryAndRestart.CrashReportsDirectory))
+					{
+						MessageBox.Show("QuickAccess successfully restarted from crash. See Crash report.", "Restarted successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						Process.Start("explorer", "\"" + ApplicationRecoveryAndRestart.CrashReportsDirectory + "\"");
+					}
+					else MessageBox.Show("QuickAccess successfully restarted from crash. Could not find Crash reports folder ("
+						+ ApplicationRecoveryAndRestart.CrashReportsDirectory
+						+ ").", "Successfully Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				},
+				delegate
+				{
+					labelRecoveryAndRestartSafe.Visible = true;
+					notifyIcon1.ShowBalloonTip(3000, "Recovery and Restart", "QuickAccess is now Recovery and Restart Safe", ToolTipIcon.Info);
+				});
+
 			//StartPipeClient();
 			WindowMessagesInterop.InitializeClientMessages();
 
@@ -314,7 +314,15 @@ namespace QuickAccess
 
 			commandsWindow = new CommandsWindow(this);
 			commandsWindow.Show();
+
+			//Thread.Sleep(500);
+			//int i = 1;
+			//int j = 0;
+			//var k = i / j;
+			////throw new Exception("Hallo");
+
 			commandsWindow.Hide();
+
 			commandsWindow.MouseClickedRequestToOpenOverlayWindow += (snder, evtargs) =>
 			{
 				if (!evtargs.WasRightClick)
@@ -373,14 +381,14 @@ namespace QuickAccess
 			}
 		}
 
-		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			if (!(e.ExceptionObject is Exception)) return;
-			//UserMessages.ShowErrorMessage("An error unhandled by the application has occurred, application shutting down: " + exc.Message + Environment.NewLine + exc.StackTrace);
-			//UnhandledExceptionsWindow uew = new UnhandledExceptionsWindow(e.ExceptionObject as Exception);
-			UnhandledExceptionsWindow.ShowUnHandledException(e.ExceptionObject as Exception);
-			this.Close();
-		}
+		//private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+		//{
+		//    if (!(e.ExceptionObject is Exception)) return;
+		//    //UserMessages.ShowErrorMessage("An error unhandled by the application has occurred, application shutting down: " + exc.Message + Environment.NewLine + exc.StackTrace);
+		//    //UnhandledExceptionsWindow uew = new UnhandledExceptionsWindow(e.ExceptionObject as Exception);
+		//    UnhandledExceptionsWindow.ShowUnHandledException(e.ExceptionObject as Exception);
+		//    this.Close();
+		//}
 
 		private void Form1_Shown(object sender, EventArgs e)
 		{
@@ -443,11 +451,6 @@ namespace QuickAccess
 					Application.DoEvents();
 				}
 			});
-		}
-
-		private bool IsApplicationArestartedInstance()
-		{
-			return System.Environment.GetCommandLineArgs().Length > 1 && System.Environment.GetCommandLineArgs()[1] == "/restart";
 		}
 
 		private bool EventAddedMouseClickedRequestToOpenOverlayWindow = false;
@@ -1091,7 +1094,7 @@ namespace QuickAccess
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			ApplicationRecoveryAndRestart.UnregisterApplicationRecoveryAndRestart();
+			ApplicationRecoveryAndRestart.UnregisterForRecoveryAndRestart();
 			Win32Api.UnregisterHotKey(this.Handle, Win32Api.Hotkey1);
 			//overlayWindow.PreventClosing = false;
 			//overlayWindow.Close();
@@ -1140,7 +1143,7 @@ namespace QuickAccess
 					MainWindow.Top = 0;
 				}
 
-				WindowsInterop.ShowAndActivateWindow(MainWindow);
+				WPFHelper.ShowAndActivateWindow(MainWindow);
 			});
 		}
 		private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
@@ -1241,7 +1244,7 @@ namespace QuickAccess
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			ApplicationRecoveryAndRestart.TestCrash(true, msg => UserMessages.Confirm(msg));
+			OwnUnhandledExceptionHandler.TestCrash(true, msg => UserMessages.Confirm(msg));
 		}
 
 		private WebResultsWindow webResultsWindow;
