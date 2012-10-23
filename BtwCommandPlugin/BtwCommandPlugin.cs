@@ -35,7 +35,7 @@ namespace BtwCommandPlugin
 			if (Index != 0)
 				errorMessage = "Exaclty one argument required for Btw command";
 			else if (Index == 0 && string.IsNullOrWhiteSpace(argumentValue))
-				errorMessage = "First argument Btw command may not be null/empty/whitespaces only";
+				errorMessage = "First argument Btw command may not be null/empty/whitespaces";
 			else return true;
 			return false;
 		}
