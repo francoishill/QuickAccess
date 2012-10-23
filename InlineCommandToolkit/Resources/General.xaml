@@ -1,11 +1,11 @@
 ﻿<ResourceDictionary x:Class='SharedClasses.GeneralResourceDictionary'
-										xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-										xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-										xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
-										xmlns:local='clr-namespace:SharedClasses'
-										xmlns:SharedClasses='clr-namespace:SharedClasses'
-										xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-										xmlns:input="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit">
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
+					xmlns:local='clr-namespace:SharedClasses'
+					xmlns:SharedClasses='clr-namespace:SharedClasses'
+					xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+					xmlns:input="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit">
 	<ResourceDictionary.MergedDictionaries>
 		<!--<ResourceDictionary Source='pack://application:,,,/InlineCommandToolkit;component/Resources/GlassStyle.xaml' />-->
 		<ResourceDictionary Source='pack://application:,,,/InlineCommandToolkit;component/Resources/DefaultStyle.xaml' />
@@ -755,24 +755,24 @@
 		<!--Brushes-->
 		<ResourceDictionary>
 			<LinearGradientBrush x:Key='EmbeddedButtonBackgroundBrush'
-													 StartPoint="0,0"
-													 EndPoint="0,1">
+								 StartPoint="0,0"
+								 EndPoint="0,1">
 				<GradientStop Color="#fff"
-											Offset="0" />
+							  Offset="0" />
 				<GradientStop Color="#eee"
-											Offset="0.7" />
+							  Offset="0.7" />
 				<GradientStop Color="#f0f0f0"
-											Offset="1" />
+							  Offset="1" />
 			</LinearGradientBrush>
 			<LinearGradientBrush x:Key='CommandListBoxItemMainBorderBackgroundBrush'
-													 StartPoint="0,0"
-													 EndPoint="0,1">
+								 StartPoint="0,0"
+								 EndPoint="0,1">
 				<GradientStop Color="#456"
-											Offset="0" />
+							  Offset="0" />
 				<GradientStop Color="#345"
-											Offset="0.7" />
+							  Offset="0.7" />
 				<GradientStop Color="#405060"
-											Offset="1" />
+							  Offset="1" />
 			</LinearGradientBrush>
 		</ResourceDictionary>
 		<!--Colors (some extra ones, not sure if they're used)-->
@@ -812,28 +812,28 @@
 			<Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
 			<Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
 			<LinearGradientBrush x:Key="MenuPopupBrush"
-													 EndPoint="0.5,1"
-													 StartPoint="0.5,0">
+								 EndPoint="0.5,1"
+								 StartPoint="0.5,0">
 				<GradientStop Color="{DynamicResource ControlLightColor}"
-											Offset="0" />
+							  Offset="0" />
 				<GradientStop Color="{DynamicResource ControlMediumColor}"
-											Offset="0.5" />
+							  Offset="0.5" />
 				<GradientStop Color="{DynamicResource ControlLightColor}"
-											Offset="1" />
+							  Offset="1" />
 			</LinearGradientBrush>
 			<LinearGradientBrush x:Key="ProgressBarIndicatorAnimatedFill"
-													 StartPoint="0,0"
-													 EndPoint="1,0">
+								 StartPoint="0,0"
+								 EndPoint="1,0">
 				<LinearGradientBrush.GradientStops>
 					<GradientStopCollection>
 						<GradientStop Color="#000000FF"
-													Offset="0" />
+									  Offset="0" />
 						<GradientStop Color="#600000FF"
-													Offset="0.4" />
+									  Offset="0.4" />
 						<GradientStop Color="#600000FF"
-													Offset="0.6" />
+									  Offset="0.6" />
 						<GradientStop Color="#000000FF"
-													Offset="1" />
+									  Offset="1" />
 					</GradientStopCollection>
 				</LinearGradientBrush.GradientStops>
 			</LinearGradientBrush>
@@ -847,106 +847,106 @@
 		<!--Storyboards-->
 		<ResourceDictionary>
 			<Storyboard x:Key="RotateAway"
-									AccelerationRatio="0.3"
-									DecelerationRatio="0.3">
+						AccelerationRatio="0.3"
+						DecelerationRatio="0.3">
 				<Rotation3DAnimationUsingKeyFrames BeginTime="00:00:00"
-																					 Storyboard.TargetProperty="(ModelVisual3D.Transform).(Transform3DGroup.Children)[2].(RotateTransform3D.Rotation)"
-																					 Storyboard.TargetName="ModelVisual3D">
+												   Storyboard.TargetProperty="(ModelVisual3D.Transform).(Transform3DGroup.Children)[2].(RotateTransform3D.Rotation)"
+												   Storyboard.TargetName="ModelVisual3D">
 					<SplineRotation3DKeyFrame KeySpline="0.5,0.5,0.5,0.5"
-																		KeyTime="00:00:00.5">
+											  KeyTime="00:00:00.5">
 						<SplineRotation3DKeyFrame.Value>
 							<AxisAngleRotation3D Angle="75"
-																	 Axis="0,1,0" />
+												 Axis="0,1,0" />
 						</SplineRotation3DKeyFrame.Value>
 					</SplineRotation3DKeyFrame>
 				</Rotation3DAnimationUsingKeyFrames>
 				<DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
-																			 Storyboard.TargetProperty="(ModelVisual3D.Transform).(Transform3DGroup.Children)[4].(TranslateTransform3D.OffsetX)"
-																			 Storyboard.TargetName="ModelVisual3D">
+											   Storyboard.TargetProperty="(ModelVisual3D.Transform).(Transform3DGroup.Children)[4].(TranslateTransform3D.OffsetX)"
+											   Storyboard.TargetName="ModelVisual3D">
 					<SplineDoubleKeyFrame KeySpline="0.5,0.5,0.5,0.5"
-																Value="-0.35"
-																KeyTime="00:00:0.5" />
+										  Value="-0.35"
+										  KeyTime="00:00:0.5" />
 				</DoubleAnimationUsingKeyFrames>
 				<DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
-																			 Storyboard.TargetProperty="(UIElement.Opacity)"
-																			 Storyboard.TargetName="ZAM3DViewport3D">
+											   Storyboard.TargetProperty="(UIElement.Opacity)"
+											   Storyboard.TargetName="ZAM3DViewport3D">
 					<SplineDoubleKeyFrame KeySpline="0.5,0.5,0.5,0.5"
-																Value="0.4"
-																KeyTime="00:00:00.5000000" />
+										  Value="0.4"
+										  KeyTime="00:00:00.5000000" />
 				</DoubleAnimationUsingKeyFrames>
 			</Storyboard>
 		</ResourceDictionary>
 		<!--Styles WindowChrome-->
 		<ResourceDictionary>
 			<Style x:Key='ButtonStyleSemiTransparentUntilHover'
-						 TargetType="{x:Type Button}">
+				   TargetType="{x:Type Button}">
 				<Setter Property="Opacity"
-								Value="0.1" />
+						Value="0.1" />
 				<Style.Triggers>
 					<Trigger Property="IsMouseOver"
-									 Value="True">
+							 Value="True">
 						<Setter Property="Button.Opacity"
-										Value="1" />
+								Value="1" />
 					</Trigger>
 				</Style.Triggers>
 			</Style>
 			<Style x:Key="FractalStyle"
-						 TargetType="{x:Type local:CommandsWindow}">
+				   TargetType="{x:Type local:CommandsWindow}">
 				<Setter Property="shell:WindowChrome.WindowChrome">
 					<Setter.Value>
 						<shell:WindowChrome GlassFrameThickness="8"
-																ResizeBorderThickness="4"
-																CaptionHeight="28"
-																CornerRadius="10" />
+											ResizeBorderThickness="4"
+											CaptionHeight="28"
+											CornerRadius="10" />
 					</Setter.Value>
 				</Setter>
 				<Setter Property="Template">
 					<Setter.Value>
 						<ControlTemplate TargetType="{x:Type local:CommandsWindow}">
 							<Border Background='White'
-											Margin='8'>
+									Margin='8'>
 								<DockPanel LastChildFill='True'>
 									<Grid DockPanel.Dock="Top"
-												Background='White'>
+										  Background='White'>
 										<StackPanel Orientation='Horizontal'
-																HorizontalAlignment='Right'
-																VerticalAlignment='Top'
-																Margin='3'>
+													HorizontalAlignment='Right'
+													VerticalAlignment='Top'
+													Margin='3'>
 											<Button x:Name='MinimizeToTrayUsercontrolButton'
-															Style='{StaticResource ButtonStyleSemiTransparentUntilHover}'
-															shell:WindowChrome.IsHitTestVisibleInChrome="True"
-															ToolTip='Minimize to tray'
-															HorizontalAlignment='Right'
-															VerticalAlignment='Top'
-															Margin='0,0,3,0'
-															BorderBrush='#ddd'
-															BorderThickness='1'
-															Background='Transparent'
-															Foreground='#777'
-															Padding='3,0'
-															Content='_' />
+													Style='{StaticResource ButtonStyleSemiTransparentUntilHover}'
+													shell:WindowChrome.IsHitTestVisibleInChrome="True"
+													ToolTip='Minimize to tray'
+													HorizontalAlignment='Right'
+													VerticalAlignment='Top'
+													Margin='0,0,3,0'
+													BorderBrush='#ddd'
+													BorderThickness='1'
+													Background='Transparent'
+													Foreground='#777'
+													Padding='3,0'
+													Content='_' />
 											<Button x:Name='CloseUsercontrolButton'
-															Style='{StaticResource ButtonStyleSemiTransparentUntilHover}'
-															shell:WindowChrome.IsHitTestVisibleInChrome="True"
-															ToolTip='Quit Quick Access'
-															HorizontalAlignment='Right'
-															VerticalAlignment='Top'
-															BorderBrush='#ddd'
-															BorderThickness='1'
-															Background='Transparent'
-															Foreground='#777'
-															Padding='3,0'
-															Content='X' />
+													Style='{StaticResource ButtonStyleSemiTransparentUntilHover}'
+													shell:WindowChrome.IsHitTestVisibleInChrome="True"
+													ToolTip='Quit Quick Access'
+													HorizontalAlignment='Right'
+													VerticalAlignment='Top'
+													BorderBrush='#ddd'
+													BorderThickness='1'
+													Background='Transparent'
+													Foreground='#777'
+													Padding='3,0'
+													Content='X' />
 										</StackPanel>
 										<Grid HorizontalAlignment="Center">
 											<TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}"
-																 Foreground="#777"
-																 FontFamily="Segoe UI"
-																 FontSize="14" />
+													   Foreground="#777"
+													   FontFamily="Segoe UI"
+													   FontSize="14" />
 										</Grid>
 									</Grid>
 									<ContentPresenter Content="{TemplateBinding Content}"
-																		DockPanel.Dock="Bottom" />
+													  DockPanel.Dock="Bottom" />
 								</DockPanel>
 							</Border>
 						</ControlTemplate>
@@ -963,8 +963,8 @@
 							<GeometryDrawing Brush="Red">
 								<GeometryDrawing.Geometry>
 									<RectangleGeometry Rect="0 0 24 24"
-																		 RadiusX="4"
-																		 RadiusY="4" />
+													   RadiusX="4"
+													   RadiusY="4" />
 								</GeometryDrawing.Geometry>
 							</GeometryDrawing>
 						</DrawingGroup.Children>
@@ -978,8 +978,8 @@
 							<GeometryDrawing Brush="Green">
 								<GeometryDrawing.Geometry>
 									<RectangleGeometry Rect="0 0 24 24"
-																		 RadiusX="4"
-																		 RadiusY="4" />
+													   RadiusX="4"
+													   RadiusY="4" />
 								</GeometryDrawing.Geometry>
 							</GeometryDrawing>
 						</DrawingGroup.Children>
@@ -993,8 +993,8 @@
 							<GeometryDrawing Brush="Blue">
 								<GeometryDrawing.Geometry>
 									<RectangleGeometry Rect="0 0 24 24"
-																		 RadiusX="4"
-																		 RadiusY="4" />
+													   RadiusX="4"
+													   RadiusY="4" />
 								</GeometryDrawing.Geometry>
 							</GeometryDrawing>
 						</DrawingGroup.Children>
@@ -1005,46 +1005,46 @@
 		<!--ControlTemplate (with brushes) for commands TreeView and Main commands textbox-->
 		<ResourceDictionary>
 			<LinearGradientBrush x:Key='HoverBackground'
-													 StartPoint='0.5,0'
-													 EndPoint='0.5,1'>
+								 StartPoint='0.5,0'
+								 EndPoint='0.5,1'>
 				<GradientStop Offset='0'
-											Color='#66bababa' />
+							  Color='#66bababa' />
 				<GradientStop Offset='1'
-											Color='#66707070' />
+							  Color='#66707070' />
 			</LinearGradientBrush>
 			<LinearGradientBrush x:Key='HoverBorderBrush'
-													 StartPoint='0.5,0'
-													 EndPoint='0.5,1'>
+								 StartPoint='0.5,0'
+								 EndPoint='0.5,1'>
 				<GradientStop Offset='0'
-											Color='#bbfafafa' />
+							  Color='#bbfafafa' />
 				<GradientStop Offset='1'
-											Color='#bb707070' />
+							  Color='#bb707070' />
 			</LinearGradientBrush>
 			<LinearGradientBrush x:Key='PressedBackground'
-													 StartPoint='0.5,0'
-													 EndPoint='0.5,1'>
+								 StartPoint='0.5,0'
+								 EndPoint='0.5,1'>
 				<GradientStop Offset='0'
-											Color='#66ffffff' />
+							  Color='#66ffffff' />
 				<GradientStop Offset='1'
-											Color='#66dddddd' />
+							  Color='#66dddddd' />
 			</LinearGradientBrush>
 			<LinearGradientBrush x:Key='PressedBorderBrush'
-													 StartPoint='0.5,0'
-													 EndPoint='0.5,1'>
+								 StartPoint='0.5,0'
+								 EndPoint='0.5,1'>
 				<GradientStop Offset='0'
-											Color='#bbffffff' />
+							  Color='#bbffffff' />
 				<GradientStop Offset='1'
-											Color='#bbdddddd' />
+							  Color='#bbdddddd' />
 			</LinearGradientBrush>
 			<ControlTemplate x:Key="CommonValidationToolTipTemplate"
-											 TargetType="{x:Type ToolTip}">
+							 TargetType="{x:Type ToolTip}">
 				<Grid x:Name="Root"
-							Margin="5,0"
-							RenderTransformOrigin="0,0"
-							Opacity="0">
+					  Margin="5,0"
+					  RenderTransformOrigin="0,0"
+					  Opacity="0">
 					<Grid.RenderTransform>
 						<TranslateTransform x:Name="Translation"
-																X="-25" />
+											X="-25" />
 					</Grid.RenderTransform>
 					<!--<VisualStateManager.VisualStateGroups>
 								<VisualStateGroup Name="OpenStates">
@@ -1092,51 +1092,51 @@
 								</VisualStateGroup>
 							</VisualStateManager.VisualStateGroups>-->
 					<Border Margin="4,4,-4,-4"
-									Background="#052A2E31"
-									CornerRadius="5" />
+							Background="#052A2E31"
+							CornerRadius="5" />
 					<Border Margin="3,3,-3,-3"
-									Background="#152A2E31"
-									CornerRadius="4" />
+							Background="#152A2E31"
+							CornerRadius="4" />
 					<Border Margin="2,2,-2,-2"
-									Background="#252A2E31"
-									CornerRadius="3" />
+							Background="#252A2E31"
+							CornerRadius="3" />
 					<Border Margin="1,1,-1,-1"
-									Background="#352A2E31"
-									CornerRadius="2" />
+							Background="#352A2E31"
+							CornerRadius="2" />
 					<Border Background="#FFDC000C"
-									CornerRadius="2">
+							CornerRadius="2">
 						<TextBlock UseLayoutRounding="false"
-											 Foreground="White"
-											 Margin="8,4,8,4"
-											 MaxWidth="250"
-											 TextWrapping="Wrap"
-											 Text="{Binding (Validation.Errors)[0].ErrorContent}" />
+								   Foreground="White"
+								   Margin="8,4,8,4"
+								   MaxWidth="250"
+								   TextWrapping="Wrap"
+								   Text="{Binding (Validation.Errors)[0].ErrorContent}" />
 					</Border>
 				</Grid>
 			</ControlTemplate>
 			<ControlTemplate x:Key="TextBoxBaseControlTemplate"
-											 TargetType="{x:Type TextBoxBase}">
+							 TargetType="{x:Type TextBoxBase}">
 				<Border Background="{TemplateBinding Background}"
-								x:Name="Bd"
-								BorderThickness="{TemplateBinding BorderThickness}"
-								CornerRadius="5"
-								Padding="2">
+						x:Name="Bd"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="5"
+						Padding="2">
 					<DockPanel>
 						<Border x:Name="EmbeddedButton"
-										DockPanel.Dock="Left"
-										BorderBrush="#ccc"
-										BorderThickness="1"
-										CornerRadius="3"
-										Padding="3,0,3,3"
-										Margin="0,0,3,0"
-										MouseLeftButtonDown='EmbeddedButton_MouseLeftButtonDown'
-										MouseRightButtonUp='EmbeddedButton_MouseRightButtonDown'
-										Background='{StaticResource EmbeddedButtonBackgroundBrush}'>
+								DockPanel.Dock="Left"
+								BorderBrush="#ccc"
+								BorderThickness="1"
+								CornerRadius="3"
+								Padding="3,0,3,3"
+								Margin="0,0,3,0"
+								MouseLeftButtonDown='EmbeddedButton_MouseLeftButtonDown'
+								MouseRightButtonUp='EmbeddedButton_MouseRightButtonDown'
+								Background='{StaticResource EmbeddedButtonBackgroundBrush}'>
 							<DockPanel VerticalAlignment='Center'>
 								<TextBlock DockPanel.Dock='Left'
-													 x:Name="EmbeddedButtonTextBlock"
-													 Foreground="#555"
-													 Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}">
+										   x:Name="EmbeddedButtonTextBlock"
+										   Foreground="#555"
+										   Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}">
 										<TextBlock.ToolTip>
 											<StackPanel>
 												<TextBlock Text='{Binding Description, UpdateSourceTrigger=PropertyChanged}' />
@@ -1149,14 +1149,14 @@
 						<Border DockPanel.Dock='Left'>
 							<Border.Resources>
 								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-																 Color="Transparent" />
+												 Color="Transparent" />
 								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
-																 Color="Transparent" />
+												 Color="Transparent" />
 							</Border.Resources>
 							<ListBox x:Name='EmbeddedListbox'
-											 BorderThickness='0'
-											 Background='Transparent'
-											 ItemsSource='{Binding CurrentArguments, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}'>
+									 BorderThickness='0'
+									 Background='Transparent'
+									 ItemsSource='{Binding CurrentArguments, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}'>
 								<ListBox.ItemsPanel>
 									<ItemsPanelTemplate>
 										<WrapPanel IsItemsHost="True" />
@@ -1165,80 +1165,80 @@
 								<ListBox.ItemTemplate>
 									<DataTemplate>
 										<Border x:Name='MainBorder'
-														BorderBrush="#ccc"
-														BorderThickness="1"
-														CornerRadius="3"
-														Padding="3,0,3,3"
-														Margin="0,0,3,0"
-														Opacity='0.7'
-														Background='{StaticResource CommandListBoxItemMainBorderBackgroundBrush}'>
+												BorderBrush="#ccc"
+												BorderThickness="1"
+												CornerRadius="3"
+												Padding="3,0,3,3"
+												Margin="0,0,3,0"
+												Opacity='0.7'
+												Background='{StaticResource CommandListBoxItemMainBorderBackgroundBrush}'>
 											<DockPanel>
 												<DockPanel DockPanel.Dock='Top'
-																	 LastChildFill='True'
-																	 Background='Transparent'
-																	 Margin='0,3,0,0'>
+														   LastChildFill='True'
+														   Background='Transparent'
+														   Margin='0,3,0,0'>
 													<Button DockPanel.Dock='Right'
-																	x:Name='ButtonClose'
-																	HorizontalAlignment='Right'
-																	VerticalAlignment='Center'
-																	Content='X'
-																	FontSize='12'
-																	Foreground='#300'
-																	BorderBrush='#333'
-																	PreviewMouseLeftButtonUp='ClearTextboxTextButton_MouseLeftButtonDown'>
+															x:Name='ButtonClose'
+															HorizontalAlignment='Right'
+															VerticalAlignment='Center'
+															Content='X'
+															FontSize='12'
+															Foreground='#300'
+															BorderBrush='#333'
+															PreviewMouseLeftButtonUp='ClearTextboxTextButton_MouseLeftButtonDown'>
 														<Button.Template>
 															<ControlTemplate TargetType='{x:Type Button}'>
 																<Border x:Name='ButtonBorder'
-																				CornerRadius='3'
-																				BorderThickness='1'
-																				BorderBrush='Transparent'
-																				Background='Transparent'
-																				Padding='2'>
+																		CornerRadius='3'
+																		BorderThickness='1'
+																		BorderBrush='Transparent'
+																		Background='Transparent'
+																		Padding='2'>
 																	<ContentPresenter Content='{TemplateBinding Content}'
-																										HorizontalAlignment='Center'
-																										VerticalAlignment='Center' />
+																					  HorizontalAlignment='Center'
+																					  VerticalAlignment='Center' />
 																</Border>
 																<ControlTemplate.Triggers>
 																	<Trigger Property='IsMouseOver'
-																					 Value='True'>
+																			 Value='True'>
 																		<Setter TargetName='ButtonBorder'
-																						Property='Background'
-																						Value='{StaticResource HoverBackground}' />
+																				Property='Background'
+																				Value='{StaticResource HoverBackground}' />
 																		<Setter TargetName='ButtonBorder'
-																						Property='BorderBrush'
-																						Value='{StaticResource HoverBorderBrush}' />
+																				Property='BorderBrush'
+																				Value='{StaticResource HoverBorderBrush}' />
 																	</Trigger>
 																	<Trigger Property='IsPressed'
-																					 Value='True'>
+																			 Value='True'>
 																		<Setter TargetName='ButtonBorder'
-																						Property='Background'
-																						Value='{StaticResource PressedBackground}' />
+																				Property='Background'
+																				Value='{StaticResource PressedBackground}' />
 																		<Setter TargetName='ButtonBorder'
-																						Property='BorderBrush'
-																						Value='{StaticResource PressedBorderBrush}' />
+																				Property='BorderBrush'
+																				Value='{StaticResource PressedBorderBrush}' />
 																	</Trigger>
 																</ControlTemplate.Triggers>
 															</ControlTemplate>
 														</Button.Template>
 													</Button>
 													<input:AutoCompleteBox x:Name='ArgumentText'
-																								 BorderThickness='0'
-																								 MinimumPrefixLength='0'
-																								 MinimumPopulateDelay='0'
-																								 Background='{StaticResource CommandArgumentAutoCompleteBoxBackgroundBrush}'
-																								 Text='{Binding CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}'
-																								 Tag='{Binding DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}'
-																								 ItemsSource='{Binding PredefinedAutocompleteList, UpdateSourceTrigger=PropertyChanged}'
-																								 SelectionChanged='ArgumentText_SelectionChanged'
-																								 HorizontalAlignment='Stretch'
-																								 FontSize='20'
-																								 GotFocus='ArgumentText_GotFocus'
-																								 IsTextCompletionEnabled='True'
-																								 PreviewKeyDown='AutoCompleteActualTextBox_PreviewKeyDown'
-																								 AllowDrop='True'
-																								 PreviewDragOver='ArgumentText_DragOver'
-																								 PreviewDrop='ArgumentText_Drop'
-																								 Width='auto'>
+																		   BorderThickness='0'
+																		   MinimumPrefixLength='0'
+																		   MinimumPopulateDelay='0'
+																		   Background='{StaticResource CommandArgumentAutoCompleteBoxBackgroundBrush}'
+																		   Text='{Binding CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}'
+																		   Tag='{Binding DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}'
+																		   ItemsSource='{Binding PredefinedAutocompleteList, UpdateSourceTrigger=PropertyChanged}'
+																		   SelectionChanged='ArgumentText_SelectionChanged'
+																		   HorizontalAlignment='Stretch'
+																		   FontSize='20'
+																		   GotFocus='ArgumentText_GotFocus'
+																		   IsTextCompletionEnabled='True'
+																		   PreviewKeyDown='AutoCompleteActualTextBox_PreviewKeyDown'
+																		   AllowDrop='True'
+																		   PreviewDragOver='ArgumentText_DragOver'
+																		   PreviewDrop='ArgumentText_Drop'
+																		   Width='auto'>
 														<input:AutoCompleteBox.ContextMenu>
 															<ContextMenu Background="White">
 																<MenuItem Command="ApplicationCommands.Copy" />
@@ -1249,31 +1249,31 @@
 														<input:AutoCompleteBox.ItemContainerStyle>
 															<Style TargetType='ListBoxItem'>
 																<Setter Property="Background"
-																				Value='{StaticResource CommandArgumentAutoCompleteBoxDropdownItemBackground}' />
+																		Value='{StaticResource CommandArgumentAutoCompleteBoxDropdownItemBackground}' />
 															</Style>
 														</input:AutoCompleteBox.ItemContainerStyle>
 														<input:AutoCompleteBox.ItemTemplate>
 															<DataTemplate>
 																<DockPanel LastChildFill='True'
-																					 HorizontalAlignment='Stretch'>
+																		   HorizontalAlignment='Stretch'>
 																	<!--<Button DockPanel.Dock='Left'
 																							Content='X' />-->
 																	<TextBlock DockPanel.Dock='Right'
-																						 Padding='3,0'
-																						 FontSize='14'
-																						 Foreground='{StaticResource CommandArgumentAutoCompleteBoxDropdownItemForeground}'
-																						 Text="{Binding}"
-																						 VerticalAlignment="Center" />
+																			   Padding='3,0'
+																			   FontSize='14'
+																			   Foreground='{StaticResource CommandArgumentAutoCompleteBoxDropdownItemForeground}'
+																			   Text="{Binding}"
+																			   VerticalAlignment="Center" />
 																</DockPanel>
 															</DataTemplate>
 														</input:AutoCompleteBox.ItemTemplate>
 													</input:AutoCompleteBox>
 												</DockPanel>
 												<TextBlock DockPanel.Dock='Bottom'
-																	 Text='{Binding DisplayName}'
-																	 Foreground='#ddd'
-																	 HorizontalAlignment='Center'
-																	 FontSize='12' />
+														   Text='{Binding DisplayName}'
+														   Foreground='#ddd'
+														   HorizontalAlignment='Center'
+														   FontSize='12' />
 											</DockPanel>
 										</Border>
 									</DataTemplate>
@@ -1338,45 +1338,45 @@
 														 FontSize="12"><Run Text="Testing" /></TextBlock>
 								</Border>-->
 						<ScrollViewer x:Name="PART_ContentHost"
-													DockPanel.Dock="Right" />
+									  DockPanel.Dock="Right" />
 					</DockPanel>
 				</Border>
 				<ControlTemplate.Triggers>
 					<Trigger Property="IsEnabled"
-									 Value="False">
+							 Value="False">
 						<Setter Property="Background"
-										Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-										TargetName="Bd" />
+								Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+								TargetName="Bd" />
 						<Setter Property="Foreground"
-										Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+								Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
 					</Trigger>
 					<Trigger Property="IsFocused"
-									 Value="True">
+							 Value="True">
 						<Setter Property="BorderBrush"
-										Value="#0BF" />
+								Value="#0BF" />
 					</Trigger>
 					<Trigger Property="Width"
-									 Value="Auto">
+							 Value="Auto">
 						<Setter Property="MinWidth"
-										Value="100" />
+								Value="100" />
 					</Trigger>
 					<Trigger Property="Height"
-									 Value="Auto">
+							 Value="Auto">
 						<Setter Property="MinHeight"
-										Value="20" />
+								Value="20" />
 					</Trigger>
 				</ControlTemplate.Triggers>
 			</ControlTemplate>
 			<ControlTemplate x:Key="TreeviewControlTemplate"
-											 TargetType="{x:Type TreeView}">
+							 TargetType="{x:Type TreeView}">
 				<Border x:Name="Bd"
-								CornerRadius="5"
-								Background="Transparent"
-								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}">
+						CornerRadius="5"
+						Background="Transparent"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}">
 					<ScrollViewer Focusable="True"
-												CanContentScroll="False"
-												Padding="4">
+								  CanContentScroll="False"
+								  Padding="4">
 						<ItemsPresenter />
 					</ScrollViewer>
 				</Border>
@@ -1385,39 +1385,39 @@
 		<!--ControlTemplate Button style for inside Messages Richtextbox for commands-->
 		<ResourceDictionary>
 			<ControlTemplate TargetType='{x:Type Button}'
-											 x:Key='paragraphStandOut'>
+							 x:Key='paragraphStandOut'>
 				<Border CornerRadius='3'
-								Padding='3'
-								Margin='3'
-								x:Name='templatedBorder'>
+						Padding='3'
+						Margin='3'
+						x:Name='templatedBorder'>
 					<Border.Background>
 						<LinearGradientBrush StartPoint='0,0'
-																 EndPoint='0,1'>
+											 EndPoint='0,1'>
 							<GradientStop Color='#777'
-														Offset='0' />
+										  Offset='0' />
 							<GradientStop Color='#555'
-														Offset='0.7' />
+										  Offset='0.7' />
 							<GradientStop Color='#444'
-														Offset='1' />
+										  Offset='1' />
 						</LinearGradientBrush>
 					</Border.Background>
 					<TextBlock Text='{TemplateBinding Content}'
-										 Foreground='#fff' />
+							   Foreground='#fff' />
 				</Border>
 				<ControlTemplate.Triggers>
 					<DataTrigger Binding="{Binding IsMouseOver, ElementName=templatedBorder}"
-											 Value="True">
+								 Value="True">
 						<Setter Property="Background"
-										TargetName="templatedBorder">
+								TargetName="templatedBorder">
 							<Setter.Value>
 								<LinearGradientBrush StartPoint='0,0'
-																		 EndPoint='0,1'>
+													 EndPoint='0,1'>
 									<GradientStop Color='#9bd'
-																Offset='0' />
+												  Offset='0' />
 									<GradientStop Color='#79b'
-																Offset='0.7' />
+												  Offset='0.7' />
 									<GradientStop Color='#68a'
-																Offset='1' />
+												  Offset='1' />
 								</LinearGradientBrush>
 							</Setter.Value>
 						</Setter>
@@ -1428,15 +1428,15 @@
 		<!--Styles (button SemiTransparentUntilHover)-->
 		<ResourceDictionary>
 			<Style x:Key='ButtonStyleSemiTransparentUntilHover'
-						 TargetType="{x:Type Button}">
+				   TargetType="{x:Type Button}">
 				<!-- Default Values -->
 				<Setter Property="Opacity"
-								Value="0.1" />
+						Value="0.1" />
 				<Style.Triggers>
 					<Trigger Property="IsMouseOver"
-									 Value="True">
+							 Value="True">
 						<Setter Property="Button.Opacity"
-										Value="1" />
+								Value="1" />
 					</Trigger>
 				</Style.Triggers>
 			</Style>
@@ -1450,66 +1450,66 @@
          -->
 			<!-- Brushes used in Styling of ScrollViewer -->
 			<SolidColorBrush x:Key="StandardBorderBrush"
-											 Color="#888" />
+							 Color="#888" />
 			<SolidColorBrush x:Key="StandardBackgroundBrush"
-											 Color="#FFF" />
+							 Color="#FFF" />
 			<SolidColorBrush x:Key="HoverBorderBrush"
-											 Color="#DDD" />
+							 Color="#DDD" />
 			<SolidColorBrush x:Key="SelectedBackgroundBrush"
-											 Color="Gray" />
+							 Color="Gray" />
 			<SolidColorBrush x:Key="SelectedForegroundBrush"
-											 Color="White" />
+							 Color="White" />
 			<SolidColorBrush x:Key="DisabledForegroundBrush"
-											 Color="#888" />
+							 Color="#888" />
 			<SolidColorBrush x:Key="NormalBrush"
-											 Color="#888" />
+							 Color="#888" />
 			<SolidColorBrush x:Key="NormalBorderBrush"
-											 Color="#888" />
+							 Color="#888" />
 			<SolidColorBrush x:Key="HorizontalNormalBrush"
-											 Color="#888" />
+							 Color="#888" />
 			<SolidColorBrush x:Key="HorizontalNormalBorderBrush"
-											 Color="#888" />
+							 Color="#888" />
 			<LinearGradientBrush x:Key="ListBoxBackgroundBrush"
-													 StartPoint="0,0"
-													 EndPoint="1,0.001">
+								 StartPoint="0,0"
+								 EndPoint="1,0.001">
 				<GradientBrush.GradientStops>
 					<GradientStopCollection>
 						<GradientStop Color="White"
-													Offset="0.0" />
+									  Offset="0.0" />
 						<GradientStop Color="White"
-													Offset="0.6" />
+									  Offset="0.6" />
 						<GradientStop Color="#DDDDDD"
-													Offset="1.2" />
+									  Offset="1.2" />
 					</GradientStopCollection>
 				</GradientBrush.GradientStops>
 			</LinearGradientBrush>
 			<LinearGradientBrush x:Key="StandardBrush"
-													 StartPoint="0,0"
-													 EndPoint="0,1">
+								 StartPoint="0,0"
+								 EndPoint="0,1">
 				<GradientBrush.GradientStops>
 					<GradientStopCollection>
 						<GradientStop Color="#FFF"
-													Offset="0.0" />
+									  Offset="0.0" />
 						<GradientStop Color="#CCC"
-													Offset="1.0" />
+									  Offset="1.0" />
 					</GradientStopCollection>
 				</GradientBrush.GradientStops>
 			</LinearGradientBrush>
 			<SolidColorBrush x:Key="GlyphBrush"
-											 Color="#444" />
+							 Color="#444" />
 			<LinearGradientBrush x:Key="PressedBrush"
-													 StartPoint="0,0"
-													 EndPoint="0,1">
+								 StartPoint="0,0"
+								 EndPoint="0,1">
 				<GradientBrush.GradientStops>
 					<GradientStopCollection>
 						<GradientStop Color="#BBB"
-													Offset="0.0" />
+									  Offset="0.0" />
 						<GradientStop Color="#EEE"
-													Offset="0.1" />
+									  Offset="0.1" />
 						<GradientStop Color="#EEE"
-													Offset="0.9" />
+									  Offset="0.9" />
 						<GradientStop Color="#FFF"
-													Offset="1.0" />
+									  Offset="1.0" />
 					</GradientStopCollection>
 				</GradientBrush.GradientStops>
 			</LinearGradientBrush>

@@ -283,7 +283,10 @@ namespace QuickAccess
 			ApplicationRecoveryAndRestart.RegisterForRecoveryAndRestart(
 				delegate//On crash
 				{
-					notifyIcon1.Visible = false;
+					this.Invoke((Action)delegate
+					{
+						notifyIcon1.Visible = false;
+					});
 					//TODO: Application Restart and Recovery is there but no use so far?
 					//File.WriteAllText(@"C:\Francois\Crash reports\tmpQuickAccess.log", "Application crashed, more details not incorporated yet." + DateTime.Now.ToString());
 					//using (StreamWriter sw = new StreamWriter())
@@ -303,8 +306,11 @@ namespace QuickAccess
 				},
 				delegate
 				{
-					labelRecoveryAndRestartSafe.Visible = true;
-					notifyIcon1.ShowBalloonTip(3000, "Recovery and Restart", "QuickAccess is now Recovery and Restart Safe", ToolTipIcon.Info);
+					this.Invoke((Action)delegate
+					{
+						labelRecoveryAndRestartSafe.Visible = true;
+						notifyIcon1.ShowBalloonTip(3000, "Recovery and Restart", "QuickAccess is now Recovery and Restart Safe", ToolTipIcon.Info);
+					});
 				});
 
 			//StartPipeClient();
