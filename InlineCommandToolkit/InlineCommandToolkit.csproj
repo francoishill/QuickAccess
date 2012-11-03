@@ -132,6 +132,9 @@
     <Compile Include="..\..\SharedClasses\AppTypeIndependant.cs">
       <Link>AppTypeIndependant.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\CalledFromService.cs">
+      <Link>CalledFromService.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\CompareObjects.cs">
       <Link>CompareObjects.cs</Link>
     </Compile>
@@ -334,6 +337,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\WPFdraggableCanvas.cs">
       <Link>WPFdraggableCanvas.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\WPFHelper.cs">
+      <Link>WPFHelper.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\WpfNotificationWindow.xaml.cs">
       <Link>WpfNotificationWindow.xaml.cs</Link>
