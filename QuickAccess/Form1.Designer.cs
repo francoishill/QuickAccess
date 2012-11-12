@@ -35,7 +35,6 @@
 			this.textBox_Messages = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.contextMenu_TrayIcon = new System.Windows.Forms.ContextMenu();
-			this.menuItem_Exit = new System.Windows.Forms.MenuItem();
 			this.menuItem_Commands = new System.Windows.Forms.MenuItem();
 			this.menuItem1 = new System.Windows.Forms.MenuItem();
 			this.menuItem2 = new System.Windows.Forms.MenuItem();
@@ -45,10 +44,12 @@
 			this.menuItem6 = new System.Windows.Forms.MenuItem();
 			this.menuItem7 = new System.Windows.Forms.MenuItem();
 			this.menuItem8 = new System.Windows.Forms.MenuItem();
+			this.menuItem_Exit = new System.Windows.Forms.MenuItem();
 			this.comboboxCommand = new System.Windows.Forms.ComboBox();
 			this.buttonTestCrash = new System.Windows.Forms.Button();
 			this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
+			this.menuItem9 = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
 			// notifyIcon1
@@ -102,31 +103,26 @@
 			// contextMenu_TrayIcon
 			// 
 			this.contextMenu_TrayIcon.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItem_Exit,
             this.menuItem_Commands,
             this.menuItem1,
             this.menuItem3,
             this.menuItem4,
             this.menuItem5,
             this.menuItem6,
-            this.menuItem7});
+            this.menuItem7,
+            this.menuItem9,
+            this.menuItem_Exit});
 			this.contextMenu_TrayIcon.Popup += new System.EventHandler(this.contextMenu_TrayIcon_Popup);
-			// 
-			// menuItem_Exit
-			// 
-			this.menuItem_Exit.Index = 0;
-			this.menuItem_Exit.Text = "E&xit";
-			this.menuItem_Exit.Click += new System.EventHandler(this.menuItem_Exit_Click);
 			// 
 			// menuItem_Commands
 			// 
 			this.menuItem_Commands.DefaultItem = true;
-			this.menuItem_Commands.Index = 1;
+			this.menuItem_Commands.Index = 0;
 			this.menuItem_Commands.Text = "&Commands";
 			// 
 			// menuItem1
 			// 
-			this.menuItem1.Index = 2;
+			this.menuItem1.Index = 1;
 			this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem2});
 			this.menuItem1.Text = "Test";
@@ -139,31 +135,31 @@
 			// 
 			// menuItem3
 			// 
-			this.menuItem3.Index = 3;
+			this.menuItem3.Index = 2;
 			this.menuItem3.Text = "&WebResults";
 			this.menuItem3.Click += new System.EventHandler(this.menuItem3_Click);
 			// 
 			// menuItem4
 			// 
-			this.menuItem4.Index = 4;
+			this.menuItem4.Index = 3;
 			this.menuItem4.Text = "Show &ten notifications";
 			this.menuItem4.Click += new System.EventHandler(this.menuItem4_Click);
 			// 
 			// menuItem5
 			// 
-			this.menuItem5.Index = 5;
+			this.menuItem5.Index = 4;
 			this.menuItem5.Text = "Create &plugin";
 			this.menuItem5.Click += new System.EventHandler(this.menuItem5_Click);
 			// 
 			// menuItem6
 			// 
-			this.menuItem6.Index = 6;
+			this.menuItem6.Index = 5;
 			this.menuItem6.Text = "Train &face detection";
 			this.menuItem6.Click += new System.EventHandler(this.menuItem6_Click);
 			// 
 			// menuItem7
 			// 
-			this.menuItem7.Index = 7;
+			this.menuItem7.Index = 6;
 			this.menuItem7.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem8});
 			this.menuItem7.Text = "Test Emgu Cv";
@@ -173,6 +169,12 @@
 			this.menuItem8.Index = 0;
 			this.menuItem8.Text = "Pedestrian detection";
 			this.menuItem8.Click += new System.EventHandler(this.menuItem8_Click);
+			// 
+			// menuItem_Exit
+			// 
+			this.menuItem_Exit.Index = 8;
+			this.menuItem_Exit.Text = "E&xit";
+			this.menuItem_Exit.Click += new System.EventHandler(this.menuItem_Exit_Click);
 			// 
 			// comboboxCommand
 			// 
@@ -228,6 +230,11 @@
 			this.progressBar1.Size = new System.Drawing.Size(118, 15);
 			this.progressBar1.TabIndex = 7;
 			this.progressBar1.Visible = false;
+			// 
+			// menuItem9
+			// 
+			this.menuItem9.Index = 7;
+			this.menuItem9.Text = "-";
 			// 
 			// Form1
 			// 
@@ -291,6 +298,7 @@
 				private System.Windows.Forms.MenuItem menuItem6;
 				private System.Windows.Forms.MenuItem menuItem7;
 				private System.Windows.Forms.MenuItem menuItem8;
+				private System.Windows.Forms.MenuItem menuItem9;
     }
 }
 
