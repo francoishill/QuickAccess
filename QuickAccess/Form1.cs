@@ -146,6 +146,8 @@ namespace QuickAccess
 
 			DeleteAllDropboxConfilctsOfVsProjects();
 
+			StartMonitoringForSourceCodeVersionedFileChanges();
+
 			//UserMessages.Confirm("Hallo");
 			//System.Windows.Window w = UserMessages.GetTopmostForm();
 			//w.Close();
@@ -225,6 +227,151 @@ namespace QuickAccess
 				foreach (var f in Directory.GetFiles(vsprojectsDir, "* conflicted copy *", SearchOption.AllDirectories))
 					if (f.IndexOf(@"\bin\", StringComparison.InvariantCultureIgnoreCase) != -1)
 						File.Delete(f);
+		}
+
+		private FileSystemWatcher csharpVersionedFilesMonitor = null;
+		private FileSystemWatcher delphiVersionedFilesMonitor = null;
+
+		private const string cCSharpMonitoredDirectory = @"C:\Francois\Dev\VSprojects";
+		private const string cDelphiMonitoredDirectory = @"C:\Programming";
+
+		private List<string> changedVisualStudioProjectDirectories = new List<string>();
+		private List<string> changedDelphiProjectDirectories = new List<string>();
+		private Dictionary<int, Process> runningVisualStudioProcesses = new Dictionary<int, Process>();
+		private Dictionary<int, Process> runningDelphiProcesses = new Dictionary<int, Process>();
+
+		private void StartMonitoringForSourceCodeVersionedFileChanges()
+		{
+			if (Directory.Exists(cCSharpMonitoredDirectory))
+			{
+				csharpVersionedFilesMonitor = new FileSystemWatcher(cCSharpMonitoredDirectory);
+				csharpVersionedFilesMonitor.EnableRaisingEvents = true;
+				csharpVersionedFilesMonitor.IncludeSubdirectories = true;
+				csharpVersionedFilesMonitor.Changed += (sn, ev) => { OnFileModifiedCheckIfCSharpVersioned(ev.FullPath); };
+			}
+
+			if (Directory.Exists(cDelphiMonitoredDirectory))
+			{
+				delphiVersionedFilesMonitor = new FileSystemWatcher(cDelphiMonitoredDirectory);
+				delphiVersionedFilesMonitor.EnableRaisingEvents = true;
+				delphiVersionedFilesMonitor.IncludeSubdirectories = true;
+				delphiVersionedFilesMonitor.Changed += (sn, ev) => { OnFileModifiedCheckIfDelphiVersioned(ev.FullPath); };
+			}
+
+			//int removeline;
+			PopulateRunningVisualStudioProcesses();
+		}
+
+		DateTime lastProcessCheckTime = DateTime.MinValue;
+		private void PopulateRunningVisualStudioProcesses()
+		{
+			DateTime now = DateTime.Now;
+			if (now.Subtract(lastProcessCheckTime).TotalSeconds < 10)
+				return;//Do not do more often than every 10 seconds
+
+			var allprocs = Process.GetProcessesByName("VCSExpress");
+			if (allprocs.Length > 0)
+			{
+				for (int i = 0; i < allprocs.Length; i++)
+				{
+					try
+					{
+						int pid = allprocs[i].Id;
+						if (runningVisualStudioProcesses.ContainsKey(pid))
+							continue;
+						runningVisualStudioProcesses.Add(pid, allprocs[i]);
+						ThreadingInterop.PerformOneArgFunctionSeperateThread<Process>(
+							(proc) =>
+							{
+								proc.WaitForExit();
+								runningVisualStudioProcesses.Remove(proc.Id);
+								if (runningVisualStudioProcesses.Count == 0)
+									AllVisualStudioIDEsClosed_PromptUserIfSubversionChanges();
+							},
+							allprocs[i],
+							false);
+					}
+					catch
+					{
+					}
+				}
+			}
+
+			//Delphi
+			allprocs = Process.GetProcessesByName("bds");
+			if (allprocs.Length > 0)
+			{
+				for (int i = 0; i < allprocs.Length; i++)
+				{
+					try
+					{
+						int pid = allprocs[i].Id;
+						if (runningDelphiProcesses.ContainsKey(pid))
+							continue;
+						runningDelphiProcesses.Add(pid, allprocs[i]);
+						ThreadingInterop.PerformOneArgFunctionSeperateThread<Process>(
+							(proc) =>
+							{
+								proc.WaitForExit();
+								runningDelphiProcesses.Remove(proc.Id);
+								if (runningDelphiProcesses.Count == 0)
+									AllDelphiIDEsClosed_PromptUserIfSubversionChanges();
+							},
+							allprocs[i],
+							false);
+					}
+					catch
+					{
+					}
+				}
+			}
+		}
+
+		private void OnFileModifiedCheckIfCSharpVersioned(string path)
+		{
+			string projectRootFolder = Path.Combine(
+				cCSharpMonitoredDirectory,
+				path.Substring(cCSharpMonitoredDirectory.Length + 1).TrimStart('\\').Split('\\')[0]);//Just the project folder name
+			if (DirIsValidSvnPath(projectRootFolder))
+			{
+				if (!changedVisualStudioProjectDirectories.Contains(projectRootFolder))
+					changedVisualStudioProjectDirectories.Add(projectRootFolder);
+				PopulateRunningVisualStudioProcesses();
+			}
+		}
+
+		private void OnFileModifiedCheckIfDelphiVersioned(string path)
+		{
+			string projectRootFolder = Path.Combine(
+				cDelphiMonitoredDirectory,
+				path.Substring(cDelphiMonitoredDirectory.Length + 1).TrimStart('\\').Split('\\')[0]);//Just the project folder name
+			if (DirIsValidSvnPath(projectRootFolder))
+			{
+				if (!changedDelphiProjectDirectories.Contains(projectRootFolder))
+					changedDelphiProjectDirectories.Add(projectRootFolder);
+				PopulateRunningVisualStudioProcesses();
+			}
+		}
+
+		private void AllVisualStudioIDEsClosed_PromptUserIfSubversionChanges()
+		{
+			UserMessages.ShowWarningMessage("The following subversion projects were modified (the last Visual Studio C# IDE was closed):"
+				+ Environment.NewLine + Environment.NewLine
+				+ string.Join(Environment.NewLine, changedVisualStudioProjectDirectories));
+		}
+
+		private void AllDelphiIDEsClosed_PromptUserIfSubversionChanges()
+		{
+			UserMessages.ShowWarningMessage("The following subversion projects were modified (the last Delphi IDE was closed):"
+				+ Environment.NewLine + Environment.NewLine
+				+ string.Join(Environment.NewLine, changedDelphiProjectDirectories));
+		}
+
+		private bool DirIsValidSvnPath(string dir)
+		{
+			if (!Directory.Exists(dir))
+				return false;
+			return Directory.Exists(System.IO.Path.Combine(dir, ".svn"));
 		}
 
 		/*private void StartPipeClient()

@@ -43,7 +43,7 @@ namespace QuickAccess
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			AssociateFacesFileExtensionInRegistry();
-			AssociateUrlProtocolHandler();
+			RegistryInterop.AssociateUrlProtocolHandler(UrlHandlerUriStart, "QuickAccess protocol", "\"" + Environment.GetCommandLineArgs()[0] + "\" " + UrlHandlerArgument + " \"%1\"");
 			AutoUpdating.CheckForUpdates(
 				//AutoUpdatingForm.CheckForUpdates(
 				//    exitApplicationAction: () => Application.Exit(),
@@ -160,18 +160,6 @@ namespace QuickAccess
 			//    "Extract faces here",
 			//    "\"" + Environment.GetCommandLineArgs()[0] + "\"",
 			//    (err, title) => UserMessages.ShowErrorMessage(err, title));
-		}
-
-		private static void AssociateUrlProtocolHandler()
-		{
-			var classesRootKey = RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryInterop.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32);
-			var quickaccessKey = classesRootKey.CreateSubKey(UrlHandlerUriStart);
-			quickaccessKey.SetValue(null, "URL:QuickAccess Protocol");
-			quickaccessKey.SetValue("URL Protocol", "");
-			var shellSubkey = quickaccessKey.CreateSubKey("shell");
-			var openSubkey = shellSubkey.CreateSubKey("open");
-			var commandSubkey = openSubkey.CreateSubKey("command");
-			commandSubkey.SetValue(null, "\"" + Environment.GetCommandLineArgs()[0] + "\" " + UrlHandlerArgument + " \"%1\"");
 		}
 	}
 }

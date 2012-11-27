@@ -44,12 +44,12 @@
 			this.menuItem6 = new System.Windows.Forms.MenuItem();
 			this.menuItem7 = new System.Windows.Forms.MenuItem();
 			this.menuItem8 = new System.Windows.Forms.MenuItem();
+			this.menuItem9 = new System.Windows.Forms.MenuItem();
 			this.menuItem_Exit = new System.Windows.Forms.MenuItem();
 			this.comboboxCommand = new System.Windows.Forms.ComboBox();
 			this.buttonTestCrash = new System.Windows.Forms.Button();
 			this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
-			this.menuItem9 = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
 			// notifyIcon1
@@ -170,6 +170,11 @@
 			this.menuItem8.Text = "Pedestrian detection";
 			this.menuItem8.Click += new System.EventHandler(this.menuItem8_Click);
 			// 
+			// menuItem9
+			// 
+			this.menuItem9.Index = 7;
+			this.menuItem9.Text = "-";
+			// 
 			// menuItem_Exit
 			// 
 			this.menuItem_Exit.Index = 8;
@@ -230,11 +235,6 @@
 			this.progressBar1.Size = new System.Drawing.Size(118, 15);
 			this.progressBar1.TabIndex = 7;
 			this.progressBar1.Visible = false;
-			// 
-			// menuItem9
-			// 
-			this.menuItem9.Index = 7;
-			this.menuItem9.Text = "-";
 			// 
 			// Form1
 			// 
