@@ -207,6 +207,9 @@
       <Link>InputBoxWPF.xaml.cs</Link>
       <DependentUpon>InputBoxWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="..\..\SharedClasses\LicensingInterop_Shared.cs">
+      <Link>LicensingInterop_Shared.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\MiniDownloadBarForm.cs">
       <Link>MiniDownloadBarForm.cs</Link>
       <SubType>Form</SubType>
@@ -246,6 +249,9 @@
     <Compile Include="..\..\SharedClasses\OverlayRibbon.xaml.cs">
       <Link>OverlayRibbon.xaml.cs</Link>
       <DependentUpon>OverlayRibbon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\PhpInterop.cs">
+      <Link>PhpInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\PickItemForm.cs">
       <Link>PickItemForm.cs</Link>

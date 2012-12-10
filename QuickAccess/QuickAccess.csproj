@@ -237,9 +237,6 @@
     <Compile Include="..\..\SharedClasses\ParseHtmlInterop.cs">
       <Link>ParseHtmlInterop.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\PhpInterop.cs">
-      <Link>PhpInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\ScreenAndDrawingInterop.cs">
       <Link>ScreenAndDrawingInterop.cs</Link>
     </Compile>
