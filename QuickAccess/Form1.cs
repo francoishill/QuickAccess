@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Windows.Forms.Integration;
 using System.Threading;
-using UnhandledExceptions;
+//using UnhandledExceptions;
 using PropertyInterceptor;
 using DynamicDLLsInterop;
 //using InterfaceForQuickAccessPlugin;

@@ -44,12 +44,16 @@ namespace QuickAccess
 			Application.SetCompatibleTextRenderingDefault(false);
 			AssociateFacesFileExtensionInRegistry();
 			RegistryInterop.AssociateUrlProtocolHandler(UrlHandlerUriStart, "QuickAccess protocol", "\"" + Environment.GetCommandLineArgs()[0] + "\" " + UrlHandlerArgument + " \"%1\"");
-			AutoUpdating.CheckForUpdates(
+			AutoUpdating.CheckForUpdates_ExceptionHandler(delegate
+			{
+				Form1.CurrentVersionString = AutoUpdating.GetThisAppVersionString();
+			});
+			/*AutoUpdating.CheckForUpdates(
 				//AutoUpdatingForm.CheckForUpdates(
 				//    exitApplicationAction: () => Application.Exit(),
 				ActionIfUptoDate_Versionstring: versionstring => Form1.CurrentVersionString = versionstring//,
 				//ActionIfUnableToCheckForUpdates: errmsg => Form1.ErrorMessageIfCannotCheckVersion = errmsg);
-				);
+				);*/
 			SingleInstanceApplication.Run(NewInstanceHandler);
 		}
 
