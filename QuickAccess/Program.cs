@@ -40,36 +40,55 @@ namespace QuickAccess
 			//    };
 			//}
 
-			Application.EnableVisualStyles();
+			/*Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			AssociateFacesFileExtensionInRegistry();
 			RegistryInterop.AssociateUrlProtocolHandler(UrlHandlerUriStart, "QuickAccess protocol", "\"" + Environment.GetCommandLineArgs()[0] + "\" " + UrlHandlerArgument + " \"%1\"");
 			AutoUpdating.CheckForUpdates_ExceptionHandler(delegate
 			{
-				Form1.CurrentVersionString = AutoUpdating.GetThisAppVersionString();
-			});
+				MainForm.CurrentVersionString = AutoUpdating.GetThisAppVersionString();
+			});*/
 			/*AutoUpdating.CheckForUpdates(
 				//AutoUpdatingForm.CheckForUpdates(
 				//    exitApplicationAction: () => Application.Exit(),
 				ActionIfUptoDate_Versionstring: versionstring => Form1.CurrentVersionString = versionstring//,
 				//ActionIfUnableToCheckForUpdates: errmsg => Form1.ErrorMessageIfCannotCheckVersion = errmsg);
 				);*/
-			SingleInstanceApplication.Run(NewInstanceHandler);
+
+			Application.SetCompatibleTextRenderingDefault(false);//Must do it here before the next code section, otherwise it crashes
+			SingleInstanceApplicationManager<MainForm>.CheckIfAlreadyRunningElseCreateNew(
+				(onSecondInstanceArgs, onSecondInstanceMainFormFromFirstInstance) =>
+				{
+					ProcessCommandLineArguments(onSecondInstanceMainFormFromFirstInstance, onSecondInstanceArgs.CommandLineArgs, false);
+				},
+				(onFirstInstanceArgs, onAppStartFirstInstanceForm) =>
+				{
+					Application.EnableVisualStyles();
+					AssociateFacesFileExtensionInRegistry();
+					RegistryInterop.AssociateUrlProtocolHandler(UrlHandlerUriStart, "QuickAccess protocol", "\"" + Environment.GetCommandLineArgs()[0] + "\" " + UrlHandlerArgument + " \"%1\"");
+					AutoUpdating.CheckForUpdates_ExceptionHandler(delegate
+					{
+						MainForm.CurrentVersionString = AutoUpdating.GetThisAppVersionString();
+					});
+					Application.Run(onAppStartFirstInstanceForm);
+				});
+
+			//SingleInstanceApplication.Run(NewInstanceHandler);
 		}
 
 		public static void NewInstanceHandler(object sender, StartupNextInstanceEventArgs e)
 		{
 			e.BringToForeground = false;
 
-			Form1 form1 = null;
+			MainForm form1 = null;
 			var app = sender as SingleInstanceApplication;
 			if (app != null)
-				form1 = app.GetMainForm() as Form1;
+				form1 = app.GetMainForm() as MainForm;
 
 			ProcessCommandLineArguments(form1, e.CommandLine.ToArray(), false);
 		}
 
-		public static void ProcessCommandLineArguments(Form1 mainForm, string[] args, bool IsFirstInstance)
+		public static void ProcessCommandLineArguments(MainForm mainForm, string[] args, bool IsFirstInstance)
 		{
 			if (args.Length == 3)
 			{
@@ -143,8 +162,8 @@ namespace QuickAccess
 
 					if (mutex.WaitOne(0, true))
 					{
-						app.MainForm = new Form1();
-						ProcessCommandLineArguments(app.MainForm as Form1, Environment.GetCommandLineArgs(), true);
+						app.MainForm = new MainForm();
+						ProcessCommandLineArguments(app.MainForm as MainForm, Environment.GetCommandLineArgs(), true);
 					}
 					app.Run(Environment.GetCommandLineArgs());
 				}

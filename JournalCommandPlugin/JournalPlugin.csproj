@@ -41,9 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\SharedClasses\PhpInterop.cs">
-      <Link>PhpInterop.cs</Link>
-    </Compile>
     <Compile Include="JournalPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

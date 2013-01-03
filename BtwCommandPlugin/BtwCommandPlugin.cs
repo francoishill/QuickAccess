@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using InlineCommandToolkit;
 //using InterfaceForQuickAccessPlugin;
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
+using SharedClasses;
 
 namespace BtwCommandPlugin
 {

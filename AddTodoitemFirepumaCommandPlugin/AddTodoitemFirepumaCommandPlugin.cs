@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using InlineCommandToolkit;
 //using InterfaceForQuickAccessPlugin;
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
+using SharedClasses;
 
 namespace AddTodoitemFirepumaCommandPlugin
 {
@@ -68,7 +69,7 @@ namespace AddTodoitemFirepumaCommandPlugin
 			//if (!ValidateArguments(out errorMessage, arguments)) return false;
 			try
 			{
-				PhpInterop.AddTodoItemFirepuma(
+				SharedClasses.PhpInterop.AddTodoItemFirepuma(
 					this,
 					PhpInterop.ServerAddress,
 					PhpInterop.doWorkAddress,

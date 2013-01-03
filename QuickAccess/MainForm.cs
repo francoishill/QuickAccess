@@ -29,7 +29,7 @@ using QuickAccessPluginCreator;
 namespace QuickAccess
 {
 	//TODO: In C# press Ctrl + K, Ctrl + H to add an item to the Task List (choose Shorcuts from the dropdown options).
-	public partial class Form1 : Form
+	public partial class MainForm : Form
 	{
 		//TODO: When program (QuickAccess) starts up it must check on a regular basis (every one minutes or 30 seconds) whether changes are picked up in any of the Subversion repos (only check LOCALLY), this check must not occur directly after the system booted, maybe have a delay of 10 or 20 minutes.
 		private CommandsWindow commandsWindow;
@@ -52,7 +52,7 @@ namespace QuickAccess
 		public static string CurrentVersionString = null;
 		public static string ErrorMessageIfCannotCheckVersion = null;
 
-		public Form1()
+		public MainForm()
 		{
 			////DynamicDLLs.InvokeDllMethodGetReturnObject(@"D:\Francois\Dev\VSprojects\TestDynamicDllLoadingInQuickAccess\TestDynamicDllLoadingInQuickAccess\bin\Debug\TestDynamicDllLoadingInQuickAccess.dll", "TestClass", "ShowMessage", null);
 			//object obj = DynamicDLLs.InvokeDllMethodGetReturnObject(@"D:\Francois\Dev\VSprojects\TestDynamicDllLoadingInQuickAccess\TestDynamicDllLoadingInQuickAccess\bin\Debug\TestDynamicDllLoadingInQuickAccess.dll", "TestClass", "ShowMessage", null);
@@ -466,6 +466,14 @@ namespace QuickAccess
 			AddAllCurrentDomainAssembliesToLoadedList();
 
 			commandsWindow = new CommandsWindow(this);
+			CommandsWindow.actionForShowingAboutWindow = delegate
+			{
+				AboutWindow2.ShowAboutWindow(new System.Collections.ObjectModel.ObservableCollection<DisplayItem>()
+				{
+					new DisplayItem("Author", "Francois Hill"),
+					new DisplayItem("Icon(s) obtained from", null)
+				});
+			};
 			commandsWindow.Show();
 
 			//Thread.Sleep(500);

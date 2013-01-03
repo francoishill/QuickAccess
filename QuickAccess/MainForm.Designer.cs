@@ -1,6 +1,6 @@
 ﻿namespace QuickAccess
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
 			this.label1 = new System.Windows.Forms.Label();
 			this.textBox_Messages = new System.Windows.Forms.TextBox();
