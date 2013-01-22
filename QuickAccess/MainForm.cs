@@ -1425,7 +1425,7 @@ namespace QuickAccess
 				CustomBalloonTipwpf.ShowCustomBalloonTip(
 					"Title " + i,
 					"Message " + i,
-					2000,
+					TimeSpan.FromSeconds(2),
 					CustomBalloonTipwpf.IconTypes.Information,
 					(snder) => { if (snder is CustomBalloonTipwpf.CustomBalloonTipClass) MessageBox.Show("Clicked on: " + (snder as CustomBalloonTipwpf.CustomBalloonTipClass).Message); },
 					Scaling: ((double)i) / (double)2);
