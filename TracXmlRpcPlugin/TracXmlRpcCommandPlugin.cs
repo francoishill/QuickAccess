@@ -23,7 +23,7 @@ namespace TracXmlRpcPlugin
 		private static List<string> subCommandList;
 		private static List<string> SubCommandList { get { if (subCommandList == null) subCommandList = EnumsInterop.GetStringListOfEnumNames(typeof(SubCommandsEnum)); return subCommandList; } }
 		private readonly static string[] projectNameList = new string[] { "QuickAccess", "MonitorSystem", "SharedClasses" };
-		private readonly static string[] TicketIds = new string[] { "1" };//TODO: This should not always be only 1, might be nothing or even many more
+		private readonly static string[] TicketIds = new string[] { "1" };
 
 		private readonly ObservableCollection<string>[] predefinedArgumentsList =
 		{

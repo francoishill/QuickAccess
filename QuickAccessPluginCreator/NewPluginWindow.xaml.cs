@@ -217,7 +217,7 @@ namespace QuickAccessPluginCreator
 				{
 					///
 					///
-					//TODO: Add here to check if successfully built, then ask user if plugin must be placed in QuickAccess\Plugins in the programfiles folder.
+					//Add here to check if successfully built, then ask user if plugin must be placed in QuickAccess\Plugins in the programfiles folder.
 					///
 					///
 					string newversionString;

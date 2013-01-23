@@ -23,9 +23,6 @@ using System.Security;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("b2cfe352-da06-4248-b51c-5b46ebfb30c8")]
 
-//TODO: The info in this file can be shared between assemblies (like between
-//	QuickAcces, InlineCommandToolkit, and the plugins (this is how Emgu.CV does it sharing one assembly file)
-
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version

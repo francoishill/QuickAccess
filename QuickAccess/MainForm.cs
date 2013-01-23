@@ -20,7 +20,6 @@ using SharedClasses;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 using QuickAccessPluginCreator;
-//TODO: Facedetection disabled for now
 //using QuickAccess.TestEmguCV;
 //using Emgu.CV;
 //using Emgu.CV.Structure;
@@ -28,10 +27,8 @@ using QuickAccessPluginCreator;
 
 namespace QuickAccess
 {
-	//TODO: In C# press Ctrl + K, Ctrl + H to add an item to the Task List (choose Shorcuts from the dropdown options).
 	public partial class MainForm : Form
 	{
-		//TODO: When program (QuickAccess) starts up it must check on a regular basis (every one minutes or 30 seconds) whether changes are picked up in any of the Subversion repos (only check LOCALLY), this check must not occur directly after the system booted, maybe have a delay of 10 or 20 minutes.
 		private CommandsWindow commandsWindow;
 		//private tmpCommandsWindow tmpCommandsWindow1;
 
@@ -124,7 +121,6 @@ namespace QuickAccess
 			//textFeedback += (tag, evtargs) => { Logging.appendLogTextbox_OfPassedTextbox(textBox_Messages, evtargs.FeedbackText); };
 			//progressChanged += (tag, evtargs) => { UpdateProgress(evtargs.CurrentValue, evtargs.MaximumValue, evtargs.BytesPerSecond); };
 
-			//TODO: Check out this command SubversionInterop.CheckStatusAllVisualStudio2010Projects()
 			//SubversionInterop.CheckStatusAllVisualStudio2010Projects();
 
 			//SharedClassesSettings.EnsureAllSharedClassesSettingsNotNullCreateDefault();
@@ -163,7 +159,6 @@ namespace QuickAccess
 			//tmpCommandsWindow1 = new tmpCommandsWindow();
 			//tmpCommandsWindow1.Closed += delegate { this.Close(); };
 
-			//TODO: Check uit AppDomain.MonitoringIsEnabled
 			//MessageBox.Show(AppDomain.MonitoringIsEnabled.ToString());
 
 			//int a = 1;
@@ -179,7 +174,6 @@ namespace QuickAccess
 			//GenericSettings.ShowAndEditAllSettings();
 			//GenericSettings.ShowAndEditAllSettings();
 
-			//TODO: Have "Add Window" option in VS Project menu: put the following in an empty <ProjectGroup> : <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
 
 			//});
 
@@ -434,7 +428,6 @@ namespace QuickAccess
 					{
 						notifyIcon1.Visible = false;
 					});
-					//TODO: Application Restart and Recovery is there but no use so far?
 					//File.WriteAllText(@"C:\Francois\Crash reports\tmpQuickAccess.log", "Application crashed, more details not incorporated yet." + DateTime.Now.ToString());
 					//using (StreamWriter sw = new StreamWriter())
 					//ApplicationRecoveryAndRestart.WriteCrashReportFile("QuickAccess");//, "Application crashed, more details not incorporated yet.");
@@ -812,7 +805,7 @@ namespace QuickAccess
 									{
 										InlineCommands.InlineCommands.CommandDetails thisCommandDetails = ((send as System.Windows.Controls.TreeViewItem).Tag as object[])[1] as InlineCommands.InlineCommands.CommandDetails;
 										string thisPredefinedArguments = ((send as System.Windows.Controls.TreeViewItem).Tag as object[])[0].ToString();
-										//TODO: Something not working right here (see the MAIL command), does not concat the arguments into one string.
+										//Something not working right here (see the MAIL command), does not concat the arguments into one string.
 										//foreach (string s in thisPredefinedArguments.Substring(thisCommandDetails.commandName.Length + 1).Split(InlineCommands.InlineCommands.CommandDetails.ArgumentSeparator))
 										//  MessageBox.Show(s;)
 									};
@@ -1052,7 +1045,6 @@ namespace QuickAccess
 
 		private void PerformCommandNow(string text, bool ClearCommandTextboxOnSuccess = true, bool HideAfterSuccess = false)
 		{
-			//TODO: Need to add comma separated values to textbox also working with autocomplete for each i.e. svnupdate MonitorSystem,QuickAccess,SharedClasses
 			/*string errorMsg;
 			InlineCommands.InlineCommands.CommandDetails command = InlineCommands.InlineCommands.GetCommandDetailsFromTextboxText(text);
 			if (command == null)
@@ -1146,7 +1138,6 @@ namespace QuickAccess
 
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
-			//TODO: Should check out the debugging tools for Windows, Run the "Global Flags" and in the "Kernel Flags" tab enable items "Enable heap tail checking", "Enable heap free checking", "Enable page heap"
 			/*string tmpkey = null;
 			if (comboboxCommand.Text.ToLower().IndexOf(' ') != -1)
 				tmpkey = comboboxCommand.Text.ToLower().Substring(0, comboboxCommand.Text.ToLower().IndexOf(' '));
@@ -1198,7 +1189,6 @@ namespace QuickAccess
 					//    }
 					//  }
 				}
-					//TODO: Should eventually (on next commented lines) add autocomplete for COMMAseparated arguments like svnupdate MonitorSystem,QuickAccess
 				//else if (textboxArgsString.EndsWith(@","))// && lastetextboxArg.Contains(@":\"))
 				//{
 				//}
@@ -1220,7 +1210,6 @@ namespace QuickAccess
 				else
 				{
 					SetAutoCompleteForAction(tmpkey);
-					//TODO: Must still adapt combobox to use the Dropdown, instead of its built in autocomplete
 					//Win32Api.SendMessage(comboboxCommand.Handle, Win32Api.CB_SHOWDROPDOWN, 1, 0);
 				}
 			}
@@ -1442,13 +1431,13 @@ namespace QuickAccess
 
 		private void menuItem6_Click(object sender, EventArgs e)
 		{
-			//TODO: Facedetection disabled for now
+			//Facedetection disabled for now
 			//FaceTrainingForm.ShowFacetraining();
 		}
 
 		private void menuItem8_Click(object sender, EventArgs e)
 		{
-			//TODO: Facedetection disabled for now
+			//Facedetection disabled for now
 			//List<string> embeddedImagePaths = VisualStudioInterop.GetAllEmbeddedResourcesReturnFilePaths(
 			//	x =>
 			//		x.ToLower().Contains(".TestEmguCV.".ToLower())

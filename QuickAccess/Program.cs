@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
-//TODO: Facedetection disabled for now
+//Facedetection disabled for now
 //using Emgu.CV;
 //using Emgu.CV.Structure;
 using Microsoft.VisualBasic.ApplicationServices;
@@ -103,7 +103,7 @@ namespace QuickAccess
 						if (!Directory.Exists(saveToDir))
 							Directory.CreateDirectory(saveToDir);
 
-						//TODO: Facedetection disabled for now
+						//Facedetection disabled for now
 						//int counter = 1;
 						//Dictionary<string, List<Image<Gray, byte>>> tmpList = new Dictionary<string, List<Image<Gray, byte>>>();
 						//FaceDetectionInterop.ExtractFacesFromFile(FaceDetectionInterop.Passphrase, FaceDetectionInterop.Salt, ref tmpList, args[2]);
