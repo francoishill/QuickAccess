@@ -75,7 +75,7 @@ namespace TracXmlRpcPlugin
 				if (string.Equals(arguments[0], SubCommandsEnum.GetFieldLabels.ToString(), StringComparison.InvariantCultureIgnoreCase))
 				{
 					//DONE: Warning, if the password userprompt pops up it crashes because the commands are run on separate threads
-					List<string> tmplist = TracXmlRpcInterop.GetFieldLables(VisualStudioInterop.GetTracXmlRpcHttpPathFromProjectName(arguments[1]));
+					List<string> tmplist = TracXmlRpcInterop.GetFieldLables(TracXmlRpcInterop.ChangeLogs.GetTracXmlRpcUrlForApplication(arguments[1]));
 					int tmpcounter = 1;
 					foreach (string s in tmplist)
 						TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(
@@ -86,7 +86,7 @@ namespace TracXmlRpcPlugin
 				}
 				else if (string.Equals(arguments[0], SubCommandsEnum.GetTicketIDs.ToString(), StringComparison.InvariantCultureIgnoreCase))
 				{
-					int[] ids = TracXmlRpcInterop.GetTicketIds(VisualStudioInterop.GetTracXmlRpcHttpPathFromProjectName(arguments[1]));
+					int[] ids = TracXmlRpcInterop.GetOpenTicketIds(TracXmlRpcInterop.ChangeLogs.GetTracXmlRpcUrlForApplication(arguments[1]));
 					int tmpcounter = 1;
 					foreach (int i in ids)
 						TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(
@@ -97,7 +97,7 @@ namespace TracXmlRpcPlugin
 				}
 				else if (string.Equals(arguments[0], SubCommandsEnum.GetListOfMethods.ToString(), StringComparison.InvariantCultureIgnoreCase))
 				{
-					string[] arr = TracXmlRpcInterop.GetListOfMethods(VisualStudioInterop.GetTracXmlRpcHttpPathFromProjectName(arguments[1]));
+					string[] arr = TracXmlRpcInterop.GetListOfMethods(TracXmlRpcInterop.ChangeLogs.GetTracXmlRpcUrlForApplication(arguments[1]));
 					int tmpcounter = 1;
 					foreach (string s in arr)
 						TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(
@@ -116,7 +116,7 @@ namespace TracXmlRpcPlugin
 					}
 					else
 					{
-						List<TracXmlRpcInterop.ChangeLogStruct> tmplist = TracXmlRpcInterop.ChangeLogs(tmpticketid, VisualStudioInterop.GetTracXmlRpcHttpPathFromProjectName(arguments[1]));
+						List<TracXmlRpcInterop.ChangeLogStruct> tmplist = TracXmlRpcInterop.GetChangeLogs(tmpticketid, TracXmlRpcInterop.ChangeLogs.GetTracXmlRpcUrlForApplication(arguments[1]));
 						int tmpcounter = 1;
 						foreach (TracXmlRpcInterop.ChangeLogStruct cl in tmplist)
 							if (cl.Field == "comment" && !string.IsNullOrWhiteSpace(cl.NewValue))
@@ -137,7 +137,7 @@ namespace TracXmlRpcPlugin
 					}
 					else
 					{
-						Dictionary<string, object> fieldvalues = TracXmlRpcInterop.GetFieldValuesOfTicket(tmpticketid, VisualStudioInterop.GetTracXmlRpcHttpPathFromProjectName(arguments[1]));
+						Dictionary<string, object> fieldvalues = TracXmlRpcInterop.GetFieldValuesOfTicket(tmpticketid, TracXmlRpcInterop.ChangeLogs.GetTracXmlRpcUrlForApplication(arguments[1]));
 						int tmpcounter = 1;
 						foreach (string key in fieldvalues.Keys)
 							TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(
@@ -149,7 +149,7 @@ namespace TracXmlRpcPlugin
 				}
 				else if (string.Equals(arguments[0], SubCommandsEnum.GetAllTicketDescriptionsAndTypes.ToString(), StringComparison.InvariantCultureIgnoreCase))
 				{
-					Dictionary<int, TracXmlRpcInterop.DescriptionAndTicketType> ticketDescriptionsAndTypes = TracXmlRpcInterop.GetAllTicketDescriptionsAndTypes(VisualStudioInterop.GetTracXmlRpcHttpPathFromProjectName(arguments[1]));
+					Dictionary<int, TracXmlRpcInterop.TracTicketDetails> ticketDescriptionsAndTypes = TracXmlRpcInterop.GetAllClosedTicketDescriptionsAndTypes(TracXmlRpcInterop.ChangeLogs.GetTracXmlRpcUrlForApplication(arguments[1]));
 					int tmpcounter = 1;
 					foreach (int i in ticketDescriptionsAndTypes.Keys)
 						TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(

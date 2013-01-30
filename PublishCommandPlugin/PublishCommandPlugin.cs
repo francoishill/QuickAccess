@@ -80,6 +80,7 @@ namespace PublishCommandPlugin
 					{
 						string tmpNoUseVersionStr;
 						string tmpNoUseSetupPath;
+						DateTime publishedDate;
 						PublishInterop.PerformPublish(
 							//VisualStudioInterop.PerformPublish(
 							//textfeedbackSenderObject: this,
@@ -92,6 +93,7 @@ namespace PublishCommandPlugin
 							SelectSetupIfSuccessful: false,
 							publishedVersionString: out tmpNoUseVersionStr,
 							publishedSetupPath: out tmpNoUseSetupPath,
+							publishDate: out publishedDate,
 							actionOnMessage: (mes, msgtype) =>
 							{
 								if (textFeedbackEvent != null)
@@ -125,6 +127,7 @@ namespace PublishCommandPlugin
 					{
 						string tmpNoUseVersionStr;
 						string tmpNoUseSetupPath;
+						DateTime publishedDate;
 						PublishInterop.PerformPublishOnline(
 							//VisualStudioInterop.PerformPublishOnline(
 							//textfeedbackSenderObject: this,
@@ -138,6 +141,7 @@ namespace PublishCommandPlugin
 							OpenWebsite: false,
 							publishedVersionString: out tmpNoUseVersionStr,
 							publishedSetupPath: out tmpNoUseSetupPath,
+							publishDate: out publishedDate,
 							actionOnMessage: (mes, msgtype) =>
 							{
 								if (textFeedbackEvent != null)

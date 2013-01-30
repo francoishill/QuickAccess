@@ -354,9 +354,6 @@
       <Link>UserMessages.designer.cs</Link>
       <DependentUpon>UserMessages.cs</DependentUpon>
     </Compile>
-    <Compile Include="..\..\SharedClasses\VisualStudioInterop.cs">
-      <Link>VisualStudioInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\WebInterop.cs">
       <Link>WebInterop.cs</Link>
     </Compile>
