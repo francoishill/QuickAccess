@@ -23,14 +23,14 @@ namespace JournalPluginCommandPlugin
 				};
 		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return argumentsReplaceKeyValuePair; } }
 
-		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)
+		public override bool PreValidateArgument(out string errorMessage, int index, string argumentValue)
 		{
 			errorMessage = "";
-			if (Index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[Index].ContainsKey(argumentValue))
-				argumentValue = argumentsReplaceKeyValuePair[Index][argumentValue];
-			if (Index < 0 || Index > 1)
+			if (index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[index].ContainsKey(argumentValue))
+				argumentValue = argumentsReplaceKeyValuePair[index][argumentValue];
+			if (index < 0 || index > 1)
 				errorMessage = "At least one and at most two arguments required for Journal command";
-			else if (Index == 0 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 0 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "First argument Journal command may not be null/empty/whitespaces";
 			else return true;
 			return false;

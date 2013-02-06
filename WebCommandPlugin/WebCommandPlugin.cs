@@ -28,16 +28,16 @@ namespace WebCommandPlugin
 				};
 		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return argumentsReplaceKeyValuePair; } }
 
-		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)
+		public override bool PreValidateArgument(out string errorMessage, int index, string argumentValue)
 		{
 			errorMessage = "";
-			if (Index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[Index].ContainsKey(argumentValue))
-				argumentValue = argumentsReplaceKeyValuePair[Index][argumentValue];
-			if (Index != 0)
+			if (index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[index].ContainsKey(argumentValue))
+				argumentValue = argumentsReplaceKeyValuePair[index][argumentValue];
+			if (index != 0)
 				errorMessage = "Only one argument required for Web command";
-			else if (Index == 0 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 0 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "First argument of Web command may not be null/empty/whitespaces only";
-			else if (Index == 0 && !argumentValue.Contains('.') && !argumentValue.ToLower().Contains("localhost"))
+			else if (index == 0 && !argumentValue.Contains('.') && !argumentValue.ToLower().Contains("localhost"))
 				errorMessage = "First argument of Web command must contain a '.' or be localhost.";
 			else return true;
 			return false;

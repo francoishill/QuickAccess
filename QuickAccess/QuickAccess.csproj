@@ -280,6 +280,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickAccessSettings.cs" />
+    <Compile Include="RunningApps.cs" />
     <Compile Include="WebResultsWindow.xaml.cs">
       <DependentUpon>WebResultsWindow.xaml</DependentUpon>
     </Compile>

@@ -30,16 +30,16 @@ namespace VsCmdCommandPlugin
 				};
 		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return argumentsReplaceKeyValuePair; } }
 
-		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)
+		public override bool PreValidateArgument(out string errorMessage, int index, string argumentValue)
 		{
 			errorMessage = "";
-			if (Index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[Index].ContainsKey(argumentValue))
-				argumentValue = argumentsReplaceKeyValuePair[Index][argumentValue];
-			if (Index != 0)
+			if (index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[index].ContainsKey(argumentValue))
+				argumentValue = argumentsReplaceKeyValuePair[index][argumentValue];
+			if (index != 0)
 				errorMessage = "Only one argument allowed for VsCmd command";
-			else if (Index == 0 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 0 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "First argument of VsCmd command may not be null/empty/whitespaces only";
-			else if (Index == 0 && !Directory.Exists(argumentValue))
+			else if (index == 0 && !Directory.Exists(argumentValue))
 				errorMessage = "First argument of VsCmd command must be existing directory";
 			else return true;
 			return false;

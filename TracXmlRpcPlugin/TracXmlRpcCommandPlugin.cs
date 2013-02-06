@@ -37,18 +37,18 @@ namespace TracXmlRpcPlugin
 		};
 		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return argumentsReplaceKeyValuePair; } }
 
-		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)
+		public override bool PreValidateArgument(out string errorMessage, int index, string argumentValue)
 		{
 			errorMessage = "";
-			if (Index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[Index].ContainsKey(argumentValue))
-				argumentValue = argumentsReplaceKeyValuePair[Index][argumentValue];
-			if (Index >= 3)
+			if (index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[index].ContainsKey(argumentValue))
+				argumentValue = argumentsReplaceKeyValuePair[index][argumentValue];
+			if (index >= 3)
 				errorMessage = "More than 3 arguments not allowed for Trac XmlRpc command (sub-command, project)";
-			else if (Index == 0 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 0 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "First argument (sub-command) of Trac XmlRpc command may not be null/empty/whitespaces";
-			else if (Index == 0 && !(predefinedArgumentsList[0].ToArray()).Contains(argumentValue))
+			else if (index == 0 && !(predefinedArgumentsList[0].ToArray()).Contains(argumentValue))
 				errorMessage = "First argument of Trac XmlRpc command is an invalid sub-command";
-			else if (Index == 1 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 1 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "Second argument (project) of Trac XmlRpc command may not be null/empty/whitespaces";
 			else return true;
 			return false;

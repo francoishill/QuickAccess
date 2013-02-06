@@ -30,16 +30,16 @@ namespace MailCommandPlugin
 				};
 		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return argumentsReplaceKeyValuePair; } }
 
-		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)
+		public override bool PreValidateArgument(out string errorMessage, int index, string argumentValue)
 		{
 			errorMessage = "";
-			if (Index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[Index].ContainsKey(argumentValue))
-				argumentValue = argumentsReplaceKeyValuePair[Index][argumentValue];
-			if (Index >= 3)
+			if (index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[index].ContainsKey(argumentValue))
+				argumentValue = argumentsReplaceKeyValuePair[index][argumentValue];
+			if (index >= 3)
 				errorMessage = "More than 3 arguments not allowed for Mail command (mail, subject, body)";
-			else if (Index == 0 && !InlineCommandToolkit.InlineCommands.IsEmail(argumentValue))
+			else if (index == 0 && !InlineCommandToolkit.InlineCommands.IsEmail(argumentValue))
 				errorMessage = "First argument (to) of Mail command must be a valid email address";
-			else if (Index == 1 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 1 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "Second argument (subject) of Mail command may not be null/empty/whitespaces only";
 			else return true;
 			return false;

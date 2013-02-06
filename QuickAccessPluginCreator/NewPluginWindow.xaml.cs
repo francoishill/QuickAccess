@@ -222,7 +222,7 @@ namespace QuickAccessPluginCreator
 					///
 					//string newversionString;
 					//string currentVersionString;
-					var proj = new VSBuildProject_NonAbstract(newCommandName, tmpCsProjFilepath);
+					var proj = new VsBuildProject_NonAbstract(newCommandName, tmpCsProjFilepath);
 					List<string> tmplst;
 					if (proj.PerformBuild(
 						(mes, msgtype) =>

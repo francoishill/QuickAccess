@@ -28,16 +28,16 @@ namespace CallCommandPlugin
 				};
 		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return argumentsReplaceKeyValuePair; } }
 
-		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)
+		public override bool PreValidateArgument(out string errorMessage, int index, string argumentValue)
 		{
 			errorMessage = "";
-			if (Index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[Index].ContainsKey(argumentValue))
-				argumentValue = argumentsReplaceKeyValuePair[Index][argumentValue];
-			if (Index != 0)
+			if (index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[index].ContainsKey(argumentValue))
+				argumentValue = argumentsReplaceKeyValuePair[index][argumentValue];
+			if (index != 0)
 				errorMessage = "Only one argument required for Call command";
-			else if (Index == 0 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 0 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "First argument of Call command may not be null/empty/whitespaces";
-			else if (Index == 0 && !NameAndNumberDictionary.ContainsKey(argumentValue))
+			else if (index == 0 && !NameAndNumberDictionary.ContainsKey(argumentValue))
 				errorMessage = "Name not found in contact list: " + argumentValue;
 			else return true;
 			return false;

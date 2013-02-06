@@ -39,20 +39,20 @@ namespace StartupBatCommandPlugin
 				commandLowercase == "uncomment";
 		}
 
-		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)
+		public override bool PreValidateArgument(out string errorMessage, int index, string argumentValue)
 		{
 			errorMessage = "";
-			if (Index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[Index].ContainsKey(argumentValue))
-				argumentValue = argumentsReplaceKeyValuePair[Index][argumentValue];
-			if (Index >= 2)
+			if (index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[index].ContainsKey(argumentValue))
+				argumentValue = argumentsReplaceKeyValuePair[index][argumentValue];
+			if (index >= 2)
 				errorMessage = "More than 2 arguments not allowed for Startub bat command";
-			else if (Index == 0 && !IsStartubBatCommand(argumentValue))
+			else if (index == 0 && !IsStartubBatCommand(argumentValue))
 				errorMessage = "First argument of Startup bat command is invalid, must be one of the predefined commands: " + argumentValue;
-			else if (Index == 1 && (new string[] { "open", "getall" }).Contains(CurrentArguments[0].CurrentValue))
+			else if (index == 1 && (new string[] { "open", "getall" }).Contains(CurrentArguments[0].CurrentValue))
 				errorMessage = "No additional arguments allowed for '" + CurrentArguments[0].CurrentValue + "'";
-			else if (Index == 1 && (new string[] { "comment", "uncomment" }).Contains(CurrentArguments[0].CurrentValue) && !InlineCommandToolkit.InlineCommands.CanParseToInt(argumentValue))
+			else if (index == 1 && (new string[] { "comment", "uncomment" }).Contains(CurrentArguments[0].CurrentValue) && !InlineCommandToolkit.InlineCommands.CanParseToInt(argumentValue))
 				errorMessage = "Second argument of Startup bat command (" + CurrentArguments[0].CurrentValue + ") must be a valid integer";
-			else if (Index == 1 && "getline" == CurrentArguments[0].CurrentValue && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 1 && "getline" == CurrentArguments[0].CurrentValue && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "Second argument of Startup bat command (" + CurrentArguments[0].CurrentValue + ") may not be null/empty/whitespaces";
 			else return true;
 			return false;

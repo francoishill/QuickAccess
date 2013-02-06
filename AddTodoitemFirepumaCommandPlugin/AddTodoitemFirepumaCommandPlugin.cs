@@ -31,18 +31,18 @@ namespace AddTodoitemFirepumaCommandPlugin
 				};
 		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return argumentsReplaceKeyValuePair; } }
 
-		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)
+		public override bool PreValidateArgument(out string errorMessage, int index, string argumentValue)
 		{
 			errorMessage = "";
-			if (Index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[Index].ContainsKey(argumentValue))
-				argumentValue = argumentsReplaceKeyValuePair[Index][argumentValue];
-			if (Index >= 4)
+			if (index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[index].ContainsKey(argumentValue))
+				argumentValue = argumentsReplaceKeyValuePair[index][argumentValue];
+			if (index >= 4)
 				errorMessage = "More than 4 arguments not allowed for Add todo command (minutesfromnow, autosnooze, name, desc)";
-			else if (Index == 0 && !InlineCommandToolkit.InlineCommands.CanParseToInt(argumentValue))
+			else if (index == 0 && !InlineCommandToolkit.InlineCommands.CanParseToInt(argumentValue))
 				errorMessage = "First argument (minutesfromnow) of Add todo command must be of type int";
-			else if (Index == 1 && !InlineCommandToolkit.InlineCommands.CanParseToInt(argumentValue))
+			else if (index == 1 && !InlineCommandToolkit.InlineCommands.CanParseToInt(argumentValue))
 				errorMessage = "Second argument (autosnooze) of Add todo command must be of type int";
-			else if (Index == 2 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 2 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "Third argument (name) of Add todo command may not be null/empty/whitespaces only";
 			else return true;
 			return false;

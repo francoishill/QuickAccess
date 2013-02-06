@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Windows.Forms.Integration;
@@ -20,6 +21,8 @@ using SharedClasses;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 using QuickAccessPluginCreator;
+using System.Net;
+using System.Web.UI;
 //using QuickAccess.TestEmguCV;
 //using Emgu.CV;
 //using Emgu.CV.Structure;
@@ -143,6 +146,7 @@ namespace QuickAccess
 			DeleteAllDropboxConfilctsOfVsProjects();
 
 			StartMonitoringForSourceCodeVersionedFileChanges();
+			StartAppsmonitorWebUi();
 
 			//UserMessages.Confirm("Hallo");
 			//System.Windows.Window w = UserMessages.GetTopmostForm();
@@ -214,7 +218,162 @@ namespace QuickAccess
 			//inlineCommandsWindowWPF.GetInlineCommandsUserControl().LoadPlugins();
 		}
 
-		private void DeleteAllDropboxConfilctsOfVsProjects()
+		private static byte[] GetFavicon()
+		{
+			const string filepath = @"C:\Francois\Dev\VSprojects\ApplicationManager\ApplicationManager\app.ico";
+			return File.ReadAllBytes(filepath);
+			//StreamReader streamReader = new StreamReader(filepath);
+			//string responseString = streamReader.ReadToEnd();
+			//return Encoding.UTF8.GetBytes(responseString);
+		}
+
+		private static void RenderTableStartWithColumns(HtmlTextWriter writer, IEnumerable<string> columnNames)
+		{
+			writer.RenderBeginTag(HtmlTextWriterTag.Table);
+
+			writer.RenderBeginTag(HtmlTextWriterTag.Thead);
+			foreach (var colname in columnNames)
+			{
+				writer.RenderBeginTag(HtmlTextWriterTag.Th);
+				writer.Write(colname);
+				writer.RenderEndTag();//Th
+			}
+			writer.RenderEndTag();//Thead
+		}
+
+		private static void RenderTableRow(HtmlTextWriter writer, IEnumerable<string> rowCells)
+		{
+			writer.RenderBeginTag(HtmlTextWriterTag.Tr);
+
+			foreach (var cell in rowCells)
+			{
+				writer.RenderBeginTag(HtmlTextWriterTag.Td);
+				writer.Write(cell);
+				writer.RenderEndTag();//Td
+			}
+
+			writer.RenderEndTag();//Tr
+		}
+
+		private static List<RunningApps> GetRunningApps()
+		{
+			List<RunningApps> runningApps = new List<RunningApps>();
+
+			Dictionary<string, KeyValuePair<string, int>> pathAndNameWithCount = new Dictionary<string, KeyValuePair<string, int>>();
+			var procs = Process.GetProcesses();
+			foreach (var p in procs)
+			{
+				try
+				{
+					if (p.MainModule != null)
+						if (!pathAndNameWithCount.ContainsKey(p.MainModule.FileName))
+							pathAndNameWithCount.Add(p.MainModule.FileName, new KeyValuePair<string, int>(p.ProcessName, 1));
+						else
+							pathAndNameWithCount[p.MainModule.FileName] = new KeyValuePair<string, int>(
+								pathAndNameWithCount[p.MainModule.FileName].Key,
+								pathAndNameWithCount[p.MainModule.FileName].Value + 1);
+				}
+				catch { }
+			}
+
+			foreach (var path in pathAndNameWithCount.Keys)
+				runningApps.Add(new RunningApps(pathAndNameWithCount[path].Key, path, pathAndNameWithCount[path].Value));
+
+			runningApps = runningApps.OrderBy(ra => ra.AppName).ToList();
+			return runningApps;
+		}
+
+		private static byte[] GetResponseHtml()
+		{
+			// Initialize StringWriter instance.
+			var stringWriter = new StringWriter();
+
+			// Put HtmlTextWriter in using block because it needs to call Dispose.
+			using (var writer = new HtmlTextWriter(stringWriter))
+			{
+				RenderTableStartWithColumns(writer, new List<string>()
+				{
+					"Application",
+					"Path",
+					"Status",
+					"Process count"
+				});
+
+				writer.RenderBeginTag(HtmlTextWriterTag.Tbody);
+				foreach (var app in GetRunningApps())
+					RenderTableRow(writer, new List<string>()
+					{
+						app.AppName,
+						app.AppPath,
+						"Undeterminate",
+						app.Count.ToString()
+					});
+				writer.RenderEndTag();//Tbody
+
+				writer.RenderEndTag();//Table
+			}
+
+			return Encoding.UTF8.GetBytes(stringWriter.ToString());
+		}
+
+		private static void OnClientConnectionCallback(IAsyncResult result)
+		{
+			var listener = (HttpListener)result.AsyncState;
+			// Call EndGetContext to complete the asynchronous operation.
+			var context = listener.EndGetContext(result);
+			var request = context.Request;
+			var response = context.Response;
+
+			byte[] bytesToReturn = null;
+			if (request.RawUrl.Equals("/myicon.ico", StringComparison.InvariantCultureIgnoreCase))
+			{
+				response.ContentType = "image/x-icon";
+				bytesToReturn = GetFavicon();
+			}
+			else
+				bytesToReturn = GetResponseHtml();
+
+			if (bytesToReturn == null) return;
+
+			response.ContentLength64 = bytesToReturn.Length;
+			response.StatusCode = 200;
+			var output = response.OutputStream;
+			output.Write(bytesToReturn, 0, bytesToReturn.Length);
+			output.Close();
+		}
+
+		private static bool mustStop = false;
+		private static void StartAppsmonitorWebUi()
+		{
+			ThreadingInterop.DoAction(
+				delegate
+				{
+					const int portnum = 9099;
+					var listener = new HttpListener();
+					listener.Prefixes.Add(string.Format("http://+:{0}/", portnum));
+					listener.Start();
+					//actionOnStatus("Running server on port " + portnum);
+					while (true)
+					{
+						//Each connection will be handled with ListenerCallback, then will wait again for new connection
+						try
+						{
+							var result = listener.BeginGetContext(new AsyncCallback(OnClientConnectionCallback),
+																listener);
+							result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
+							//Only wait a second then retry, so we dont hang forever
+						}
+						catch
+						{
+						}
+						if (mustStop)
+							break;
+					}
+				},
+				false);
+		}
+
+		private static void DeleteAllDropboxConfilctsOfVsProjects()
 		{
 			var vsprojectsDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).TrimEnd('\\') + @"\Dropbox\Dev\VSprojects";
 			if (Directory.Exists(vsprojectsDir))
@@ -223,33 +382,33 @@ namespace QuickAccess
 						File.Delete(f);
 		}
 
-		private FileSystemWatcher csharpVersionedFilesMonitor = null;
-		private FileSystemWatcher delphiVersionedFilesMonitor = null;
+		private FileSystemWatcher _csharpVersionedFilesMonitor = null;
+		private FileSystemWatcher _delphiVersionedFilesMonitor = null;
 
-		private const string cCSharpMonitoredDirectory = @"C:\Francois\Dev\VSprojects";
-		private const string cDelphiMonitoredDirectory = @"C:\Programming";
+		private const string CcSharpMonitoredDirectory = @"C:\Francois\Dev\VSprojects";
+		private const string CDelphiMonitoredDirectory = @"C:\Programming";
 
-		private List<string> changedVisualStudioProjectDirectories = new List<string>();
-		private List<string> changedDelphiProjectDirectories = new List<string>();
-		private Dictionary<int, Process> runningVisualStudioProcesses = new Dictionary<int, Process>();
-		private Dictionary<int, Process> runningDelphiProcesses = new Dictionary<int, Process>();
+		private readonly List<string> _changedVisualStudioProjectDirectories = new List<string>();
+		private readonly List<string> _changedDelphiProjectDirectories = new List<string>();
+		private readonly Dictionary<int, Process> _runningVisualStudioProcesses = new Dictionary<int, Process>();
+		private readonly Dictionary<int, Process> _runningDelphiProcesses = new Dictionary<int, Process>();
 
 		private void StartMonitoringForSourceCodeVersionedFileChanges()
 		{
-			if (Directory.Exists(cCSharpMonitoredDirectory))
+			if (Directory.Exists(CcSharpMonitoredDirectory))
 			{
-				csharpVersionedFilesMonitor = new FileSystemWatcher(cCSharpMonitoredDirectory);
-				csharpVersionedFilesMonitor.EnableRaisingEvents = true;
-				csharpVersionedFilesMonitor.IncludeSubdirectories = true;
-				csharpVersionedFilesMonitor.Changed += (sn, ev) => { OnFileModifiedCheckIfCSharpVersioned(ev.FullPath); };
+				_csharpVersionedFilesMonitor = new FileSystemWatcher(CcSharpMonitoredDirectory);
+				_csharpVersionedFilesMonitor.EnableRaisingEvents = true;
+				_csharpVersionedFilesMonitor.IncludeSubdirectories = true;
+				_csharpVersionedFilesMonitor.Changed += (sn, ev) => { OnFileModifiedCheckIfCSharpVersioned(ev.FullPath); };
 			}
 
-			if (Directory.Exists(cDelphiMonitoredDirectory))
+			if (Directory.Exists(CDelphiMonitoredDirectory))
 			{
-				delphiVersionedFilesMonitor = new FileSystemWatcher(cDelphiMonitoredDirectory);
-				delphiVersionedFilesMonitor.EnableRaisingEvents = true;
-				delphiVersionedFilesMonitor.IncludeSubdirectories = true;
-				delphiVersionedFilesMonitor.Changed += (sn, ev) => { OnFileModifiedCheckIfDelphiVersioned(ev.FullPath); };
+				_delphiVersionedFilesMonitor = new FileSystemWatcher(CDelphiMonitoredDirectory);
+				_delphiVersionedFilesMonitor.EnableRaisingEvents = true;
+				_delphiVersionedFilesMonitor.IncludeSubdirectories = true;
+				_delphiVersionedFilesMonitor.Changed += (sn, ev) => { OnFileModifiedCheckIfDelphiVersioned(ev.FullPath); };
 			}
 
 			//int removeline;
@@ -271,15 +430,15 @@ namespace QuickAccess
 					try
 					{
 						int pid = allprocs[i].Id;
-						if (runningVisualStudioProcesses.ContainsKey(pid))
+						if (_runningVisualStudioProcesses.ContainsKey(pid))
 							continue;
-						runningVisualStudioProcesses.Add(pid, allprocs[i]);
+						_runningVisualStudioProcesses.Add(pid, allprocs[i]);
 						ThreadingInterop.PerformOneArgFunctionSeperateThread<Process>(
 							(proc) =>
 							{
 								proc.WaitForExit();
-								runningVisualStudioProcesses.Remove(proc.Id);
-								if (runningVisualStudioProcesses.Count == 0)
+								_runningVisualStudioProcesses.Remove(proc.Id);
+								if (_runningVisualStudioProcesses.Count == 0)
 									AllVisualStudioIDEsClosed_PromptUserIfSubversionChanges();
 							},
 							allprocs[i],
@@ -300,15 +459,15 @@ namespace QuickAccess
 					try
 					{
 						int pid = allprocs[i].Id;
-						if (runningDelphiProcesses.ContainsKey(pid))
+						if (_runningDelphiProcesses.ContainsKey(pid))
 							continue;
-						runningDelphiProcesses.Add(pid, allprocs[i]);
+						_runningDelphiProcesses.Add(pid, allprocs[i]);
 						ThreadingInterop.PerformOneArgFunctionSeperateThread<Process>(
 							(proc) =>
 							{
 								proc.WaitForExit();
-								runningDelphiProcesses.Remove(proc.Id);
-								if (runningDelphiProcesses.Count == 0)
+								_runningDelphiProcesses.Remove(proc.Id);
+								if (_runningDelphiProcesses.Count == 0)
 									AllDelphiIDEsClosed_PromptUserIfSubversionChanges();
 							},
 							allprocs[i],
@@ -324,12 +483,12 @@ namespace QuickAccess
 		private void OnFileModifiedCheckIfCSharpVersioned(string path)
 		{
 			string projectRootFolder = Path.Combine(
-				cCSharpMonitoredDirectory,
-				path.Substring(cCSharpMonitoredDirectory.Length + 1).TrimStart('\\').Split('\\')[0]);//Just the project folder name
+				CcSharpMonitoredDirectory,
+				path.Substring(CcSharpMonitoredDirectory.Length + 1).TrimStart('\\').Split('\\')[0]);//Just the project folder name
 			if (DirIsValidSvnPath(projectRootFolder))
 			{
-				if (!changedVisualStudioProjectDirectories.Contains(projectRootFolder))
-					changedVisualStudioProjectDirectories.Add(projectRootFolder);
+				if (!_changedVisualStudioProjectDirectories.Contains(projectRootFolder))
+					_changedVisualStudioProjectDirectories.Add(projectRootFolder);
 				PopulateRunningVisualStudioProcesses();
 			}
 		}
@@ -337,12 +496,12 @@ namespace QuickAccess
 		private void OnFileModifiedCheckIfDelphiVersioned(string path)
 		{
 			string projectRootFolder = Path.Combine(
-				cDelphiMonitoredDirectory,
-				path.Substring(cDelphiMonitoredDirectory.Length + 1).TrimStart('\\').Split('\\')[0]);//Just the project folder name
+				CDelphiMonitoredDirectory,
+				path.Substring(CDelphiMonitoredDirectory.Length + 1).TrimStart('\\').Split('\\')[0]);//Just the project folder name
 			if (DirIsValidSvnPath(projectRootFolder))
 			{
-				if (!changedDelphiProjectDirectories.Contains(projectRootFolder))
-					changedDelphiProjectDirectories.Add(projectRootFolder);
+				if (!_changedDelphiProjectDirectories.Contains(projectRootFolder))
+					_changedDelphiProjectDirectories.Add(projectRootFolder);
 				PopulateRunningVisualStudioProcesses();
 			}
 		}
@@ -351,14 +510,14 @@ namespace QuickAccess
 		{
 			UserMessages.ShowWarningMessage("The following subversion projects were modified (the last Visual Studio C# IDE was closed):"
 				+ Environment.NewLine + Environment.NewLine
-				+ string.Join(Environment.NewLine, changedVisualStudioProjectDirectories));
+				+ string.Join(Environment.NewLine, _changedVisualStudioProjectDirectories));
 		}
 
 		private void AllDelphiIDEsClosed_PromptUserIfSubversionChanges()
 		{
 			UserMessages.ShowWarningMessage("The following subversion projects were modified (the last Delphi IDE was closed):"
 				+ Environment.NewLine + Environment.NewLine
-				+ string.Join(Environment.NewLine, changedDelphiProjectDirectories));
+				+ string.Join(Environment.NewLine, _changedDelphiProjectDirectories));
 		}
 
 		private bool DirIsValidSvnPath(string dir)
@@ -1371,6 +1530,7 @@ namespace QuickAccess
 
 		private void menuItem_Exit_Click(object sender, EventArgs e)
 		{
+			mustStop = true;
 			this.Close();
 		}
 

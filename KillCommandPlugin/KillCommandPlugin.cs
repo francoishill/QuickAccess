@@ -50,16 +50,16 @@ namespace KillCommandPlugin
 				};
 		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return argumentsReplaceKeyValuePair; } }
 
-		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)
+		public override bool PreValidateArgument(out string errorMessage, int index, string argumentValue)
 		{
 			errorMessage = "";
-			if (Index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[Index].ContainsKey(argumentValue))
-				argumentValue = argumentsReplaceKeyValuePair[Index][argumentValue];
-			if (Index != 0)
+			if (index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[index].ContainsKey(argumentValue))
+				argumentValue = argumentsReplaceKeyValuePair[index][argumentValue];
+			if (index != 0)
 				errorMessage = "Only one argument required for Kill command";
-			else if (Index == 0 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 0 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "First argument of Kill command may not be null/empty/whitespaces";
-			else if (Index == 0 && !GetPredefinedArgumentsList(Index).Contains(argumentValue))
+			else if (index == 0 && !GetPredefinedArgumentsList(index).Contains(argumentValue))
 				errorMessage = "Process not found in running list: " + argumentValue;
 			else return true;
 			return false;

@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using InlineCommandToolkit;
+using SharedClasses;
 //using InterfaceForQuickAccessPlugin;
 using OverrideToStringClass = InlineCommandToolkit.InlineCommands.OverrideToStringClass;
-using SharedClasses;
 
 namespace PublishCommandPlugin
 {
@@ -18,30 +16,30 @@ namespace PublishCommandPlugin
 		public override string Description { get { return "Perform publish command(s) on a folder"; } }
 		public override string ArgumentsExample { get { return @"localvs c:\dev86\myproject1"; } }
 
-		private readonly ObservableCollection<string>[] predefinedArgumentsList =
+		private readonly ObservableCollection<string>[] _predefinedArgumentsList =
 		{
 			new ObservableCollection<string>() { "localvs", "onlinevs" },
 			new ObservableCollection<string>() { "QuickAccess", "MonitorSystem", "PublishOwnApps" },
 		};
-		public override ObservableCollection<string>[] PredefinedArgumentsList { get { return predefinedArgumentsList; } }
+		public override ObservableCollection<string>[] PredefinedArgumentsList { get { return _predefinedArgumentsList; } }
 
-		private readonly Dictionary<string, string>[] argumentsReplaceKeyValuePair =
+		private readonly Dictionary<string, string>[] _argumentsReplaceKeyValuePair =
 		{
 		};
-		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return argumentsReplaceKeyValuePair; } }
+		public override Dictionary<string, string>[] ArgumentsReplaceKeyValuePair { get { return _argumentsReplaceKeyValuePair; } }
 
-		public override bool PreValidateArgument(out string errorMessage, int Index, string argumentValue)
+		public override bool PreValidateArgument(out string errorMessage, int index, string argumentValue)
 		{
 			errorMessage = "";
-			if (Index < argumentsReplaceKeyValuePair.Length && argumentsReplaceKeyValuePair[Index].ContainsKey(argumentValue))
-				argumentValue = argumentsReplaceKeyValuePair[Index][argumentValue];
-			if (Index >= 2)
+			if (index < _argumentsReplaceKeyValuePair.Length && _argumentsReplaceKeyValuePair[index].ContainsKey(argumentValue))
+				argumentValue = _argumentsReplaceKeyValuePair[index][argumentValue];
+			if (index >= 2)
 				errorMessage = "More than 2 arguments not allowed for Publish command (sub-command, folder/project)";
-			else if (Index == 0 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 0 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "First argument (sub-command) of Publish command may not be null/empty/whitespaces";
-			else if (Index == 0 && !(predefinedArgumentsList[0].ToArray()).Contains(argumentValue))
+			else if (index == 0 && !(_predefinedArgumentsList[0].ToArray()).Contains(argumentValue))
 				errorMessage = "First argument of Publish command is an invalid sub-command";
-			else if (Index == 1 && string.IsNullOrWhiteSpace(argumentValue))
+			else if (index == 1 && string.IsNullOrWhiteSpace(argumentValue))
 				errorMessage = "Second argument (folder) of Publish command may not be null/empty/whitespaces";
 			else return true;
 			return false;
@@ -64,17 +62,17 @@ namespace PublishCommandPlugin
 		{
 			try
 			{
-				bool? HasPlugins = null;
-				bool? AutomaticallyUpdateRevision = null;
-				bool? WriteIntoRegistryForWindowsAutostartup = null;
+				bool? hasPlugins = null;
+				bool? automaticallyUpdateRevision = null;
+				bool? writeIntoRegistryForWindowsAutostartup = null;
 
-				HasPlugins = UserMessages.ConfirmNullable("Does the application have plugins (in a Plugins subfolder of the binaries)?", DefaultYesButton: true);
-				if (HasPlugins != null)
-					AutomaticallyUpdateRevision = UserMessages.ConfirmNullable("Update the revision also?");
-				if (HasPlugins != null && AutomaticallyUpdateRevision != null)
-					WriteIntoRegistryForWindowsAutostartup = UserMessages.ConfirmNullable("Auto startup with windows (written into registry)?", DefaultYesButton: true);
+				hasPlugins = UserMessages.ConfirmNullable("Does the application have plugins (in a Plugins subfolder of the binaries)?", DefaultYesButton: true);
+				if (hasPlugins != null)
+					automaticallyUpdateRevision = UserMessages.ConfirmNullable("Update the revision also?");
+				if (hasPlugins != null && automaticallyUpdateRevision != null)
+					writeIntoRegistryForWindowsAutostartup = UserMessages.ConfirmNullable("Auto startup with windows (written into registry)?", DefaultYesButton: true);
 
-				if (HasPlugins != null && AutomaticallyUpdateRevision != null && WriteIntoRegistryForWindowsAutostartup != null)
+				if (hasPlugins != null && automaticallyUpdateRevision != null && writeIntoRegistryForWindowsAutostartup != null)
 				{
 					if (arguments[0] == "localvs")
 					{
@@ -84,40 +82,30 @@ namespace PublishCommandPlugin
 						PublishInterop.PerformPublish(
 							//VisualStudioInterop.PerformPublish(
 							//textfeedbackSenderObject: this,
-							projName: arguments[1],
-							_64Only: false,
-							HasPlugins: (bool)HasPlugins,
-							AutomaticallyUpdateRevision: (bool)AutomaticallyUpdateRevision,
-							InstallLocallyAfterSuccessfullNSIS: true,
-							StartupWithWindows: (bool)WriteIntoRegistryForWindowsAutostartup,
-							SelectSetupIfSuccessful: false,
-							publishedVersionString: out tmpNoUseVersionStr,
-							publishedSetupPath: out tmpNoUseSetupPath,
-							publishDate: out publishedDate,
-							actionOnMessage: (mes, msgtype) =>
+							arguments[1],
+							/*_64Only: false,*/
+							(bool)hasPlugins, (bool)automaticallyUpdateRevision, true, (bool)writeIntoRegistryForWindowsAutostartup, false, out tmpNoUseVersionStr, out tmpNoUseSetupPath, out publishedDate, (mes, msgtype) =>
 							{
-								if (textFeedbackEvent != null)
+								if (textFeedbackEvent == null) return;
+								var tmpFeedbackType = TextFeedbackType.Subtle;
+								switch (msgtype)
 								{
-									TextFeedbackType tmpFeedbackType = TextFeedbackType.Subtle;
-									switch (msgtype)
-									{
-										case FeedbackMessageTypes.Success:
-											tmpFeedbackType = TextFeedbackType.Success;
-											break;
-										case FeedbackMessageTypes.Error:
-											tmpFeedbackType = TextFeedbackType.Error;
-											break;
-										case FeedbackMessageTypes.Warning:
-											tmpFeedbackType = TextFeedbackType.Noteworthy;
-											break;
-										case FeedbackMessageTypes.Status:
-											tmpFeedbackType = TextFeedbackType.Subtle;
-											break;
-									}
-									textFeedbackEvent(null, new TextFeedbackEventArgs(mes, tmpFeedbackType));
+									case FeedbackMessageTypes.Success:
+										tmpFeedbackType = TextFeedbackType.Success;
+										break;
+									case FeedbackMessageTypes.Error:
+										tmpFeedbackType = TextFeedbackType.Error;
+										break;
+									case FeedbackMessageTypes.Warning:
+										tmpFeedbackType = TextFeedbackType.Noteworthy;
+										break;
+									case FeedbackMessageTypes.Status:
+										tmpFeedbackType = TextFeedbackType.Subtle;
+										break;
 								}
+								textFeedbackEvent(null, new TextFeedbackEventArgs(mes, tmpFeedbackType));
 							},
-							actionOnProgressPercentage: (progperc) =>
+							(progperc) =>
 							{
 								if (progressChangedEvent != null)
 									progressChangedEvent(null, new ProgressChangedEventArgs(progperc, 100));
@@ -131,41 +119,28 @@ namespace PublishCommandPlugin
 						PublishInterop.PerformPublishOnline(
 							//VisualStudioInterop.PerformPublishOnline(
 							//textfeedbackSenderObject: this,
-							projName: arguments[1],
-							_64Only: false,
-							HasPlugins: (bool)HasPlugins,
-							AutomaticallyUpdateRevision: (bool)AutomaticallyUpdateRevision,
-							InstallLocallyAfterSuccessfullNSIS: true,
-							StartupWithWindows: (bool)WriteIntoRegistryForWindowsAutostartup,
-							SelectSetupIfSuccessful: false,
-							OpenWebsite: false,
-							publishedVersionString: out tmpNoUseVersionStr,
-							publishedSetupPath: out tmpNoUseSetupPath,
-							publishDate: out publishedDate,
-							actionOnMessage: (mes, msgtype) =>
+							arguments[1], false, (bool)hasPlugins, (bool)automaticallyUpdateRevision, true, (bool)writeIntoRegistryForWindowsAutostartup, false, false, out tmpNoUseVersionStr, out tmpNoUseSetupPath, out publishedDate, (mes, msgtype) =>
 							{
-								if (textFeedbackEvent != null)
+								if (textFeedbackEvent == null) return;
+								var tmpFeedbackType = TextFeedbackType.Subtle;
+								switch (msgtype)
 								{
-									TextFeedbackType tmpFeedbackType = TextFeedbackType.Subtle;
-									switch (msgtype)
-									{
-										case FeedbackMessageTypes.Success:
-											tmpFeedbackType = TextFeedbackType.Success;
-											break;
-										case FeedbackMessageTypes.Error:
-											tmpFeedbackType = TextFeedbackType.Error;
-											break;
-										case FeedbackMessageTypes.Warning:
-											tmpFeedbackType = TextFeedbackType.Noteworthy;
-											break;
-										case FeedbackMessageTypes.Status:
-											tmpFeedbackType = TextFeedbackType.Subtle;
-											break;
-									}
-									textFeedbackEvent(null, new TextFeedbackEventArgs(mes, tmpFeedbackType));
+									case FeedbackMessageTypes.Success:
+										tmpFeedbackType = TextFeedbackType.Success;
+										break;
+									case FeedbackMessageTypes.Error:
+										tmpFeedbackType = TextFeedbackType.Error;
+										break;
+									case FeedbackMessageTypes.Warning:
+										tmpFeedbackType = TextFeedbackType.Noteworthy;
+										break;
+									case FeedbackMessageTypes.Status:
+										tmpFeedbackType = TextFeedbackType.Subtle;
+										break;
 								}
+								textFeedbackEvent(null, new TextFeedbackEventArgs(mes, tmpFeedbackType));
 							},
-							actionOnProgressPercentage: (progperc) =>
+							(progperc) =>
 							{
 								if (progressChangedEvent != null)
 									progressChangedEvent(null, new ProgressChangedEventArgs(progperc, 100));
@@ -194,12 +169,12 @@ namespace PublishCommandPlugin
 			}
 		}
 
-		private CommandArgument[] availableArguments = new CommandArgument[]
+		private CommandArgument[] _availableArguments = new CommandArgument[]
 		{
 			new CommandArgument("", "sub-command", new ObservableCollection<string>() { "localvs", "onlinevs" }),
 			new CommandArgument("", "folder/path", new ObservableCollection<string>() { "QuickAccess", "MonitorSystem","PublishOwnApps"})
 		};
-		public override CommandArgument[] AvailableArguments { get { return availableArguments; } set { availableArguments = value; } }
+		public override CommandArgument[] AvailableArguments { get { return _availableArguments; } set { _availableArguments = value; } }
 
 		//private KeyAndValuePair[] availableArgumentAndDescriptionsPair = new KeyAndValuePair[]
 		//{
