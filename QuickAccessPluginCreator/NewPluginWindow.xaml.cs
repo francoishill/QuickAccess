@@ -222,10 +222,9 @@ namespace QuickAccessPluginCreator
 					///
 					//string newversionString;
 					//string currentVersionString;
-					var proj = new VsBuildProject_NonAbstract(newCommandName, tmpCsProjFilepath);
-					List<string> tmplst;
-					if (proj.PerformBuild(
-						(mes, msgtype) =>
+
+					VsBuildProject_NonAbstract.ActionOnFeedbackMessageReceived +=
+						(app, mes, msgtype) =>
 						{
 							switch (msgtype)
 							{
@@ -242,7 +241,11 @@ namespace QuickAccessPluginCreator
 								default:
 									break;
 							}
-						},
+						};
+
+					var proj = new VsBuildProject_NonAbstract(newCommandName, tmpCsProjFilepath);
+					List<string> tmplst;
+					if (proj.PerformBuild(
 						out tmplst))
 					/*if (VisualStudioInterop.BuildVsProjectReturnNewversionString(
 						newCommandName,
