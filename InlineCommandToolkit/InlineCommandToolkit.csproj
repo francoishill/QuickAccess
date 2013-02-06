@@ -153,14 +153,6 @@
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
       <Link>ApplicationRecoveryAndRestart.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\AutoUpdatingForm.cs">
-      <Link>AutoUpdatingForm.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\AutoUpdatingForm.designer.cs">
-      <Link>AutoUpdatingForm.designer.cs</Link>
-      <DependentUpon>AutoUpdatingForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="..\..\SharedClasses\BinaryDiff.cs">
       <Link>BinaryDiff.cs</Link>
     </Compile>
@@ -450,10 +442,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\SharedClasses\AutoUpdatingForm.resx">
-      <Link>AutoUpdatingForm.resx</Link>
-      <DependentUpon>AutoUpdatingForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\..\SharedClasses\MiniDownloadBarForm.resx">
       <Link>MiniDownloadBarForm.resx</Link>
       <DependentUpon>MiniDownloadBarForm.cs</DependentUpon>
