@@ -45,6 +45,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SharedClasses\_OwnAppsSharedDll\_OwnAppsSharedDll.csproj">
+      <Project>{5AA050A3-9D5F-4FEF-9071-BB5D87A7BE3F}</Project>
+      <Name>_OwnAppsSharedDll</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InlineCommandToolkit\InlineCommandToolkit.csproj">
       <Project>{3F73ECE5-851E-4C02-AC70-37C0F92783AD}</Project>
       <Name>InlineCommandToolkit</Name>

@@ -211,15 +211,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\SharedClasses\AboutWindow2.xaml.cs">
-      <Link>AboutWindow2.xaml.cs</Link>
-      <DependentUpon>AboutWindow2.xaml</DependentUpon>
-    </Compile>
     <Compile Include="..\..\SharedClasses\CheckApplicationTypes.cs">
       <Link>CheckApplicationTypes.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ConvertersGeneral.cs">
-      <Link>ConvertersGeneral.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\DebugInterop.cs">
       <Link>DebugInterop.cs</Link>
@@ -247,29 +240,8 @@
     <Compile Include="..\..\SharedClasses\ParseHtmlInterop.cs">
       <Link>ParseHtmlInterop.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\ScreenAndDrawingInterop.cs">
-      <Link>ScreenAndDrawingInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\SingleInstanceApplicationManager.cs">
       <Link>SingleInstanceApplicationManager.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\StartupbatInterop.cs">
-      <Link>StartupbatInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\UploadingProtocolTypesEnum.cs">
-      <Link>UploadingProtocolTypesEnum.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
-      <Link>UserActivityHook.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\WindowMessagesInterop.cs">
-      <Link>WindowMessagesInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\Windows7JumpListsInterop.cs">
-      <Link>Windows7JumpListsInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\WPFinterop.cs">
-      <Link>WPFinterop.cs</Link>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -370,16 +342,15 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="..\..\SharedClasses\AboutWindow2.xaml">
-      <Link>AboutWindow2.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="WebResultsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SharedClasses\_OwnAppsSharedDll\_OwnAppsSharedDll.csproj">
+      <Project>{5AA050A3-9D5F-4FEF-9071-BB5D87A7BE3F}</Project>
+      <Name>_OwnAppsSharedDll</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InlineCommandToolkit\InlineCommandToolkit.csproj">
       <Project>{3f73ece5-851e-4c02-ac70-37c0f92783ad}</Project>
       <Name>InlineCommandToolkit</Name>
