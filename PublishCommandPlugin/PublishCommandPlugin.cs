@@ -82,7 +82,7 @@ namespace PublishCommandPlugin
 						PublishInterop.PerformPublish(
 							//VisualStudioInterop.PerformPublish(
 							//textfeedbackSenderObject: this,
-							arguments[1],
+							new VsBuildProject_NonAbstract(arguments[1]),
 							/*_64Only: false,*/
 							(bool)hasPlugins, (bool)automaticallyUpdateRevision, true, (bool)writeIntoRegistryForWindowsAutostartup, false, out tmpNoUseVersionStr, out tmpNoUseSetupPath, out publishedDate, (mes, msgtype) =>
 							{
@@ -119,7 +119,18 @@ namespace PublishCommandPlugin
 						PublishInterop.PerformPublishOnline(
 							//VisualStudioInterop.PerformPublishOnline(
 							//textfeedbackSenderObject: this,
-							arguments[1], false, (bool)hasPlugins, (bool)automaticallyUpdateRevision, true, (bool)writeIntoRegistryForWindowsAutostartup, false, false, out tmpNoUseVersionStr, out tmpNoUseSetupPath, out publishedDate, (mes, msgtype) =>
+							new VsBuildProject_NonAbstract(arguments[1]),
+							false, 
+							(bool)hasPlugins, 
+							(bool)automaticallyUpdateRevision, 
+							true, 
+							(bool)writeIntoRegistryForWindowsAutostartup, 
+							false, 
+							false, 
+							out tmpNoUseVersionStr, 
+							out tmpNoUseSetupPath,
+							out publishedDate, 
+							(mes, msgtype) =>
 							{
 								if (textFeedbackEvent == null) return;
 								var tmpFeedbackType = TextFeedbackType.Subtle;

@@ -108,9 +108,6 @@
     <EmbeddedResource Include="..\..\SharedClasses\Resources\DotNetChecker.dll">
       <Link>Resources\DotNetChecker.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\SharedClasses\Resources\VisualStudioInterop %28publish page%29.html">
-      <Link>Resources\VisualStudioInterop %28publish page%29.html</Link>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
