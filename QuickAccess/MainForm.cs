@@ -145,8 +145,8 @@ namespace QuickAccess
 
 			DeleteAllDropboxConfilctsOfVsProjects();
 
-			StartMonitoringForSourceCodeVersionedFileChanges();
-			StartAppsmonitorWebUi();
+			//StartMonitoringForSourceCodeVersionedFileChanges();
+			//StartAppsmonitorWebUi();
 
 			//UserMessages.Confirm("Hallo");
 			//System.Windows.Window w = UserMessages.GetTopmostForm();
@@ -285,6 +285,11 @@ namespace QuickAccess
 
 		private static byte[] GetResponseHtml()
 		{
+			int todo;
+			//Instead of doing this on http request, rather maybe do it on a timer, say every minute and cache the result
+			//So then when we get the html response, there is no delay and also not simultaneous calls which calculates this
+			//This will speed it up a lot
+
 			// Initialize StringWriter instance.
 			var stringWriter = new StringWriter();
 
