@@ -86,7 +86,9 @@ namespace TracXmlRpcPlugin
 				}
 				else if (string.Equals(arguments[0], SubCommandsEnum.GetTicketIDs.ToString(), StringComparison.InvariantCultureIgnoreCase))
 				{
-					int[] ids = TracXmlRpcInterop.GetOpenTicketIds(TracXmlRpcInterop.ChangeLogs.GetTracXmlRpcUrlForApplication(arguments[1]));
+					int[] ids = TracXmlRpcInterop.GetOpenTicketIds(
+						err => TextFeedbackEventArgs.RaiseSimple(textFeedbackEvent, err, TextFeedbackType.Error),
+						TracXmlRpcInterop.ChangeLogs.GetTracXmlRpcUrlForApplication(arguments[1]));
 					int tmpcounter = 1;
 					foreach (int i in ids)
 						TextFeedbackEventArgs.RaiseTextFeedbackEvent_Ifnotnull(
