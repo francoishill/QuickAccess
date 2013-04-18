@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleSearchCommandPlugin",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillCommandPlugin", "KillCommandPlugin\KillCommandPlugin.csproj", "{9F3CCAB4-DF4B-4482-ADF7-B0809C4CFCD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailCommandPlugin", "MailCommandPlugin\MailCommandPlugin.csproj", "{AAB46ACA-FDC5-4CFA-B53A-FD6CC07CC1F2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublishCommandPlugin", "PublishCommandPlugin\PublishCommandPlugin.csproj", "{24DDFF3B-5AEF-433B-8FCF-FE7C63D9B21F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunCommandPlugin", "RunCommandPlugin\RunCommandPlugin.csproj", "{DF0B35E0-F88F-4782-A1BF-D7C3B85C0FB3}"

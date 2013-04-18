@@ -14,7 +14,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\..\..\Binaries\InlineCommandToolkit\obj\Debug\x64</BaseIntermediateOutputPath>
+    <OutputPath>..\..\..\..\Binaries\InlineCommandToolkit\bin\Debug\x64</OutputPath>
     <DefineConstants>TRACE;DEBUG;WPF, HAVEPLUGINS</DefineConstants>
     <NoWarn>
     </NoWarn>
@@ -24,7 +25,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\..\..\Binaries\InlineCommandToolkit\obj\Release\x64</BaseIntermediateOutputPath>
+    <OutputPath>..\..\..\..\Binaries\InlineCommandToolkit\bin\Release\x64</OutputPath>
     <DefineConstants>TRACE;WPF, HAVEPLUGINS</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>
@@ -36,7 +38,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\..\..\Binaries\InlineCommandToolkit\obj\Debug\x86</BaseIntermediateOutputPath>
+    <OutputPath>..\..\..\..\Binaries\InlineCommandToolkit\bin\Debug\x86</OutputPath>
     <DefineConstants>TRACE;DEBUG;WPF, HAVEPLUGINS</DefineConstants>
     <NoWarn>
     </NoWarn>
@@ -46,7 +49,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\Release\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\..\..\Binaries\InlineCommandToolkit\obj\Release\x86</BaseIntermediateOutputPath>
+    <OutputPath>..\..\..\..\Binaries\InlineCommandToolkit\bin\Release\x86</OutputPath>
     <DefineConstants>TRACE;WPF, HAVEPLUGINS</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>
@@ -58,7 +62,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\..\..\Binaries\InlineCommandToolkit\obj\Debug\AnyCPU</BaseIntermediateOutputPath>
+    <OutputPath>..\..\..\..\Binaries\InlineCommandToolkit\bin\Debug\AnyCPU</OutputPath>
     <DefineConstants>TRACE;DEBUG;WPF, HAVEPLUGINS</DefineConstants>
     <NoWarn>
     </NoWarn>
@@ -68,7 +73,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\..\..\Binaries\InlineCommandToolkit\obj\Release\AnyCPU</BaseIntermediateOutputPath>
+    <OutputPath>..\..\..\..\Binaries\InlineCommandToolkit\bin\Release\AnyCPU</OutputPath>
     <DefineConstants>TRACE;WPF, HAVEPLUGINS</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>
@@ -80,21 +86,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CookComputing.XmlRpcV2">
-      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\XmlRpc\CookComputing.XmlRpcV2.dll</HintPath>
+      <HintPath>..\..\..\DLLs\XmlRpc\CookComputing.XmlRpcV2.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Windows.Shell">
-      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\Microsoft_Windows_Shell\Microsoft.Windows.Shell.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack.Shell">
       <HintPath>..\..\..\DLLs\Windows API\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
     <Reference Include="MouseGestures">
-      <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\MouseGestures\MouseGestures.dll</HintPath>
+      <HintPath>..\..\..\DLLs\MouseGestures\MouseGestures.dll</HintPath>
     </Reference>
     <Reference Include="planerator">
-      <HintPath>c:\francois\other\dlls\planerator\planerator.dll</HintPath>
+      <HintPath>..\..\..\DLLs\Planerator\Planerator.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -108,7 +111,7 @@
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Controls.Input.Toolkit">
-      <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\System.Windows.Controls.Input.Toolkit.dll</HintPath>
+      <HintPath>..\..\..\DLLs\WPF Toolkit\System.Windows.Controls.Input.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Controls.WpfPropertyGrid">
       <HintPath>..\..\..\..\..\..\..\Francois\other\DLLs\WPF Property Grid\System.Windows.Controls.WpfPropertyGrid.dll</HintPath>
@@ -122,10 +125,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
     <Reference Include="WPFToolkit">
-      <HintPath>C:\Francois\Other\DLLs\WPF Toolkit\WPFToolkit.dll</HintPath>
+      <HintPath>..\..\..\DLLs\WPF Toolkit\WPFToolkit.dll</HintPath>
     </Reference>
     <Reference Include="wpftoolkit.extended">
-      <HintPath>c:\francois\other\dlls\wpf toolkit (extended)\wpftoolkit.extended.dll</HintPath>
+      <HintPath>..\..\..\DLLs\WPF Toolkit (Extended)\WPFToolkit.Extended.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -142,9 +145,6 @@
     <Compile Include="..\..\SharedClasses\CommandsWindow.xaml.cs">
       <Link>CommandsWindow.xaml.cs</Link>
       <DependentUpon>CommandsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ConvertersGeneral.cs">
-      <Link>ConvertersGeneral.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml.cs">
       <Link>CustomBalloonTipwpf.xaml.cs</Link>
