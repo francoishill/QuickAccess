@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.WindowsAPICodePack.Taskbar;
+//using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Windows.Forms.Integration;
 using System.Threading;
 //using UnhandledExceptions;
@@ -711,7 +711,7 @@ namespace QuickAccess
 		private void Form1_Shown(object sender, EventArgs e)
 		{
 			this.ShowInTaskbar = true;
-			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_CONTROL, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Q");
+			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_CONTROL + Win32Api.MOD_SHIFT, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Q");
 			//if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey2, Win32Api.MOD_CONTROL + Win32Api.MOD_SHIFT, (int)Keys.Q)) UserMessages.ShowErrorMessage("QuickAccess could not register hotkey Ctrl + Shift + Q");
 			//label1.Text = InlineCommands.InlineCommands.AvailableActionList;
 			//SetAutocompleteActionList();
@@ -743,7 +743,7 @@ namespace QuickAccess
 			base.WndProc(ref m);
 		}
 
-		private void UpdateProgress(int currentValue, int maximumValue, double bytesPerSecond = -1)
+		/*private void UpdateProgress(int currentValue, int maximumValue, double bytesPerSecond = -1)
 		{
 			ThreadingInterop.UpdateGuiFromThread(this, delegate
 			{
@@ -769,7 +769,7 @@ namespace QuickAccess
 					Application.DoEvents();
 				}
 			});
-		}
+		}*/
 
 		private bool EventAddedMouseClickedRequestToOpenOverlayWindow = false;
 		private double? OriginalWidthOfMainWindow = null;
