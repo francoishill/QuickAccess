@@ -65,7 +65,7 @@ namespace QuickAccess
 				{
 					Application.EnableVisualStyles();
 					AssociateFacesFileExtensionInRegistry();
-					RegistryInterop.AssociateUrlProtocolHandler(UrlHandlerUriStart, "QuickAccess protocol", "\"" + Environment.GetCommandLineArgs()[0] + "\" " + UrlHandlerArgument + " \"%1\"");
+					//RegistryInterop.AssociateUrlProtocolHandler(UrlHandlerUriStart, "QuickAccess protocol", "\"" + Environment.GetCommandLineArgs()[0] + "\" " + UrlHandlerArgument + " \"%1\"");
 					AutoUpdating.CheckForUpdates_ExceptionHandler(delegate
 					{
 						MainForm.CurrentVersionString = AutoUpdating.GetThisAppVersionString();
