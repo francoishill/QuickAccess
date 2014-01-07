@@ -171,7 +171,7 @@
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Users\francois\Dropbox\Dev\DLLs\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\..\..\DLLs\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
